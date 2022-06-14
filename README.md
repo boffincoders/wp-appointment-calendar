@@ -1,5 +1,5 @@
 
-#Appointment Booking 
+# Appointment Booking 
 
 ### Features
 
@@ -14,19 +14,29 @@
 # Frontend
 
 Calendar
+ 
 ![](https://raw.githubusercontent.com/boffincoders/wp-appointment-calendar/main/img/calendar.png)
-<br/>
+<br/><br/>
 Popup 
+ 
+
 ![](https://raw.githubusercontent.com/boffincoders/wp-appointment-calendar/main/img/booking%20popup.png) 
 
-<br/>
-# Admin
+<br/><br/>
+ 
+# Admin 
 Basic Settings
-![](https://raw.githubusercontent.com/boffincoders/wp-appointment-calendar/main/img/basic_info.png)
 <br/>
+![](https://raw.githubusercontent.com/boffincoders/wp-appointment-calendar/main/img/basic_info.png)
+
+<br/>
+
 Colour Settings
+
 ![](https://raw.githubusercontent.com/boffincoders/wp-appointment-calendar/main/img/styles.png) 
+ 
  <br/>
+ 
 Available Time Selection
 ![](https://raw.githubusercontent.com/boffincoders/wp-appointment-calendar/main/img/time_Setting.png) 
 
