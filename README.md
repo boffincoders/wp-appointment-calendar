@@ -38,7 +38,7 @@ Colour Settings
  <br/>
  
 Available Time Selection
-![](https://raw.githubusercontent.com/boffincoders/wp-appointment-calendar/main/appointmentappointment/img/time_Setting.png) 
+![](https://raw.githubusercontent.com/boffincoders/wp-appointment-calendar/main/appointment/img/time_Setting.png) 
 
 
 # ToDo
