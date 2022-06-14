@@ -1,7 +1,7 @@
 <?php
 /*
 	Plugin Name: Appointment
-	Plugin URI: https://boffincoders.com/wp-appointment
+	Plugin URI: https://boffincoders.com/wp- 
 	Description: Appointment System gives you the ability to set and pick time for appointment.
 	Version: 4.1.0
 	Author: Boffincoders
@@ -120,10 +120,10 @@ $query5 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name5 )
             'booking_view' => "",
             'instructions' => "",
             'capacity' => "1",
-            'booked_apointment_email_admin' => "Booking Email for Admin",
+            'booked_apointment_email_admin' => "New Appointment",
             'success_message' => "Thank you! Your appointment is booked: Schedule Appointment",
             'failed_message' => "Appointment Booking Failed",
-            'booked_apointment_email_customer' => "Booking Email for Customer ",
+            'booked_apointment_email_customer' => "Your Appointment is confirmed",
             'canceled_apointment_email_admin' => "Cancel Email for Admin ",
             'canceled_apointment_email_customer' => "Cancel Email for Customer",
             'autoload' => "",

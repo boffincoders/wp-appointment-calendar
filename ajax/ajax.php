@@ -10,10 +10,13 @@ if($_POST['radiovalue']!=""){
 	$to = $_POST['email'];
 	$subject = 'Apointment';
 	$message = 'Appointment Message';
-	$headers =  "From: boffinteam@boffincoders.com";
 
-    $sent_message = wp_mail( $to, $subject, $message, $headers );
- 
+	$headers = "MIME-Version: 1.0" . "\r\n";
+    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+ // More headers
+	$headers .= 'From: <webmaster@example.com>' . "\r\n";
+	$headers .= 'Cc: boffinteam@boffincoders.com' . "\r\n";
+  
  	$name = $_POST['name'];
  	$email = $_POST['email'];
  	$radiovalue = $_POST['radiovalue'];
@@ -30,7 +33,9 @@ if($_POST['radiovalue']!=""){
 	}
 	
      $table_name = $wpdb->prefix."appointment_booked";
-   
+     $table_name2 = $wpdb->prefix."appointment_data";
+     $default_row2 = $wpdb->get_row( "SELECT * FROM $table_name2 WHERE appointment_id='1'");
+	 
      $allbook = array();
 	 $table_namebooked = $wpdb->prefix."appointment_booked";
      $default_rowbooked = $wpdb->get_results("SELECT * FROM $table_namebooked");
@@ -66,6 +71,28 @@ if($_POST['radiovalue']!=""){
     
 	
 	$time = explode("slot",$radiovalue);
+	
+	$message = "<html>
+					<head>
+					<title>Appointment</title>
+					</head>
+					<body>
+					<p>".$default_row2->booked_apointment_email_customer."</p>
+					 <div>
+					 <p><b>Name</b>".$name."</p> 
+					 <p> <b>Email</b>".$email." </p> 
+					 <p> <b>Appointment Time </b>".$date_slected.", ".$time[1]." </p> 
+					 </div>
+					</body>
+					</html>
+					";
+ 
+	
+	// $message = $default_row2->booked_apointment_email_admin."<br/> ";
+     $sent_message = wp_mail( $to, $subject, $message, $headers );
+	
+	
+	
 	echo "<span style='color:green; font-weight:bold;'>".$default_rowbooked->success_message."</span><br/>";
 	echo $date_slected.", ".$time[1];
 	echo "<br/>";
