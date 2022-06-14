@@ -1826,3 +1826,8 @@ input.add-event-edit:-ms-input-placeholder {
  background:#f0f0f1;
  color: green;
 }
+
+.form-group
+{
+	margin-bottom:15px;
+}
