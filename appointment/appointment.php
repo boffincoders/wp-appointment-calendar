@@ -9,9 +9,11 @@
     Text Domain: wp-boffin-appointment  
 */
  
+if ( ! defined( 'ABSPATH' ) ) exit;
+  
 function scratchcode_create_appointment_availability() {
-
-global $wpdb;
+global $wpdb; 
+ 
 $table_name = $wpdb->base_prefix.'appointment_availability';
 $query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
 
@@ -235,6 +237,115 @@ $query5 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name5 )
         ));
       dbDelta($sql2); 
 	}
+	
+	
+ if( isset($_POST['radiovalue']) && isset($_POST['name']) ){
+ 
+	$to = sanitize_email($_POST['email']);
+	$subject = 'Apointment';
+	$message = 'Appointment Message';
+
+	$headers = "MIME-Version: 1.0" . "\r\n";
+    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+	$headers .= 'From: <webmaster@example.com>' . "\r\n";
+	$headers .= 'Cc: boffinteam@boffincoders.com' . "\r\n";
+  
+ 	$name = sanitize_text_field($_POST['name']);
+ 	$email = sanitize_email($_POST['email']);
+ 	$radiovalue = sanitize_text_field($_POST['radiovalue']);
+ 	$phone = sanitize_text_field($_POST['phone']);
+   	$address = sanitize_text_field($_POST['address']);
+ 	$city = sanitize_text_field($_POST['city']);
+ 	$state = sanitize_text_field($_POST['state']);
+ 	$zip_code = sanitize_text_field($_POST['zip_code']);
+ 	$note = sanitize_text_field($_POST['note']);
+	
+	if(sanitize_text_field($_POST['date_slected']))
+	{
+		$date_slected = sanitize_text_field($_POST['date_slected']);
+	}
+	
+     $table_name = $wpdb->prefix."appointment_booked";
+     $table_name2 = $wpdb->prefix."appointment_data";
+     $default_row2 = $wpdb->get_row( "SELECT * FROM $table_name2 WHERE appointment_id='1'");
+	
+     $allbook = array();
+	 $table_namebooked = $wpdb->prefix."appointment_booked";
+     $default_rowbooked = $wpdb->get_results("SELECT * FROM $table_namebooked");
+	 foreach($default_rowbooked as $bookedvalues)
+	 {
+		 $allbook[] = $bookedvalues->date;
+		 $allbook[] = $bookedvalues->time;
+	 }
+	  
+ 	 $tablemessages = $wpdb->prefix."appointment_data";
+	 $default_rowbooked = $wpdb->get_row("SELECT * FROM $tablemessages where id = '1'");
+	  
+ 
+   if (in_array( $radiovalue, $allbook) && in_array( $date_slected, $allbook))   
+   {
+	   esc_html_e($default_rowbooked->success_message);
+   }
+   
+   else {
+     $wpdb->insert($table_name, array(
+					'name' => $name,	 
+					'email' => $email,	 
+					'phone' => $phone,	 
+					'address' => $address,	 
+					'city' => $city,	 
+					'state' => $state,	 
+					'zip_code' => $zip_code,	 
+					'notes' => $note,	  
+					'date' => $radiovalue,	 
+					'time' => $date_slected,	 
+			));
+    
+	
+	$time = explode("slot",$radiovalue);
+	
+ 	$message = "<html>
+					<head>
+					<title>Appointment</title>
+					</head>
+					<body>
+					<p>".$default_row2->booked_apointment_email_customer."</p>
+					 <div>
+					 <p><b>Name</b>".$name."</p> 
+					 <p> <b>Email</b>".$email." </p> 
+					 <p> <b>Appointment Time </b>".$date_slected.", ".$time[1]." </p> 
+					 </div>
+					</body>
+					</html>
+				 ";
+ 
+		esc_html_e($default_rowbooked->success_message);
+     echo "<br/>";
+	 echo "Appointment Time : ";
+	   esc_html_e($date_slected.", ".$time[1]);
+	 echo "<br/>";	
+	 echo "Name : ";
+	   esc_html_e($name);
+	 echo "<br/>";
+	 echo "Email : ";
+	   esc_html_e($email); 
+ 
+   }
+	?>   
+	<script>
+		document.getElementById("<?php esc_html_e(str_replace(':',"", $radiovalue)); ?>").disabled = true;
+	</script>
+
+	<style>
+	#<?php esc_html_e(str_replace(':',"", $radiovalue)); ?>
+	{
+			background: #bab6bf !IMPORTANT;
+		border: 1px solid #bab6bf !IMPORTANT;
+	}
+	</style>
+	<?php
+	 die; 
+	}	
 }    
  
 add_action('init', 'scratchcode_create_appointment_availability');
@@ -247,6 +358,10 @@ function libload()
 }
  
 add_action('wp_enqueue_scripts','libload');
+  
+
+//add_action('wp_enqueue_scripts','ajax_call');
+
 
 function my_menu_pages(){
  
@@ -294,10 +409,10 @@ function boffin_appointment_settings() {
      if(isset($_POST['basic_info']))
 	{ 
         $table_name = $wpdb->prefix."appointment_data";
-		$appoint_name= $_POST["appoint_name"]; 
-	    $duration= $_POST["duration"]; 
-		$success_message= $_POST["success"]; 
-		$failed_message= $_POST["failed"]; 
+		$appoint_name= sanitize_text_field( $_POST["appoint_name"]); 
+	    $duration= sanitize_text_field( $_POST["duration"]); 
+		$success_message= sanitize_text_field( $_POST["success"]); 
+		$failed_message= sanitize_text_field( $_POST["failed"]); 
 	    
  
 	    $wpdb->update($table_name, array('name'=>$appoint_name, 'duration'=>$duration, 'duration_unit'=>'', 'booking_view'=>'', 'instructions'=>'', 'success_message'=>$success_message, 'failed_message'=>$failed_message), array('appointment_id'=>'1'));
@@ -312,19 +427,19 @@ function boffin_appointment_settings() {
 	{ 
         $table_name = $wpdb->prefix."appointment_styles";
 		
-		$background_color= $_POST["background_color"]; 
-		$months_name= $_POST["months_name"]; 
-		$dates_color= $_POST["dates_color"]; 
-		$year_color= $_POST["year_color"]; 
-		$popup_backgound_border_color= $_POST["popup_backgound_border_color"]; 
-		$popup_backgound_color= $_POST["popup_backgound_color"]; 
-		$submit_button_color= $_POST["submit_button_color"]; 
-		$timeslot_text_color= $_POST["timeslot_text_color"]; 
-		$timeslot_background_color= $_POST["timeslot_background_color"]; 
-		$timeslot_booked_color= $_POST["timeslot_booked_color"]; 
-		$timeslot_booked_bkg_color= $_POST["timeslot_booked_bkg_color"]; 
-		$heading_color_popup= $_POST["heading_color_popup"]; 
-		$text_color_popup= $_POST["text_color_popup"]; 
+		$background_color= sanitize_text_field( $_POST["background_color"]); 
+		$months_name= sanitize_text_field( $_POST["months_name"]); 
+		$dates_color= sanitize_text_field( $_POST["dates_color"]); 
+		$year_color= sanitize_text_field( $_POST["year_color"]); 
+		$popup_backgound_border_color= sanitize_text_field( $_POST["popup_backgound_border_color"]); 
+		$popup_backgound_color= sanitize_text_field( $_POST["popup_backgound_color"]); 
+		$submit_button_color= sanitize_text_field( $_POST["submit_button_color"]); 
+		$timeslot_text_color= sanitize_text_field( $_POST["timeslot_text_color"]); 
+		$timeslot_background_color= sanitize_text_field( $_POST["timeslot_background_color"]); 
+		$timeslot_booked_color= sanitize_text_field( $_POST["timeslot_booked_color"]); 
+		$timeslot_booked_bkg_color= sanitize_text_field( $_POST["timeslot_booked_bkg_color"]); 
+		$heading_color_popup= sanitize_text_field( $_POST["heading_color_popup"]); 
+		$text_color_popup= sanitize_text_field( $_POST["text_color_popup"]); 
  
  
 	    $wpdb->update($table_name, array('background_color'=>$background_color, 'months_name'=>$months_name, 'dates_color'=>$dates_color, 'year_color'=>$year_color, 'popup_backgound_border_color'=>$popup_backgound_border_color, 'popup_backgound_color'=>$popup_backgound_color, 'submit_button_color'=>$submit_button_color, 'timeslot_text_color'=>$timeslot_text_color, 'timeslot_background_color'=>$timeslot_background_color, 'timeslot_booked_color'=>$timeslot_booked_color, 'timeslot_booked_bkg_color'=>$timeslot_booked_bkg_color, 'heading_color_popup'=>$heading_color_popup, 'text_color_popup'=>$text_color_popup ), array('id'=>'1'));
@@ -333,23 +448,18 @@ function boffin_appointment_settings() {
 	}
  
  
-  
- 
      if(isset($_POST['availability_submit']))
 	{ 
         $table_name = $wpdb->prefix."appointment_availability";
-		$appointment_id= $_POST["appointment_id"]; 
-       
-         $timeslots = $_POST["timeslots"]; 
+		$appointment_id= sanitize_text_field( $_POST["appointment_id"]); 
          
 		 $arr = array();
-          
+         $timeslots = $_POST["timeslots"]; 
 		 foreach($timeslots as $val)
 		 {
 		    array_push($arr,$val);
 		 }
-      
-	 
+   
 	     $wpdb->update($table_name, array('json_data'=>json_encode($arr)), array('appointment_id'=>'1'));
 		
 		 print_r("<p class='greentext' id='message'>Appointment Updated Successfully</p>");
@@ -490,7 +600,7 @@ function boffin_appointment_settings() {
 			$user_notes_required = '0';
 		}
  
-		$appointment_id= $_POST["appointment_id"]; 
+		$appointment_id= sanitize_text_field( $_POST["appointment_id"]); 
  
 	   $wpdb->update($table_name, array('name'=>$user_name, 'name_required'=>$user_name_required, 'email'=>$user_email, 'email_required'=>$user_email_required, 'phone'=>$user_phone, 'phone_required'=>$user_phone_required, 'address'=>$user_address, 'address_required'=>$user_address_required, 'city'=>$user_city, 'city_required'=>$user_city_required, 'state'=>$user_state, 'state_required'=>$user_state_required, 'zip_code'=>$user_zip_code, 'zip_code_required'=>$user_zip_required, 'note'=>$user_notes, 'note_required'=>$user_notes_required), array('appointment_id'=>'1'));
 		 
@@ -503,12 +613,12 @@ function boffin_appointment_settings() {
      if(isset($_POST['notification']))
 	{ 
         $table_name = $wpdb->prefix."appointment_data";
-		$admin_appointment_booked= $_POST["admin_appointment_booked"]; 
-		$customer_appointment_booked= $_POST["customer_appointment_booked"]; 
-		$admin_appointment_canceled= $_POST["admin_appointment_canceled"]; 
-		$customer_appointment_canceled= $_POST["customer_appointment_canceled"]; 
+		$admin_appointment_booked= sanitize_text_field( $_POST["admin_appointment_booked"]); 
+		$customer_appointment_booked= sanitize_text_field( $_POST["customer_appointment_booked"]); 
+		$admin_appointment_canceled= sanitize_text_field( $_POST["admin_appointment_canceled"]); 
+		$customer_appointment_canceled= sanitize_text_field( $_POST["customer_appointment_canceled"]); 
  
-		$appointment_id= $_POST["appointment_id"]; 
+		$appointment_id= sanitize_text_field( $_POST["appointment_id"]); 
  
 	    $wpdb->update($table_name, array('booked_apointment_email_admin'=>$admin_appointment_booked, 'booked_apointment_email_customer'=>$customer_appointment_booked, 'canceled_apointment_email_admin'=>$admin_appointment_canceled, 'canceled_apointment_email_customer'=>$customer_appointment_canceled), array('appointment_id'=>'1'));
 		
@@ -541,14 +651,14 @@ function boffin_appointment_settings() {
          ?>
          
           <h2 class="nav-tab-wrapper">
-            <a href="?page=appointment-basics&tab=basics" class="nav-tab <?php echo $active_tab == 'basics' ? 'nav-tab-active' : ''; ?>">Basics</a>
-            <a href="?page=appointment-basics&tab=availability" class="nav-tab <?php echo $active_tab == 'availability' ? 'nav-tab-active' : ''; ?>">Availability</a>
+            <a href="?page=appointment-basics&tab=basics" class="nav-tab <?php esc_html_e($active_tab == 'basics' ? 'nav-tab-active' : ''); ?>">Basics</a>
+            <a href="?page=appointment-basics&tab=availability" class="nav-tab <?php esc_html_e($active_tab == 'availability' ? 'nav-tab-active' : ''); ?>">Availability</a>
  
-			<a href="?page=appointment-basics&tab=customer-information" class="nav-tab <?php echo $active_tab == 'customer-information' ? 'nav-tab-active' : ''; ?>">Customer Information</a>
+			<a href="?page=appointment-basics&tab=customer-information" class="nav-tab <?php esc_html_e($active_tab == 'customer-information' ? 'nav-tab-active' : ''); ?>">Customer Information</a>
 			
-			<a href="?page=appointment-basics&tab=notifications" class="nav-tab <?php echo $active_tab == 'notifications' ? 'nav-tab-active' : ''; ?>">Notifications</a>
+			<a href="?page=appointment-basics&tab=notifications" class="nav-tab <?php esc_html_e($active_tab == 'notifications' ? 'nav-tab-active' : ''); ?>">Notifications</a>
 			
-				<a href="?page=appointment-basics&tab=styles" class="nav-tab <?php echo $active_tab == 'styles' ? 'nav-tab-active' : ''; ?>">Styles</a>
+				<a href="?page=appointment-basics&tab=styles" class="nav-tab <?php esc_html_e($active_tab == 'styles' ? 'nav-tab-active' : ''); ?>">Styles</a>
 		  
           </h2>
   
@@ -565,7 +675,7 @@ function boffin_appointment_settings() {
 	 <tbody> 
 	  <tr>
 		    <th><label for="name_base">Name</label></th>
-		    <td> <input name="appoint_name" id="name_base" type="text" value="<?php echo $default_row->name; ?>" class="regular-text code" placeholder="Consultation Phone Call" required></td>
+		    <td> <input name="appoint_name" id="name_base" type="text" value="<?php  esc_html_e($default_row->name); ?>" class="regular-text code" placeholder="Consultation Phone Call" required></td>
 	  </tr>
 	  
 	  
@@ -585,18 +695,18 @@ function boffin_appointment_settings() {
 	     
 	  <tr>
 	    <th><label for="instructions">Booking Success Message</label></th>
-		 <td> <textarea name="success" id="instructions" rows="4" cols="50" class="regular-text code"placeholder="Thank you, Your Appointment is fixed" ><?php echo $default_row->success_message; ?></textarea>
+		 <td> <textarea name="success" id="instructions" rows="4" cols="50" class="regular-text code"placeholder="Thank you, Your Appointment is fixed" ><?php esc_html_e($default_row->success_message); ?></textarea>
 		 </td>
 	  </tr>
 	  
 	  <tr>
 	    <th><label for="instructions">Booking Failed Message</label></th>
-		 <td> <textarea name="failed" id="instructions" rows="4" cols="50" class="regular-text code"placeholder="Sorry, Please try Again" ><?php echo $default_row->failed_message; ?></textarea>
+		 <td> <textarea name="failed" id="instructions" rows="4" cols="50" class="regular-text code"placeholder="Sorry, Please try Again" ><?php esc_html_e($default_row->failed_message); ?></textarea>
 		 </td>
 	  </tr>
  
           <tr>
-		    <th><label> <input type="hidden" value="<?php echo $appoint_id; ?>" name="appointment_id"/>  </label></th>
+		    <th><label> <input type="hidden" value="<?php esc_html_e($appoint_id); ?>" name="appointment_id"/>  </label></th>
 			<td> <input type="submit" class="button button-primary" name="basic_info"/></td>
 	      </tr>
 	     </tbody>
@@ -649,7 +759,7 @@ function boffin_appointment_settings() {
 	  
 	  </th>
 	   <?php foreach($timearray as $timevalue){ ?>
-			        <th> <span class="time-name"> <?php echo $timevalue; ?></span> 			    
+			        <th> <span class="time-name"> <?php esc_html_e($timevalue); ?></span> 			    
   
 			        </th>
 	       <?php } ?>
@@ -658,12 +768,12 @@ function boffin_appointment_settings() {
 	       <?php foreach($days as $daysvalue) { ?>	
 		 <tr>
 			   <th>
-			      <span class="days-name"><?php  echo $daysvalue; ?></span>
+			      <span class="days-name"><?php  esc_html_e($daysvalue); ?></span>
 			    </th>
 			       <?php foreach($timearray as $timevalue){ ?>
 			        <th>  	
 					 
-			           <input name="timeslots[]" type="checkbox" class="mew" value="<?php echo $daysvalue.'slot'.$timevalue; ?>"  <?php if (str_contains($default_row4->json_data, $daysvalue.'slot'.$timevalue)) { ?> checked ="checked" <?php } ?>/>
+			           <input name="timeslots[]" type="checkbox" class="mew" value="<?php esc_html_e($daysvalue.'slot'.$timevalue); ?>"  <?php if (str_contains($default_row4->json_data, $daysvalue.'slot'.$timevalue)) { ?> checked ="checked" <?php } ?>/>
  
 			        </th>
 	      <?php } ?>	   
@@ -677,14 +787,14 @@ function boffin_appointment_settings() {
 		
         <table class="form-table" role="presentation">
           <tr>
-		    <th><label> <input type="hidden" value="<?php echo $appoint_id; ?>" name="appointment_id"/>  </label> 
+		    <th><label> <input type="hidden" value="<?php esc_html_e($appoint_id); ?>" name="appointment_id"/>  </label> 
 			  <input type="submit" class="button button-primary" name="availability_submit"/></td>
 	      </tr>
 	    </table>
 		
-       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	   
 	  	<script>
-		  $(".mew").on("mouseover", function () {
+		  jQuery(".mew").on("mouseover", function () {
 			this.checked = ! this.checked;
 		  });
 	   </script>
@@ -705,22 +815,22 @@ function boffin_appointment_settings() {
           </b>		 
 		  <tr>
 		    <th><label for="capacity">Calendar Background Color</label></th>
-		    <td> <input name="background_color" id="capacity" type="color" value="<?php echo $default_row5->background_color; ?>" class="regular-text"  required="required"></td>
+		    <td> <input name="background_color" id="capacity" type="color" value="<?php esc_html_e($default_row5->background_color); ?>" class="regular-text"  required="required"></td>
 	      </tr>
 		  
 		  <tr>
 		    <th><label for="capacity">Months Names Color</label></th>
-		    <td> <input name="months_name" id="capacity" type="color" value="<?php echo $default_row5->months_name; ?>" class="regular-text"  required></td>
+		    <td> <input name="months_name" id="capacity" type="color" value="<?php esc_html_e($default_row5->months_name); ?>" class="regular-text"  required></td>
 	      </tr>
    
 		  <tr>
 		    <th><label for="capacity">Dates Color</label></th>
-		    <td> <input name="dates_color" id="capacity" type="color" value="<?php echo $default_row5->dates_color; ?>" class="regular-text"  required></td>
+		    <td> <input name="dates_color" id="capacity" type="color" value="<?php esc_html_e($default_row5->dates_color); ?>" class="regular-text"  required></td>
 	      </tr>
 		  
 		  <tr>
 		    <th><label for="capacity">Year Color</label></th>
-		    <td> <input name="year_color" id="capacity" type="color" value="<?php echo $default_row5->year_color; ?>" class="regular-text"  required></td>
+		    <td> <input name="year_color" id="capacity" type="color" value="<?php esc_html_e($default_row5->year_color); ?>" class="regular-text"  required></td>
 	      </tr>
    
         <tr>
@@ -732,42 +842,42 @@ function boffin_appointment_settings() {
          
 		 <tr>
 		    <th><label for="capacity">Popup Header-Footer Backgound Color</label></th>
-		    <td> <input name="popup_backgound_border_color" id="capacity" type="color" value="<?php echo $default_row5->popup_backgound_border_color; ?>" class="regular-text"  required></td>
+		    <td> <input name="popup_backgound_border_color" id="capacity" type="color" value="<?php esc_html_e($default_row5->popup_backgound_border_color); ?>" class="regular-text"  required></td>
 	      </tr>
   
          <tr>
 		    <th><label for="capacity">Submit Button Color</label></th>
-		    <td> <input name="submit_button_color" id="capacity" type="color" value="<?php echo $default_row5->submit_button_color; ?>" class="regular-text"  required></td>
+		    <td> <input name="submit_button_color" id="capacity" type="color" value="<?php esc_html_e($default_row5->submit_button_color); ?>" class="regular-text"  required></td>
 	      </tr>
   
          <tr>
 		    <th><label for="capacity">Time slots Text Color</label></th>
-		    <td> <input name="timeslot_text_color" id="capacity" type="color" value="<?php echo $default_row5->timeslot_text_color; ?>" class="regular-text"  required></td>
+		    <td> <input name="timeslot_text_color" id="capacity" type="color" value="<?php esc_html_e($default_row5->timeslot_text_color); ?>" class="regular-text"  required></td>
 	      </tr>
   
          <tr>
 		    <th><label for="capacity">Time slots Background Color</label></th>
-		    <td> <input name="timeslot_background_color" id="capacity" type="color" value="<?php echo $default_row5->timeslot_background_color; ?>" class="regular-text"  required></td>
+		    <td> <input name="timeslot_background_color" id="capacity" type="color" value="<?php esc_html_e($default_row5->timeslot_background_color); ?>" class="regular-text"  required></td>
 	      </tr>
 		  
          <tr>
 		    <th><label for="capacity">Booked Time slots Text Color</label></th>
-		    <td> <input name="timeslot_booked_color" id="capacity" type="color" value="<?php echo $default_row5->timeslot_booked_color; ?>" class="regular-text"  required></td>
+		    <td> <input name="timeslot_booked_color" id="capacity" type="color" value="<?php esc_html_e($default_row5->timeslot_booked_color); ?>" class="regular-text"  required></td>
 	      </tr>
    
          <tr>
 		    <th><label for="capacity">Booked Time slots Background Color</label></th>
-		    <td> <input name="timeslot_booked_bkg_color" id="capacity" type="color" value="<?php echo $default_row5->timeslot_booked_bkg_color; ?>" class="regular-text"  required></td>
+		    <td> <input name="timeslot_booked_bkg_color" id="capacity" type="color" value="<?php esc_html_e($default_row5->timeslot_booked_bkg_color); ?>" class="regular-text"  required></td>
 	      </tr>
 		  
          <tr>
 		    <th><label for="capacity">Popup Heading Color</label></th>
-		    <td> <input name="heading_color_popup" id="capacity" type="color" value="<?php echo $default_row5->heading_color_popup; ?>" class="regular-text"  required></td>
+		    <td> <input name="heading_color_popup" id="capacity" type="color" value="<?php esc_html_e($default_row5->heading_color_popup); ?>" class="regular-text"  required></td>
 	      </tr>
 		  
          <tr>
 		    <th><label for="capacity">Popup text Color</label></th>
-		    <td> <input name="text_color_popup" id="capacity" type="color" value="<?php echo $default_row5->text_color_popup; ?>" class="regular-text"  required></td>
+		    <td> <input name="text_color_popup" id="capacity" type="color" value="<?php esc_html_e($default_row5->text_color_popup); ?>" class="regular-text"  required></td>
 	      </tr>
   
   
@@ -795,43 +905,43 @@ function boffin_appointment_settings() {
           </b>		 
 		 <tr>
 		  <th><label for="user_name">Name</label></th>
-		  <td>Display &nbsp;<input name="user_name" id="user_name" type="checkbox" class="regular-text" value="<?php echo $default_row3->name; ?>" <?php if($default_row3->name == "1") { ?> checked="checked" <?php } ?> style="pointer-events: none; opacity:0.5;">
+		  <td>Display &nbsp;<input name="user_name" id="user_name" type="checkbox" class="regular-text" value="<?php esc_html_e($default_row3->name); ?>" <?php if($default_row3->name == "1") { ?> checked="checked" <?php } ?> style="pointer-events: none; opacity:0.5;">
 		  
-		 &nbsp; &nbsp; Required &nbsp;<input name="user_name_required" id="user_name" type="checkbox" class="regular-text" value="<?php echo $default_row3->name_required; ?>" <?php if($default_row3->name_required == "1") { ?> checked="checked" <?php } ?> style="pointer-events: none; opacity:0.5;"/>
+		 &nbsp; &nbsp; Required &nbsp;<input name="user_name_required" id="user_name" type="checkbox" class="regular-text" value="<?php esc_html_e($default_row3->name_required); ?>" <?php if($default_row3->name_required == "1") { ?> checked="checked" <?php } ?> style="pointer-events: none; opacity:0.5;"/>
 		  </td>
 	     </tr>
 		 
 		 
 		 <tr>
 		  <th><label for="user_name">Email</label></th>
-		  <td>Display &nbsp;<input name="user_email" id="user_name" type="checkbox" class="regular-text" value="<?php echo $default_row3->email; ?>" <?php if($default_row3->email == "1") { ?> checked="checked" <?php } ?> style="pointer-events: none; opacity:0.5;">
+		  <td>Display &nbsp;<input name="user_email" id="user_name" type="checkbox" class="regular-text" value="<?php esc_html_e($default_row3->email); ?>" <?php if($default_row3->email == "1") { ?> checked="checked" <?php } ?> style="pointer-events: none; opacity:0.5;">
 		  
-		 &nbsp; &nbsp; Required &nbsp;<input name="user_email_required" id="user_name" type="checkbox" class="regular-text" value="<?php echo $default_row3->email_required; ?>" <?php if($default_row3->email_required == "1") { ?> checked="checked" <?php } ?> style="pointer-events: none; opacity:0.5;"/>
+		 &nbsp; &nbsp; Required &nbsp;<input name="user_email_required" id="user_name" type="checkbox" class="regular-text" value="<?php esc_html_e($default_row3->email_required); ?>" <?php if($default_row3->email_required == "1") { ?> checked="checked" <?php } ?> style="pointer-events: none; opacity:0.5;"/>
 		  </td>
 	     </tr>
  
 		 <tr>
 		  <th><label for="user_name">Phone</label></th>
-		  <td>Display &nbsp;<input name="user_phone" id="user_name" type="checkbox" class="regular-text" value="<?php echo $default_row3->phone; ?>" <?php if($default_row3->phone == "1") { ?> checked="checked" <?php } ?>>
+		  <td>Display &nbsp;<input name="user_phone" id="user_name" type="checkbox" class="regular-text" value="<?php esc_html_e($default_row3->phone); ?>" <?php if($default_row3->phone == "1") { ?> checked="checked" <?php } ?>>
 		  
-		 &nbsp; &nbsp; Required &nbsp;<input name="user_phone_required" id="user_name" type="checkbox" class="regular-text" value="<?php echo $default_row3->phone_required; ?>" <?php if($default_row3->phone_required == "1") { ?> checked="checked" <?php } ?>/>
+		 &nbsp; &nbsp; Required &nbsp;<input name="user_phone_required" id="user_name" type="checkbox" class="regular-text" value="<?php esc_html_e($default_row3->phone_required); ?>" <?php if($default_row3->phone_required == "1") { ?> checked="checked" <?php } ?>/>
 		  </td>
 	     </tr>
 		 
 		  <tr>
 		  <th><label for="user_name">Address</label></th>
-		  <td>Display &nbsp;<input name="user_address" id="user_name" type="checkbox" class="regular-text" value="<?php echo $default_row3->address; ?>" <?php if($default_row3->address == "1") { ?> checked="checked" <?php } ?>>
+		  <td>Display &nbsp;<input name="user_address" id="user_name" type="checkbox" class="regular-text" value="<?php esc_html_e($default_row3->address); ?>" <?php if($default_row3->address == "1") { ?> checked="checked" <?php } ?>>
 		  
-		 &nbsp; &nbsp; Required &nbsp;<input name="user_address_required" id="user_name" type="checkbox" class="regular-text" value="<?php echo $default_row3->address_required; ?>" <?php if($default_row3->address_required == "1") { ?> checked="checked" <?php } ?>/>
+		 &nbsp; &nbsp; Required &nbsp;<input name="user_address_required" id="user_name" type="checkbox" class="regular-text" value="<?php esc_html_e( $default_row3->address_required); ?>" <?php if($default_row3->address_required == "1") { ?> checked="checked" <?php } ?>/>
 		  </td>
 	     </tr> 
 		 
 		 
 		  <tr>
 		  <th><label for="user_name">City</label></th>
-		  <td>Display &nbsp;<input name="user_city" id="user_name" type="checkbox" class="regular-text" value="<?php echo $default_row3->city; ?>" <?php if($default_row3->city == "1") { ?> checked="checked" <?php } ?>>
+		  <td>Display &nbsp;<input name="user_city" id="user_name" type="checkbox" class="regular-text" value="<?php esc_html_e($default_row3->city); ?>" <?php if($default_row3->city == "1") { ?> checked="checked" <?php } ?>>
 		  
-		 &nbsp; &nbsp; Required &nbsp;<input name="user_city_required" id="user_name" type="checkbox" class="regular-text" value="<?php echo $default_row3->city_required; ?>" <?php if($default_row3->city_required == "1") { ?> checked="checked" <?php } ?>/>
+		 &nbsp; &nbsp; Required &nbsp;<input name="user_city_required" id="user_name" type="checkbox" class="regular-text" value="<?php esc_html_e($default_row3->city_required); ?>" <?php if($default_row3->city_required == "1") { ?> checked="checked" <?php } ?>/>
 		  </td>
 	     </tr>
          
@@ -839,31 +949,31 @@ function boffin_appointment_settings() {
 		  
 		  <tr>
 		  <th><label for="user_name">State</label></th>
-		  <td>Display &nbsp;<input name="user_state" id="user_state" type="checkbox" class="regular-text" value="<?php echo $default_row3->state; ?>" <?php if($default_row3->state == "1") { ?> checked="checked" <?php } ?>>
+		  <td>Display &nbsp;<input name="user_state" id="user_state" type="checkbox" class="regular-text" value="<?php esc_html_e($default_row3->state); ?>" <?php if($default_row3->state == "1") { ?> checked="checked" <?php } ?>>
 		  
-		 &nbsp; &nbsp; Required &nbsp;<input name="user_state_required" id="user_name" type="checkbox" class="regular-text" value="<?php echo $default_row3->state_required; ?>" <?php if($default_row3->state_required == "1") { ?> checked="checked" <?php } ?>/>
+		 &nbsp; &nbsp; Required &nbsp;<input name="user_state_required" id="user_name" type="checkbox" class="regular-text" value="<?php esc_html_e($default_row3->state_required); ?>" <?php if($default_row3->state_required == "1") { ?> checked="checked" <?php } ?>/>
 		  </td>
 	     </tr>
  
 		  <tr>
 		  <th><label for="user_name">Zip Code</label></th>
-		  <td>Display &nbsp;<input name="user_zip_code" id="user_zip_code" type="checkbox" class="regular-text" value="<?php echo $default_row3->zip_code; ?>" <?php if($default_row3->zip_code == "1") { ?> checked="checked" <?php } ?>>
+		  <td>Display &nbsp;<input name="user_zip_code" id="user_zip_code" type="checkbox" class="regular-text" value="<?php esc_html_e($default_row3->zip_code); ?>" <?php if($default_row3->zip_code == "1") { ?> checked="checked" <?php } ?>>
 		  
-		 &nbsp; &nbsp; Required &nbsp;<input name="user_zip_required" id="user_name" type="checkbox" class="regular-text" value="<?php echo $default_row3->zip_code_required; ?>" <?php if($default_row3->zip_code_required == "1") { ?> checked="checked" <?php } ?>/>
+		 &nbsp; &nbsp; Required &nbsp;<input name="user_zip_required" id="user_name" type="checkbox" class="regular-text" value="<?php esc_html_e($default_row3->zip_code_required); ?>" <?php if($default_row3->zip_code_required == "1") { ?> checked="checked" <?php } ?>/>
 		  </td>
 	     </tr>
   
  
 		  <tr>
 		  <th><label for="user_name">Notes</label></th>
-		  <td>Display &nbsp;<input name="user_notes" id="user_notes" type="checkbox" class="regular-text" value="<?php echo $default_row3->zip_code; ?>" <?php if($default_row3->zip_code == "1") { ?> checked="checked" <?php } ?>>
+		  <td>Display &nbsp;<input name="user_notes" id="user_notes" type="checkbox" class="regular-text" value="<?php esc_html_e($default_row3->note); ?>" <?php if($default_row3->note == "1") { ?> checked="checked" <?php } ?>>
 		  
-		 &nbsp; &nbsp; Required &nbsp;<input name="user_notes_required" id="user_notes_required" type="checkbox" class="regular-text" value="<?php echo $default_row3->note_required; ?>" <?php if($default_row3->note_required == "1") { ?> checked="checked" <?php } ?>/>
+		 &nbsp; &nbsp; Required &nbsp;<input name="user_notes_required" id="user_notes_required" type="checkbox" class="regular-text" value="<?php esc_html_e($default_row3->note_required); ?>" <?php if($default_row3->note_required == "1") { ?> checked="checked" <?php } ?>/>
 		  </td>
 	     </tr>
  
          <tr>
-		    <th><label for="instructions"><input type="hidden" value="<?php echo $appoint_id; ?>" name="appointment_id"/> </label></th>
+		    <th><label for="instructions"><input type="hidden" value="<?php esc_html_e($appoint_id); ?>" name="appointment_id"/> </label></th>
 			<td> <input type="submit" class="button button-primary" name="user_info"/></td>
 	     </tr>
 	     </tbody>
@@ -953,7 +1063,7 @@ function boffin_appointment_settings() {
 
             <p> <span id="dots"> </span>
 			 <span id="more" style="display: none;"> 
-			  <textarea style="width:84%;" rows="7" cols="100" class="regular-text" name="admin_appointment_booked"><?php echo $default_row->booked_apointment_email_admin; ?></textarea>
+			  <textarea style="width:84%;" rows="7" cols="100" class="regular-text" name="admin_appointment_booked"><?php esc_html_e($default_row->booked_apointment_email_admin); ?></textarea>
 			 </span>
 			</p>
 			</td>
@@ -966,7 +1076,7 @@ function boffin_appointment_settings() {
 
             <p> <span id="dots2"> </span>
 			 <span id="more2" style="display: none;"> 
-			  <textarea style="width:84%;" rows="7" cols="100" class="regular-text" name="customer_appointment_booked"><?php echo $default_row->booked_apointment_email_customer; ?></textarea>
+			  <textarea style="width:84%;" rows="7" cols="100" class="regular-text" name="customer_appointment_booked"><?php esc_html_e($default_row->booked_apointment_email_customer); ?></textarea>
 			 </span>
 			</p>
 			</td>
@@ -978,7 +1088,7 @@ function boffin_appointment_settings() {
 
             <p> <span id="dots3"> </span>
 			  <span id="more3" style="display: none;"> 
-			    <textarea style="width:84%;" rows="7" cols="100" class="regular-text" name="admin_appointment_canceled"><?php echo $default_row->canceled_apointment_email_admin; ?></textarea>
+			    <textarea style="width:84%;" rows="7" cols="100" class="regular-text" name="admin_appointment_canceled"><?php esc_html_e($default_row->canceled_apointment_email_admin); ?></textarea>
 			  </span>
 			</p>
 			</td>
@@ -990,14 +1100,14 @@ function boffin_appointment_settings() {
 
             <p> <span id="dots4"> </span>
 			  <span id="more4" style="display: none;"> 
-			    <textarea style="width:84%;" rows="7" cols="100" class="regular-text" name="customer_appointment_canceled"><?php echo $default_row->canceled_apointment_email_customer; ?></textarea>
+			    <textarea style="width:84%;" rows="7" cols="100" class="regular-text" name="customer_appointment_canceled"><?php esc_html_e($default_row->canceled_apointment_email_customer); ?></textarea>
 			  </span>
 			</p>
 			</td>
 	      </tr>
  
           <tr>
-		    <th><label for="instructions"><input type="hidden" value="<?php echo $appoint_id; ?>" name="appointment_id"/></label></th>
+		    <th><label for="instructions"><input type="hidden" value="<?php esc_html_e($appoint_id); ?>" name="appointment_id"/></label></th>
 			<td> <input type="submit" class="button button-primary" name="notification"/></td>
 	      </tr>
 	     </tbody>
@@ -1015,12 +1125,7 @@ function boffin_appointment_settings() {
 		 
 	  <?php
 }
-
-function sandbox_theme_display_options() {
-	  
-  echo 'boffin_appointmentss';
-}
-
+ 
 function boffin_appointment() {
 error_reporting(0);
 	wp_enqueue_style('style_file' , plugin_dir_url(__FILE__).'style/style.css'); 
@@ -1053,33 +1158,33 @@ error_reporting(0);
 	 ?>	
     <tr>	
      <th class="data-th"> 
-	 <?php echo $default_rows->name; ?>
+	 <?php esc_html_e($default_rows->name); ?>
 	 </th>	
    
      <th class="data-th">
-	 <?php echo $default_rows->email; ?>
+	 <?php esc_html_e($default_rows->email); ?>
 	 </th>	
 	 
 	 <th class="data-th">
-	 <?php echo $default_rows->date; ?>
+	 <?php esc_html_e($default_rows->date); ?>
 	 </th>
 	 
 	  <th class="data-th">
-	 <?php echo $default_rows->time; ?>
+	 <?php esc_html_e($default_rows->time); ?>
 	 </th>
    
      <th class="data-th">
-	 Phone: <?php if($default_rows->phone != "undefined") { echo $default_rows->phone; } ?>
+	 Phone: <?php if($default_rows->phone != "undefined") { esc_html_e($default_rows->phone); } ?>
 	 <br/>
-	 Address: <?php if($default_rows->address != "undefined") { echo $default_rows->address; }  ?>
+	 Address: <?php if($default_rows->address != "undefined") { esc_html_e($default_rows->address); }  ?>
 	 <br/>
-	 City: <?php if($default_rows->city != "undefined") { echo $default_rows->city; } ?> 
+	 City: <?php if($default_rows->city != "undefined") { esc_html_e($default_rows->city); } ?> 
 	 <br/>
-	 State: <?php if($default_rows->state != "undefined") { echo $default_rows->state; } ?> 
+	 State: <?php if($default_rows->state != "undefined") { esc_html_e($default_rows->state); } ?> 
 	 <br/>
-	 Zip Code: <?php if($default_rows->zip_code != "undefined") { echo $default_rows->zip_code; } ?>  
+	 Zip Code: <?php if($default_rows->zip_code != "undefined") { esc_html_e($default_rows->zip_code); } ?>  
 	 <br/> 
-	 Note: <?php if($default_rows->notes != "undefined") { echo $default_rows->notes; } ?>  
+	 Note: <?php if($default_rows->notes != "undefined") { esc_html_e($default_rows->notes); } ?>  
 	 <br/>
 	 </th>
  
@@ -1095,12 +1200,9 @@ error_reporting(0);
  
  
 function appointment_id() {
- wp_enqueue_style('style_file' , plugin_dir_url(__FILE__).'style/style.css');
   ?>
-  
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>	
+ 	
 <script>
-
 function nextDate(dayIndex) {
     var todays = new Date();
     todays.setDate(todays.getDate() + (dayIndex - 1 - todays.getDay() + 7) % 7 + 1);
@@ -1108,7 +1210,7 @@ function nextDate(dayIndex) {
 }
 
   setInterval(function(){
-    $(document).ready(function(){
+    jQuery(document).ready(function(){
  	var today = new Date();
     var date =  today.getDate();
    
@@ -1126,22 +1228,22 @@ function nextDate(dayIndex) {
     var dt = new Date(today);
     dt.setDate( dt.getDate() + 7 );
   
-   $(".Sun."+nextsunday+"").click(function(){
+   jQuery(".Sun."+nextsunday+"").click(function(){
    sun.style.display = "block";
-   var indexval =  $(this).index(".Sun");
-   var className = $('.Sun:eq('+indexval+')').attr('data-date');
+   var indexval =  jQuery(this).index(".Sun");
+   var className = jQuery('.Sun:eq('+indexval+')').attr('data-date');
   //  alert(className);
   var trimmedString = className.substring(0, 15);
-  $('#dateslected').text(trimmedString);
-  $('#date_slected').text(trimmedString);
-  $('#date_moreslected').text(trimmedString);
- // $('.plan-details').text(className);
+  jQuery('#dateslected').text(trimmedString);
+  jQuery('#date_slected').text(trimmedString);
+  jQuery('#date_moreslected').text(trimmedString);
+ // jQuery('.plan-details').text(className);
   
   });
 });
 
 
-$(document).ready(function(){
+jQuery(document).ready(function(){
  var today = new Date();
     var date =  today.getDate();
    
@@ -1160,23 +1262,23 @@ $(document).ready(function(){
     dt.setDate( dt.getDate() + 7 );
  
    
-   $(".Mon."+nextmonday+".Jun").click(function(){
+   jQuery(".Mon."+nextmonday+".Jun").click(function(){
    mon.style.display = "block";
-   var indexval =  $(this).index(".Mon");
-   var className = $('.Mon:eq('+indexval+')').attr('data-date');
+   var indexval =  jQuery(this).index(".Mon");
+   var className = jQuery('.Mon:eq('+indexval+')').attr('data-date');
   //  alert(className);
     var trimmedString = className.substring(0, 15);
-  $('#dateslected2').text(trimmedString);
-  $('#date_slected2').text(trimmedString);
-  $('#date_moreslected2').text(trimmedString);
- // $('.plan-details').text(className);
+  jQuery('#dateslected2').text(trimmedString);
+  jQuery('#date_slected2').text(trimmedString);
+  jQuery('#date_moreslected2').text(trimmedString);
+ // jQuery('.plan-details').text(className);
   
   });
 });
 
 
 
-$(document).ready(function(){
+jQuery(document).ready(function(){
  var today = new Date();
     var date =  today.getDate();
    
@@ -1194,22 +1296,22 @@ $(document).ready(function(){
     var dt = new Date(today);
     dt.setDate( dt.getDate() + 7 );
  
-   $(".Tue."+nextmonday+".Jun").click(function(){
+   jQuery(".Tue."+nextmonday+".Jun").click(function(){
    tue.style.display = "block";
-   var indexval =  $(this).index(".Tue");
-   var className = $('.Tue:eq('+indexval+')').attr('data-date');
+   var indexval =  jQuery(this).index(".Tue");
+   var className = jQuery('.Tue:eq('+indexval+')').attr('data-date');
   //  alert(className);
   var trimmedString = className.substring(0, 15);
-  $('#dateslected3').text(trimmedString);
-  $('#date_slected3').text(trimmedString);
-  $('#date_moreslected3').text(trimmedString);
- // $('.plan-details').text(className);
+  jQuery('#dateslected3').text(trimmedString);
+  jQuery('#date_slected3').text(trimmedString);
+  jQuery('#date_moreslected3').text(trimmedString);
+ // jQuery('.plan-details').text(className);
   
   });
 });
 
 
-$(document).ready(function(){
+jQuery(document).ready(function(){
  var today = new Date();
     var date =  today.getDate();
    
@@ -1227,23 +1329,23 @@ $(document).ready(function(){
     dt.setDate( dt.getDate() + 7 );
  
    
-   $(".Wed."+nextmonday+".Jun").click(function(){
+   jQuery(".Wed."+nextmonday+".Jun").click(function(){
    wed.style.display = "block";
-   var indexval =  $(this).index(".Wed");
-   var className = $('.Wed:eq('+indexval+')').attr('data-date');
+   var indexval =  jQuery(this).index(".Wed");
+   var className = jQuery('.Wed:eq('+indexval+')').attr('data-date');
   //  alert(className);
    var trimmedString = className.substring(0, 15);
-  $('#dateslected4').text(trimmedString);
-  $('#date_slected4').text(trimmedString);
-  $('#date_moreslected4').text(trimmedString);
- // $('.plan-details').text(className);
+  jQuery('#dateslected4').text(trimmedString);
+  jQuery('#date_slected4').text(trimmedString);
+  jQuery('#date_moreslected4').text(trimmedString);
+ // jQuery('.plan-details').text(className);
   
   });
 });
 
 
 
-$(document).ready(function(){
+jQuery(document).ready(function(){
  var today = new Date();
     var date =  today.getDate();
    
@@ -1261,23 +1363,23 @@ $(document).ready(function(){
     dt.setDate( dt.getDate() + 7 );
  
    
-   $(".Thu."+nextmonday+".Jun").click(function(){
+   jQuery(".Thu."+nextmonday+".Jun").click(function(){
    thu.style.display = "block";
-   var indexval =  $(this).index(".Thu");
-   var className = $('.Thu:eq('+indexval+')').attr('data-date');
+   var indexval =  jQuery(this).index(".Thu");
+   var className = jQuery('.Thu:eq('+indexval+')').attr('data-date');
    
     var trimmedString = className.substring(0, 15);
   //  alert(className);
-  $('#dateslected5').text(trimmedString);
-  $('#date_slected5').text(trimmedString);
-  $('#date_moreslected5').text(trimmedString);
- // $('.plan-details').text(className);
+  jQuery('#dateslected5').text(trimmedString);
+  jQuery('#date_slected5').text(trimmedString);
+  jQuery('#date_moreslected5').text(trimmedString);
+ // jQuery('.plan-details').text(className);
   
   });
 });
 
 
-$(document).ready(function(){
+jQuery(document).ready(function(){
  var today = new Date();
     var date =  today.getDate();
    
@@ -1294,21 +1396,21 @@ $(document).ready(function(){
     var dt = new Date(today);
     dt.setDate( dt.getDate() + 7 );
  
-   $(".Fri."+nextmonday+".Jun").click(function(){
+   jQuery(".Fri."+nextmonday+".Jun").click(function(){
    fri.style.display = "block";
-   var indexval =  $(this).index(".Fri");
-   var className = $('.Fri:eq('+indexval+')').attr('data-date');
+   var indexval =  jQuery(this).index(".Fri");
+   var className = jQuery('.Fri:eq('+indexval+')').attr('data-date');
   //  alert(className);
   var trimmedString = className.substring(0, 15);
-  $('#dateslected6').text(trimmedString);
-  $('#date_slected6').text(trimmedString);
-  $('#date_moreslected6').text(trimmedString);
- // $('.plan-details').text(className);
+  jQuery('#dateslected6').text(trimmedString);
+  jQuery('#date_slected6').text(trimmedString);
+  jQuery('#date_moreslected6').text(trimmedString);
+ // jQuery('.plan-details').text(className);
   
   });
 });
 
-$(document).ready(function(){
+jQuery(document).ready(function(){
  var today = new Date();
     var date =  today.getDate();
    
@@ -1325,17 +1427,17 @@ $(document).ready(function(){
     var dt = new Date(today);
     dt.setDate( dt.getDate() + 7 );
  
-   $(".Sat."+nextmonday+".Jun").click(function(){
+   jQuery(".Sat."+nextmonday+".Jun").click(function(){
    sat.style.display = "block";
-   var indexval =  $(this).index(".Sat");
-   var className = $('.Sat:eq('+indexval+')').attr('data-date');
+   var indexval =  jQuery(this).index(".Sat");
+   var className = jQuery('.Sat:eq('+indexval+')').attr('data-date');
  
    var trimmedString = className.substring(0, 15);
   //  alert(className);
-  $('#dateslected7').text(trimmedString);
-  $('#date_slected7').text(trimmedString);
-  $('#date_moreslected7').text(trimmedString);
- // $('.plan-details').text(className);
+  jQuery('#dateslected7').text(trimmedString);
+  jQuery('#date_slected7').text(trimmedString);
+  jQuery('#date_moreslected7').text(trimmedString);
+ // jQuery('.plan-details').text(className);
   
   });
 });
@@ -1819,7 +1921,7 @@ console.log(calendar);
       </div>
     <div class="sun-body">
   
-	<form name="ContactForm" method="post" action="" id="ContactForm">
+	<form name="ContactForm" method="post" id="ContactForm">
 	   <textarea style="display:none;" type="hidden" name="date_slected" id="date_slected"/> </textarea> 
 	   <div class="container-appointment">
 	    <div class="plans-appointment">
@@ -1856,11 +1958,11 @@ console.log(calendar);
 			  if (in_array( $slotsvalues, $allbook) && in_array( $nextsunday, $allbook))
 			  {
 			 ?>		 
-			  <label class="plan" for="<?php echo $slotsvalues; ?>">
-				<input type="radio" id="<?php echo $slotsvalues; ?>" name="plan" required="required" value="<?php echo $slotsvalues; ?>" disabled="disabled" />
+			  <label class="plan" for="<?php esc_html_e($slotsvalues); ?>">
+				<input type="radio" id="<?php esc_html_e($slotsvalues); ?>" name="plan" required="required" value="<?php esc_html_e($slotsvalues); ?>" disabled="disabled" />
 				<div class="plan-content disabledslot">
 				<div class="plan-details">
-			   <span class="disabledslot"><?php echo $slotsvaluestrimed; ?></span>
+			   <span><?php esc_html_e($slotsvaluestrimed); ?></span>
 			 </div>
 			 </div>
 			</label>
@@ -1870,11 +1972,11 @@ console.log(calendar);
 			  else
 			  {		  
 			 ?>
-			  <label class="plan" for="<?php echo str_replace(':',"", $slotsvalues); ?>">
-				<input type="radio" id="<?php echo str_replace(':',"", $slotsvalues); ?>" name="plan" required="required" value="<?php echo $slotsvalues; ?>" />
-				<div class="plan-content" id="<?php echo str_replace(':',"", $slotsvalues); ?>">
+			  <label class="plan" for="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>">
+				<input type="radio" id="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>" name="plan" required="required" value="<?php esc_html_e($slotsvalues); ?>" />
+				<div class="plan-content" id="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>">
 				<div class="plan-details">
-			   <span><?php echo $slotsvaluestrimed; ?></span>
+			   <span><?php esc_html_e($slotsvaluestrimed); ?></span>
 			 </div>
 			 </div>
 			</label>
@@ -1979,124 +2081,124 @@ console.log(calendar);
   </div>
 
 <script>
-	$(document).ready(function() {
+	jQuery(document).ready(function() {
 		var delay = 0;
-		$('.btn-default').click(function(e){
+		jQuery('.btn-default').click(function(e){
 			e.preventDefault();
   
 				
-		if ($('input[name=plan]:checked').length == 0) {		
-			$('.message_box').html(
+		if (jQuery('input[name=plan]:checked').length == 0) {		
+			jQuery('.message_box').html(
 				'<span style="color:red;">Please Select Time slot!</span>'
 				);
 		 
 		}
 	
 
-      if($('#name').val() == '' || $('#name').val() == ' ') 
+      if(jQuery('#name').val() == '' || jQuery('#name').val() == ' ') 
 	 {
 		  var name = "";
      }
 	 else 
 	 {
-		  var name = $('#name').val();
+		  var name = jQuery('#name').val();
 	 }
 	
-      if($('#email').val() == '' || $('#email').val() == ' ') 
+      if(jQuery('#email').val() == '' || jQuery('#email').val() == ' ') 
 	 {
 		  var email = "";
      }
 	  else 
 	 {
-		  var email = $('#email').val();
+		  var email = jQuery('#email').val();
 	 }
 	 
  
-	 if($('#phone').val() == '' || $('#phone').val() == ' ') 
+	 if(jQuery('#phone').val() == '' || jQuery('#phone').val() == ' ') 
 	 {
 		  var phone = "";
      }
 	   else 
 	 {
-		  var phone = $('#phone').val();
+		  var phone = jQuery('#phone').val();
 	 }
 	 
 	 
-	   if($('#address').val() == '' || $('#address').val() == ' ') 
+	   if(jQuery('#address').val() == '' || jQuery('#address').val() == ' ') 
 	 {
 		  var address = "";
      }
 	   else 
 	 {
-		  var address = $('#address').val();
+		  var address = jQuery('#address').val();
 	 }
 	 
 	
-	   if($('#city').val() == '' || $('#city').val() == ' ') 
+	   if(jQuery('#city').val() == '' || jQuery('#city').val() == ' ') 
 	 {
 		  var city = "";
      }
 	  else 
 	 {
-		  var city = $('#city').val();
+		  var city = jQuery('#city').val();
 	 }
 	 
 	
-	   if($('#state').val() == '' || $('#state').val() == ' ') 
+	   if(jQuery('#state').val() == '' || jQuery('#state').val() == ' ') 
 	 {
 		  var state = "";
      }
 	 else 
 	 {
-		  var state = $('#state').val();
+		  var state = jQuery('#state').val();
 	 }
 	 
-	   if($('#zip_code').val() == '' || $('#zip_code').val() == ' ') 
+	   if(jQuery('#zip_code').val() == '' || jQuery('#zip_code').val() == ' ') 
 	 {
 		  var zip_code = "";
      }
 	 else 
 	 {
-		  var zip_code = $('#zip_code').val();
+		  var zip_code = jQuery('#zip_code').val();
 	 }
 	
-	   if($('#note').val() == '' || $('#note').val() == ' ') 
+	   if(jQuery('#note').val() == '' || jQuery('#note').val() == ' ') 
 	 {
 		  var note = "";
      }
 	  else 
 	 {
-		  var note = $('#note').val();
+		  var note = jQuery('#note').val();
 	 }
 	 
 	  
   	 <?php  if($default_booked->name_required == "1" && $default_booked->name == "1") { ?>  
-	    var name = $('#name').val();
+	    var name = jQuery('#name').val();
 			if(name == ''){
-			$('.message_box').html(
+			jQuery('.message_box').html(
 			'<span style="color:red;">Enter Your Name!</span>'
 			);
-			$('#name').focus();
+			jQuery('#name').focus();
 			return false;
 			}
 		
 	 <?php } ?>	
 		
 		
-		var email = $('#email').val();
+		var email = jQuery('#email').val();
         if(email == ''){
-			$('.message_box').html(
+			jQuery('.message_box').html(
 			'<span style="color:red;">Enter Email Address!</span>'
 			);
-			$('#email').focus();
+			jQuery('#email').focus();
             return false;
 			}
-		if( $("#email").val()!='' ){
-			if( !isValidEmailAddress( $("#email").val() ) ){
-			$('.message_box').html(
+		if( jQuery("#email").val()!='' ){
+			if( !isValidEmailAddress( jQuery("#email").val() ) ){
+			jQuery('.message_box').html(
 			'<span style="color:red;">Provided email address is incorrect!</span>'
 			);
-			$('#email').focus();
+			jQuery('#email').focus();
 			return false;
 			}
 			}
@@ -2105,12 +2207,12 @@ console.log(calendar);
 			
 	 <?php  if($default_booked->phone_required == "1" && $default_booked->phone == "1") { ?>  
  	
-            var phone = $('#phone').val();
+            var phone = jQuery('#phone').val();
 			if(phone == ''){
-			$('.message_box').html(
+			jQuery('.message_box').html(
 			'<span style="color:red;">Enter phone Number!</span>'
 			);
-			$('#phone').focus();
+			jQuery('#phone').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -2119,12 +2221,12 @@ console.log(calendar);
 	 	 
 	 <?php  if($default_booked->address_required == "1" && $default_booked->address == "1") { ?>  
  	
-            var address = $('#address').val();
+            var address = jQuery('#address').val();
 			if(address == ''){
-			$('.message_box').html(
+			jQuery('.message_box').html(
 			'<span style="color:red;">Enter address!</span>'
 			);
-			$('#address').focus();
+			jQuery('#address').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -2132,36 +2234,36 @@ console.log(calendar);
 	 		
 	 <?php  if($default_booked->city_required == "1" && $default_booked->city == "1") { ?>  
  	
-            var city = $('#city').val();
+            var city = jQuery('#city').val();
 			if(city == ''){
-			$('.message_box').html(
+			jQuery('.message_box').html(
 			'<span style="color:red;">Enter city!</span>'
 			);
-			$('#city').focus();
+			jQuery('#city').focus();
 			return false;
 			}
 	 <?php  } ?>
 	  		
 	 <?php  if($default_booked->state_required == "1" && $default_booked->state == "1") { ?>  
  	
-            var state = $('#state').val();
+            var state = jQuery('#state').val();
 			if(state == ''){
-			$('.message_box').html(
+			jQuery('.message_box').html(
 			'<span style="color:red;">Enter State!</span>'
 			);
-			$('#state').focus();
+			jQuery('#state').focus();
 			return false;
 			}
 	 <?php  } ?>
 	   		
 	 <?php  if($default_booked->zip_code_required == "1" && $default_booked->zip_code == "1") { ?>  
  	
-            var zip_code = $('#zip_code').val();
+            var zip_code = jQuery('#zip_code').val();
 			if(zip_code == ''){
-			$('.message_box').html(
+			jQuery('.message_box').html(
 			'<span style="color:red;">Enter Zip Code!</span>'
 			);
-			$('#zip_code').focus();
+			jQuery('#zip_code').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -2169,44 +2271,43 @@ console.log(calendar);
 	    		
 	 <?php  if($default_booked->note_required == "1" && $default_booked->note == "1") { ?>  
  	
-            var note = $('#note').val();
+            var note = jQuery('#note').val();
 			if(note == ''){
-			$('.message_box').html(
+			jQuery('.message_box').html(
 			'<span style="color:red;">Enter Note!</span>'
 			);
-			$('#notenote').focus();
+			jQuery('#notenote').focus();
 			return false;
 			}
 	 <?php  } ?>
 	 
   
 		var radiovalue = document.querySelector('input[name="plan"]:checked').value;	
-		var date_slected = $('textarea#date_slected').val();
+		var date_slected = jQuery('textarea#date_slected').val();
 		
 			
-		var message = $('#message').val();
+		var message = jQuery('#message').val();
         if(message == ''){
-			$('.message_box').html(
+			jQuery('.message_box').html(
 			'<span style="color:red;">Enter Your Message Here!</span>'
 			);
-			$('#message').focus();
+			jQuery('#message').focus();
             return false;
 			}
   			
-			$.ajax
+			jQuery.ajax
 			({
              type: "POST",
-			 url: "<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/ajax/ajax.php'; ?>",
-             data: "name="+name+"&email="+email+"&message="+message+"&radiovalue="+radiovalue+"&date_slected="+date_slected+"&phone="+phone+"&address="+address+"&city="+city+"&state="+state+"&zip_code="+zip_code+"&note="+note,
+             data:  "name="+name+"&email="+email+"&message="+message+"&radiovalue="+radiovalue+"&date_slected="+date_slected+"&phone="+phone+"&address="+address+"&city="+city+"&state="+state+"&zip_code="+zip_code+"&note="+note,
 			 beforeSend: function() {
-			 $('.message_box').html(
+			 jQuery('.message_box').html(
 			 '<img src="<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/img/Loader.gif'; ?>" width="25" height="25"/>'
 			 );
 			 },		 
              success: function(data)
 			 {
 				 setTimeout(function() {
-                    $('.message_box').html(data);
+                    jQuery('.message_box').html(data);
                 }, delay);
 			
              }
@@ -2275,21 +2376,21 @@ function isValidEmailAddress(emailAddress) {
 		  ?>
 		 
         <?php if (in_array( $slotsvalues, $allbook) && in_array( $nextday, $allbook)) { ?>		 
-		 <label class="plan" for="<?php echo $slotsvalues; ?>">
-            <input type="radio" id="<?php echo $slotsvalues; ?>" name="plan2" required="required" value="<?php echo $slotsvalues; ?>" disabled="disabled"/>
+		 <label class="plan" for="<?php esc_html_e($slotsvalues); ?>">
+            <input type="radio" id="<?php esc_html_e($slotsvalues); ?>" name="plan2" required="required" value="<?php esc_html_e($slotsvalues); ?>" disabled="disabled"/>
             <div class="plan-content disabledslot">
             <div class="plan-details">
-            <span><?php echo $slotsvaluestrimed; ?></span>
+            <span><?php esc_html_e($slotsvaluestrimed); ?></span>
            </div>
           </div>
          </label>
   	    <?php } else {  ?>
 		
-		 <label class="plan" for="<?php echo str_replace(':',"", $slotsvalues); ?>">
-            <input type="radio" id="<?php echo str_replace(':',"", $slotsvalues); ?>" name="plan2" required="required" value="<?php echo $slotsvalues; ?>" />
-            <div class="plan-content" id="<?php echo str_replace(':',"", $slotsvalues); ?>">
+		 <label class="plan" for="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>">
+            <input type="radio" id="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>" name="plan2" required="required" value="<?php esc_html_e($slotsvalues); ?>" />
+            <div class="plan-content" id="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>">
             <div class="plan-details">
-            <span><?php echo $slotsvaluestrimed; ?></span>
+            <span><?php esc_html_e($slotsvaluestrimed); ?></span>
            </div>
           </div>
          </label>
@@ -2397,13 +2498,13 @@ function isValidEmailAddress(emailAddress) {
 </div>
 
 <script>
-$(document).ready(function() {
+jQuery(document).ready(function() {
 	var delay = 0;
-	$('.btn-default').click(function(e){
+	jQuery('.btn-default').click(function(e){
 		e.preventDefault();
 		
-	 if ($('input[name=plan2]:checked').length == 0) {		
-			$('.message_box2').html(
+	 if (jQuery('input[name=plan2]:checked').length == 0) {		
+			jQuery('.message_box2').html(
 				'<span style="color:red;">Please Select Time slot!</span>'
 				);
 		 
@@ -2411,110 +2512,110 @@ $(document).ready(function() {
 		
 		
 		
-      if($('#name2').val() == '' || $('#name2').val() == ' ') 
+      if(jQuery('#name2').val() == '' || jQuery('#name2').val() == ' ') 
 	 {
 		  var name2 = "";
      }
 	 else 
 	 {
-		  var name2 = $('#name2').val();
+		  var name2 = jQuery('#name2').val();
 	 }
 	
-      if($('#email2').val() == '' || $('#email2').val() == ' ') 
+      if(jQuery('#email2').val() == '' || jQuery('#email2').val() == ' ') 
 	 {
 		  var email2 = "";
      }
 	  else 
 	 {
-		  var email2 = $('#email2').val();
+		  var email2 = jQuery('#email2').val();
 	 }
 	 
  
-	 if($('#phone2').val() == '' || $('#phone2').val() == ' ') 
+	 if(jQuery('#phone2').val() == '' || jQuery('#phone2').val() == ' ') 
 	 {
 		  var phone2 = "";
      }
 	   else 
 	 {
-		  var phone2 = $('#phone2').val();
+		  var phone2 = jQuery('#phone2').val();
 	 }
 	 
 	 
-	   if($('#address2').val() == '' || $('#address2').val() == ' ') 
+	   if(jQuery('#address2').val() == '' || jQuery('#address2').val() == ' ') 
 	 {
 		  var address2 = "";
      }
 	   else 
 	 {
-		  var address2 = $('#address2').val();
+		  var address2 = jQuery('#address2').val();
 	 }
 	 
 	
-	   if($('#city2').val() == '' || $('#city2').val() == ' ') 
+	   if(jQuery('#city2').val() == '' || jQuery('#city2').val() == ' ') 
 	 {
 		  var city2 = "";
      }
 	  else 
 	 {
-		  var city2 = $('#city2').val();
+		  var city2 = jQuery('#city2').val();
 	 }
 	 
 	
-	   if($('#state2').val() == '' || $('#state2').val() == ' ') 
+	   if(jQuery('#state2').val() == '' || jQuery('#state2').val() == ' ') 
 	 {
 		  var state2 = "";
      }
 	 else 
 	 {
-		  var state2 = $('#state2').val();
+		  var state2 = jQuery('#state2').val();
 	 }
 	 
-	   if($('#zip_code2').val() == '' || $('#zip_code2').val() == ' ') 
+	   if(jQuery('#zip_code2').val() == '' || jQuery('#zip_code2').val() == ' ') 
 	 {
 		  var zip_code2 = "";
      }
 	 else 
 	 {
-		  var zip_code2 = $('#zip_code2').val();
+		  var zip_code2 = jQuery('#zip_code2').val();
 	 }
 	
-	   if($('#note2').val() == '' || $('#note2').val() == ' ') 
+	   if(jQuery('#note2').val() == '' || jQuery('#note2').val() == ' ') 
 	 {
 		  var note2 = "";
      }
 	  else 
 	 {
-		  var note2 = $('#note2').val();
+		  var note2 = jQuery('#note2').val();
 	 }
 		
  
 			 <?php  if($default_booked->name_required == "1" && $default_booked->name == "1") { ?>  
-	    var name2 = $('#name2').val();
+	    var name2 = jQuery('#name2').val();
 			if(name2 == ''){
-			$('.message_box2').html(
+			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter Your Name!</span>'
 			);
-			$('#name2').focus();
+			jQuery('#name2').focus();
 			return false;
 			}
 		
 	 <?php } ?>	
 		
 		
-		var email2 = $('#email2').val();
+		var email2 = jQuery('#email2').val();
         if(email2 == ''){
-			$('.message_box2').html(
+			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter Email Address!</span>'
 			);
-			$('#email2').focus();
+			jQuery('#email2').focus();
             return false;
 			}
-		if( $("#email2").val()!='' ){
-			if( !isValidEmailAddress( $("#email2").val() ) ){
-			$('.message_box2').html(
+		if( jQuery("#email2").val()!='' ){
+			if( !isValidEmailAddress( jQuery("#email2").val() ) ){
+			jQuery('.message_box2').html(
 			'<span style="color:red;">Provided email address is incorrect!</span>'
 			);
-			$('#email2').focus();
+			jQuery('#email2').focus();
 			return false;
 			}
 			}
@@ -2523,12 +2624,12 @@ $(document).ready(function() {
 			
 	 <?php  if($default_booked->phone_required == "1" && $default_booked->phone == "1") { ?>  
  	
-            var phone2 = $('#phone2').val();
+            var phone2 = jQuery('#phone2').val();
 			if(phone2 == ''){
-			$('.message_box2').html(
+			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter phone Number!</span>'
 			);
-			$('#phone2').focus();
+			jQuery('#phone2').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -2537,12 +2638,12 @@ $(document).ready(function() {
 	 	 
 	 <?php  if($default_booked->address_required == "1" && $default_booked->address == "1") { ?>  
  	
-            var address2 = $('#address2').val();
+            var address2 = jQuery('#address2').val();
 			if(address2 == ''){
-			$('.message_box2').html(
+			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter address!</span>'
 			);
-			$('#address2').focus();
+			jQuery('#address2').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -2550,36 +2651,36 @@ $(document).ready(function() {
 	 		
 	 <?php  if($default_booked->city_required == "1" && $default_booked->city == "1") { ?>  
  	
-            var city2 = $('#city2').val();
+            var city2 = jQuery('#city2').val();
 			if(city2 == ''){
-			$('.message_box2').html(
+			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter city!</span>'
 			);
-			$('#city2').focus();
+			jQuery('#city2').focus();
 			return false;
 			}
 	 <?php  } ?>
 	  		
 	 <?php  if($default_booked->state_required == "1" && $default_booked->state == "1") { ?>  
  	
-            var state2 = $('#state2').val();
+            var state2 = jQuery('#state2').val();
 			if(state2 == ''){
-			$('.message_box2').html(
+			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter State!</span>'
 			);
-			$('#state2').focus();
+			jQuery('#state2').focus();
 			return false;
 			}
 	 <?php  } ?>
 	   		
 	 <?php  if($default_booked->zip_code_required == "1" && $default_booked->zip_code == "1") { ?>  
  	
-            var zip_code2 = $('#zip_code2').val();
+            var zip_code2 = jQuery('#zip_code2').val();
 			if(zip_code2 == ''){
-			$('.message_box2').html(
+			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter Zip Code!</span>'
 			);
-			$('#zip_code2').focus();
+			jQuery('#zip_code2').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -2587,43 +2688,42 @@ $(document).ready(function() {
 	    		
 	 <?php  if($default_booked->note_required == "1" && $default_booked->note == "1") { ?>  
  	
-            var note2 = $('#note2').val();
+            var note2 = jQuery('#note2').val();
 			if(note2 == ''){
-			$('.message_box2').html(
+			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter Note!</span>'
 			);
-			$('#note2').focus();
+			jQuery('#note2').focus();
 			return false;
 			}
 	 <?php  } ?>
 			
 		var radiovalue = document.querySelector('input[name="plan2"]:checked').value;	
-		var date_slected = $('textarea#date_slected2').val();
+		var date_slected = jQuery('textarea#date_slected2').val();
 		
 			
-		var message = $('#message').val();
+		var message = jQuery('#message').val();
         if(message == ''){
-			$('.message_box2').html(
+			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter Your Message Here!</span>'
 			);
-			$('#message').focus();
+			jQuery('#message').focus();
             return false;
 			}
   			
-			$.ajax
+			jQuery.ajax
 			({
              type: "POST",
-			 url: "<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/ajax/ajax.php'; ?>",
              data: "name="+name2+"&email="+email2+"&message="+message+"&radiovalue="+radiovalue+"&date_slected="+date_slected+"&phone="+phone2+"&address="+address2+"&city="+city2+"&state="+state2+"&zip_code="+zip_code2+"&note="+note2,
 			 beforeSend: function() {
-			 $('.message_box2').html(
+			 jQuery('.message_box2').html(
 			 '<img src="<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/img/Loader.gif'; ?>" width="25" height="25"/>'
 			 );
 			 },		 
              success: function(data)
 			 {
 				 setTimeout(function() {
-                    $('.message_box2').html(data);
+                    jQuery('.message_box2').html(data);
                 }, delay);
 			
              }
@@ -2693,21 +2793,21 @@ function isValidEmailAddress2(emailAddress) {
 		  ?>
 		  
 		<?php  if (in_array( $slotsvalues, $allbook) && in_array( $nextday, $allbook)) { ?>  
-		 <label class="plan" for="<?php echo $slotsvalues; ?>">
-            <input type="radio" id="<?php echo $slotsvalues; ?>" name="plan3" required="required" value="<?php echo $slotsvalues; ?>" disabled="disabled"/>
+		 <label class="plan" for="<?php esc_html_e($slotsvalues); ?>">
+            <input type="radio" id="<?php esc_html_e($slotsvalues); ?>" name="plan3" required="required" value="<?php esc_html_e($slotsvalues); ?>" disabled="disabled"/>
             <div class="plan-content disabledslot">
             <div class="plan-details">
-           <span><?php echo $slotsvaluestrimed; ?></span>
+           <span><?php esc_html_e($slotsvaluestrimed); ?></span>
           </div>
          </div>
         </label>
 		<?php } else { ?>
 		 
-		  <label class="plan" for="<?php echo str_replace(':',"", $slotsvalues); ?>">
-            <input type="radio" id="<?php echo str_replace(':',"", $slotsvalues); ?>" name="plan3" required="required" value="<?php echo $slotsvalues; ?>" />
-            <div class="plan-content" id="<?php echo str_replace(':',"", $slotsvalues); ?>">
+		  <label class="plan" for="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>">
+            <input type="radio" id="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>" name="plan3" required="required" value="<?php esc_html_e($slotsvalues); ?>" />
+            <div class="plan-content" id="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>">
             <div class="plan-details">
-           <span><?php echo $slotsvaluestrimed; ?></span>
+           <span><?php esc_html_e($slotsvaluestrimed); ?></span>
           </div>
          </div>
         </label>
@@ -2816,125 +2916,125 @@ function isValidEmailAddress2(emailAddress) {
 </div>
 
 <script>
-$(document).ready(function() {
+jQuery(document).ready(function() {
 	var delay = 0;
-	$('.btn-default').click(function(e){
+	jQuery('.btn-default').click(function(e){
 		e.preventDefault();
 		
 		
-		 if ($('input[name=plan3]:checked').length == 0) {		
-			 $('.message_box3').html(
+		 if (jQuery('input[name=plan3]:checked').length == 0) {		
+			 jQuery('.message_box3').html(
 			   '<span style="color:red;">Please Select Time slot!</span>'
 				);
 		 
 		}
  
 		
-      if($('#name3').val() == '' || $('#name3').val() == ' ') 
+      if(jQuery('#name3').val() == '' || jQuery('#name3').val() == ' ') 
 	 {
 		  var name3 = "";
      }
 	 else 
 	 {
-		  var name3 = $('#name3').val();
+		  var name3 = jQuery('#name3').val();
 	 }
 	
-      if($('#email3').val() == '' || $('#email3').val() == ' ') 
+      if(jQuery('#email3').val() == '' || jQuery('#email3').val() == ' ') 
 	 {
 		  var email3 = "";
      }
 	  else 
 	 {
-		  var email3 = $('#email3').val();
+		  var email3 = jQuery('#email3').val();
 	 }
 	 
  
-	 if($('#phone3').val() == '' || $('#phone3').val() == ' ') 
+	 if(jQuery('#phone3').val() == '' || jQuery('#phone3').val() == ' ') 
 	 {
 		  var phone3 = "";
      }
 	   else 
 	 {
-		  var phone3 = $('#phone3').val();
+		  var phone3 = jQuery('#phone3').val();
 	 }
 	 
 	 
-	   if($('#address3').val() == '' || $('#address3').val() == ' ') 
+	   if(jQuery('#address3').val() == '' || jQuery('#address3').val() == ' ') 
 	 {
 		  var address3 = "";
      }
 	   else 
 	 {
-		  var address3 = $('#address3').val();
+		  var address3 = jQuery('#address3').val();
 	 }
 	 
 	
-	   if($('#city3').val() == '' || $('#city3').val() == ' ') 
+	   if(jQuery('#city3').val() == '' || jQuery('#city3').val() == ' ') 
 	 {
 		  var city3 = "";
      }
 	  else 
 	 {
-		  var city3 = $('#city3').val();
+		  var city3 = jQuery('#city3').val();
 	 }
 	 
 	
-	   if($('#state3').val() == '' || $('#state3').val() == ' ') 
+	   if(jQuery('#state3').val() == '' || jQuery('#state3').val() == ' ') 
 	 {
 		  var state3 = "";
      }
 	 else 
 	 {
-		  var state3 = $('#state3').val();
+		  var state3 = jQuery('#state3').val();
 	 }
 	 
-	   if($('#zip_code3').val() == '' || $('#zip_code3').val() == ' ') 
+	   if(jQuery('#zip_code3').val() == '' || jQuery('#zip_code3').val() == ' ') 
 	 {
 		  var zip_code3 = "";
      }
 	 else 
 	 {
-		  var zip_code3 = $('#zip_code3').val();
+		  var zip_code3 = jQuery('#zip_code3').val();
 	 }
 	
-	   if($('#note3').val() == '' || $('#note3').val() == ' ') 
+	   if(jQuery('#note3').val() == '' || jQuery('#note3').val() == ' ') 
 	 {
 		  var note3 = "";
      }
 	  else 
 	 {
-		  var note3 = $('#note3').val();
+		  var note3 = jQuery('#note3').val();
 	 }
 		
 	 
 			
 		 <?php  if($default_booked->name_required == "1" && $default_booked->name == "1") { ?>  
-	    var name3 = $('#name3').val();
+	    var name3 = jQuery('#name3').val();
 			if(name3 == ''){
-			$('.message_box3').html(
+			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter Your Name!</span>'
 			);
-			$('#name3').focus();
+			jQuery('#name3').focus();
 			return false;
 			}
 		
 	 <?php } ?>	
 		
 		
-		var email3 = $('#email3').val();
+		var email3 = jQuery('#email3').val();
         if(email3 == ''){
-			$('.message_box3').html(
+			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter Email Address!</span>'
 			);
-			$('#email3').focus();
+			jQuery('#email3').focus();
             return false;
 			}
-		if( $("#email3").val()!='' ){
-			if( !isValidEmailAddress( $("#email3").val() ) ){
-			$('.message_box3').html(
+		if( jQuery("#email3").val()!='' ){
+			if( !isValidEmailAddress( jQuery("#email3").val() ) ){
+			jQuery('.message_box3').html(
 			'<span style="color:red;">Provided email address is incorrect!</span>'
 			);
-			$('#email3').focus();
+			jQuery('#email3').focus();
 			return false;
 			}
 			}
@@ -2943,12 +3043,12 @@ $(document).ready(function() {
 			
 	 <?php  if($default_booked->phone_required == "1" && $default_booked->phone == "1") { ?>  
  	
-            var phone3 = $('#phone3').val();
+            var phone3 = jQuery('#phone3').val();
 			if(phone3 == ''){
-			$('.message_box3').html(
+			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter phone Number!</span>'
 			);
-			$('#phone3').focus();
+			jQuery('#phone3').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -2957,12 +3057,12 @@ $(document).ready(function() {
 	 	 
 	 <?php  if($default_booked->address_required == "1" && $default_booked->address == "1") { ?>  
  	
-            var address3 = $('#address3').val();
+            var address3 = jQuery('#address3').val();
 			if(address3 == ''){
-			$('.message_box3').html(
+			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter address!</span>'
 			);
-			$('#address3').focus();
+			jQuery('#address3').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -2970,36 +3070,36 @@ $(document).ready(function() {
 	 		
 	 <?php  if($default_booked->city_required == "1" && $default_booked->city == "1") { ?>  
  	
-            var city3 = $('#city3').val();
+            var city3 = jQuery('#city3').val();
 			if(city3 == ''){
-			$('.message_box3').html(
+			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter city!</span>'
 			);
-			$('#city3').focus();
+			jQuery('#city3').focus();
 			return false;
 			}
 	 <?php  } ?>
 	  		
 	 <?php  if($default_booked->state_required == "1" && $default_booked->state == "1") { ?>  
  	
-            var state3 = $('#state3').val();
+            var state3 = jQuery('#state3').val();
 			if(state3 == ''){
-			$('.message_box3').html(
+			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter State!</span>'
 			);
-			$('#state3').focus();
+			jQuery('#state3').focus();
 			return false;
 			}
 	 <?php  } ?>
 	   		
 	 <?php  if($default_booked->zip_code_required == "1" && $default_booked->zip_code == "1") { ?>  
  	
-            var zip_code3 = $('#zip_code3').val();
+            var zip_code3 = jQuery('#zip_code3').val();
 			if(zip_code3 == ''){
-			$('.message_box3').html(
+			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter Zip Code!</span>'
 			);
-			$('#zip_code3').focus();
+			jQuery('#zip_code3').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -3007,12 +3107,12 @@ $(document).ready(function() {
 	    		
 	 <?php  if($default_booked->note_required == "1" && $default_booked->note == "1") { ?>  
  	
-            var note3 = $('#note3').val();
+            var note3 = jQuery('#note3').val();
 			if(note3 == ''){
-			$('.message_box3').html(
+			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter Note!</span>'
 			);
-			$('#note3').focus();
+			jQuery('#note3').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -3020,32 +3120,31 @@ $(document).ready(function() {
 		
 		
 		var radiovalue = document.querySelector('input[name="plan3"]:checked').value;	
-		var date_slected = $('textarea#date_slected3').val();
+		var date_slected = jQuery('textarea#date_slected3').val();
 		
 			
-		var message = $('#message').val();
+		var message = jQuery('#message').val();
         if(message == ''){
-			$('.message_box3').html(
+			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter Your Message Here!</span>'
 			);
-			$('#message').focus();
+			jQuery('#message').focus();
             return false;
 			}
   			
-			$.ajax
+			jQuery.ajax
 			({
              type: "POST",
-			 url: "<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/ajax/ajax.php'; ?>",
              data: "name="+name3+"&email="+email3+"&message="+message+"&radiovalue="+radiovalue+"&date_slected="+date_slected+"&phone="+phone3+"&address="+address3+"&city="+city3+"&state="+state3+"&zip_code="+zip_code3+"&note="+note3,
 			 beforeSend: function() {
-			 $('.message_box3').html(
+			 jQuery('.message_box3').html(
 			 '<img src="<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/img/Loader.gif'; ?>" width="25" height="25"/>'
 			 );
 			 },		 
              success: function(data)
 			 {
 				 setTimeout(function() {
-                    $('.message_box3').html(data);
+                    jQuery('.message_box3').html(data);
                 }, delay);
 			
              }
@@ -3109,20 +3208,20 @@ function isValidEmailAddress3(emailAddress) {
 		  ?>
 		  
 		<?php  if (in_array( $slotsvalues, $allbook) && in_array( $nextday, $allbook)) { ?>  
-		    <label class="plan" for="<?php echo $slotsvalues; ?>">
-            <input type="radio" id="<?php echo $slotsvalues; ?>" name="plan4" required="required" value="<?php echo $slotsvalues; ?>" disabled="disabled"/>
+		    <label class="plan" for="<?php esc_html_e($slotsvalues); ?>">
+            <input type="radio" id="<?php esc_html_e($slotsvalues); ?>" name="plan4" required="required" value="<?php esc_html_e($slotsvalues); ?>" disabled="disabled"/>
             <div class="plan-content disabledslot">
             <div class="plan-details">
-           <span><?php echo $slotsvaluestrimed; ?></span>
+           <span><?php esc_html_e($slotsvaluestrimed); ?></span>
          </div>
          </div>
         </label>
 		<?php } else { ?>
-          <label class="plan" for="<?php echo str_replace(':',"", $slotsvalues); ?>">
-            <input type="radio" id="<?php echo str_replace(':',"", $slotsvalues); ?>" name="plan4" required="required" value="<?php echo $slotsvalues; ?>" />
-            <div class="plan-content" id="<?php echo str_replace(':',"", $slotsvalues); ?>">
+          <label class="plan" for="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>">
+            <input type="radio" id="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>" name="plan4" required="required" value="<?php esc_html_e($slotsvalues); ?>" />
+            <div class="plan-content" id="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>">
             <div class="plan-details">
-           <span><?php echo $slotsvaluestrimed; ?></span>
+           <span><?php esc_html_e($slotsvaluestrimed); ?></span>
          </div>
          </div>
         </label>
@@ -3232,13 +3331,13 @@ function isValidEmailAddress3(emailAddress) {
 </div>
 
 <script>
-$(document).ready(function() {
+jQuery(document).ready(function() {
 	var delay = 0;
-	$('.btn-default').click(function(e){
+	jQuery('.btn-default').click(function(e){
 		e.preventDefault();
 		
-			 if ($('input[name=plan4]:checked').length == 0) {		
-			$('.message_box4').html(
+			 if (jQuery('input[name=plan4]:checked').length == 0) {		
+			jQuery('.message_box4').html(
 				'<span style="color:red;">Please Select Time slot!</span>'
 				);
 		 
@@ -3247,111 +3346,111 @@ $(document).ready(function() {
 			
 			
 		
-      if($('#name4').val() == '' || $('#name4').val() == ' ') 
+      if(jQuery('#name4').val() == '' || jQuery('#name4').val() == ' ') 
 	 {
 		  var name4 = "";
      }
 	 else 
 	 {
-		  var name4 = $('#name4').val();
+		  var name4 = jQuery('#name4').val();
 	 }
 	
-      if($('#email4').val() == '' || $('#email4').val() == ' ') 
+      if(jQuery('#email4').val() == '' || jQuery('#email4').val() == ' ') 
 	 {
 		  var email4 = "";
      }
 	  else 
 	 {
-		  var email4 = $('#email4').val();
+		  var email4 = jQuery('#email4').val();
 	 }
 	 
  
-	 if($('#phone4').val() == '' || $('#phone4').val() == ' ') 
+	 if(jQuery('#phone4').val() == '' || jQuery('#phone4').val() == ' ') 
 	 {
 		  var phone4 = "";
      }
 	   else 
 	 {
-		  var phone4 = $('#phone4').val();
+		  var phone4 = jQuery('#phone4').val();
 	 }
 	 
 	 
-	   if($('#address4').val() == '' || $('#address4').val() == ' ') 
+	   if(jQuery('#address4').val() == '' || jQuery('#address4').val() == ' ') 
 	 {
 		  var address4 = "";
      }
 	   else 
 	 {
-		  var address4 = $('#address4').val();
+		  var address4 = jQuery('#address4').val();
 	 }
 	 
 	
-	   if($('#city4').val() == '' || $('#city4').val() == ' ') 
+	   if(jQuery('#city4').val() == '' || jQuery('#city4').val() == ' ') 
 	 {
 		  var city4 = "";
      }
 	  else 
 	 {
-		  var city4 = $('#city4').val();
+		  var city4 = jQuery('#city4').val();
 	 }
 	 
 	
-	   if($('#state4').val() == '' || $('#state4').val() == ' ') 
+	   if(jQuery('#state4').val() == '' || jQuery('#state4').val() == ' ') 
 	 {
 		  var state4 = "";
      }
 	 else 
 	 {
-		  var state4 = $('#state4').val();
+		  var state4 = jQuery('#state4').val();
 	 }
 	 
-	   if($('#zip_code4').val() == '' || $('#zip_code4').val() == ' ') 
+	   if(jQuery('#zip_code4').val() == '' || jQuery('#zip_code4').val() == ' ') 
 	 {
 		  var zip_code4 = "";
      }
 	 else 
 	 {
-		  var zip_code4 = $('#zip_code4').val();
+		  var zip_code4 = jQuery('#zip_code4').val();
 	 }
 	
-	   if($('#note4').val() == '' || $('#note4').val() == ' ') 
+	   if(jQuery('#note4').val() == '' || jQuery('#note4').val() == ' ') 
 	 {
 		  var note4 = "";
      }
 	  else 
 	 {
-		  var note4 = $('#note4').val();
+		  var note4 = jQuery('#note4').val();
 	 }
 		
 	 
 			
 		 <?php  if($default_booked->name_required == "1" && $default_booked->name == "1") { ?>  
-	    var name4 = $('#name4').val();
+	    var name4 = jQuery('#name4').val();
 			if(name4 == ''){
-			$('.message_box4').html(
+			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter Your Name!</span>'
 			);
-			$('#name4').focus();
+			jQuery('#name4').focus();
 			return false;
 			}
 		
 	 <?php } ?>	
 		
 		
-		var email4 = $('#email4').val();
+		var email4 = jQuery('#email4').val();
         if(email4 == ''){
-			$('.message_box4').html(
+			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter Email Address!</span>'
 			);
-			$('#email4').focus();
+			jQuery('#email4').focus();
             return false;
 			}
-		if( $("#email4").val()!='' ){
-			if( !isValidEmailAddress( $("#email4").val() ) ){
-			$('.message_box4').html(
+		if( jQuery("#email4").val()!='' ){
+			if( !isValidEmailAddress( jQuery("#email4").val() ) ){
+			jQuery('.message_box4').html(
 			'<span style="color:red;">Provided email address is incorrect!</span>'
 			);
-			$('#email4').focus();
+			jQuery('#email4').focus();
 			return false;
 			}
 			}
@@ -3360,12 +3459,12 @@ $(document).ready(function() {
 			
 	 <?php  if($default_booked->phone_required == "1" && $default_booked->phone == "1") { ?>  
  	
-            var phone4 = $('#phone4').val();
+            var phone4 = jQuery('#phone4').val();
 			if(phone4 == ''){
-			$('.message_box4').html(
+			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter phone Number!</span>'
 			);
-			$('#phone4').focus();
+			jQuery('#phone4').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -3374,12 +3473,12 @@ $(document).ready(function() {
 	 	 
 	 <?php  if($default_booked->address_required == "1" && $default_booked->address == "1") { ?>  
  	
-            var address4 = $('#address4').val();
+            var address4 = jQuery('#address4').val();
 			if(address4 == ''){
-			$('.message_box4').html(
+			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter address!</span>'
 			);
-			$('#address4').focus();
+			jQuery('#address4').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -3387,36 +3486,36 @@ $(document).ready(function() {
 	 		
 	 <?php  if($default_booked->city_required == "1" && $default_booked->city == "1") { ?>  
  	
-            var city4 = $('#city4').val();
+            var city4 = jQuery('#city4').val();
 			if(city4 == ''){
-			$('.message_box4').html(
+			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter city!</span>'
 			);
-			$('#city4').focus();
+			jQuery('#city4').focus();
 			return false;
 			}
 	 <?php  } ?>
 	  		
 	 <?php  if($default_booked->state_required == "1" && $default_booked->state == "1") { ?>  
  	
-            var state4 = $('#state4').val();
+            var state4 = jQuery('#state4').val();
 			if(state4 == ''){
-			$('.message_box4').html(
+			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter State!</span>'
 			);
-			$('#state4').focus();
+			jQuery('#state4').focus();
 			return false;
 			}
 	 <?php  } ?>
 	   		
 	 <?php  if($default_booked->zip_code_required == "1" && $default_booked->zip_code == "1") { ?>  
  	
-            var zip_code4 = $('#zip_code4').val();
+            var zip_code4 = jQuery('#zip_code4').val();
 			if(zip_code4 == ''){
-			$('.message_box4').html(
+			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter Zip Code!</span>'
 			);
-			$('#zip_code4').focus();
+			jQuery('#zip_code4').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -3424,12 +3523,12 @@ $(document).ready(function() {
 	    		
 	 <?php  if($default_booked->note_required == "1" && $default_booked->note == "1") { ?>  
  	
-            var note4 = $('#note4').val();
+            var note4 = jQuery('#note4').val();
 			if(note4 == ''){
-			$('.message_box4').html(
+			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter Note!</span>'
 			);
-			$('#note4').focus();
+			jQuery('#note4').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -3437,32 +3536,31 @@ $(document).ready(function() {
 			
 			
 		var radiovalue = document.querySelector('input[name="plan4"]:checked').value;	
-		var date_slected = $('textarea#date_slected4').val();
+		var date_slected = jQuery('textarea#date_slected4').val();
 		
 			
-		var message = $('#message').val();
+		var message = jQuery('#message').val();
         if(message == ''){
-			$('.message_box4').html(
+			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter Your Message Here!</span>'
 			);
-			$('#message').focus();
+			jQuery('#message').focus();
             return false;
 			}
   			
-			$.ajax
+			jQuery.ajax
 			({
              type: "POST",
-			 url: "<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/ajax/ajax.php'; ?>",
              data: "name="+name4+"&email="+email4+"&message="+message+"&radiovalue="+radiovalue+"&date_slected="+date_slected+"&phone="+phone4+"&address="+address4+"&city="+city4+"&state="+state4+"&zip_code="+zip_code4+"&note="+note4,
 			 beforeSend: function() {
-			 $('.message_box4').html(
+			 jQuery('.message_box4').html(
 			 '<img src="<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/img/Loader.gif'; ?>" width="25" height="25"/>'
 			 );
 			 },		 
              success: function(data)
 			 {
 				 setTimeout(function() {
-                    $('.message_box4').html(data);
+                    jQuery('.message_box4').html(data);
                 }, delay);
 			
              }
@@ -3523,20 +3621,20 @@ function isValidEmailAddress4(emailAddress) {
 		  ?>
 		  
 		 <?php if (in_array( $slotsvalues, $allbook) && in_array( $nextday, $allbook)) {  ?> 
-		 <label class="plan" for="<?php echo $slotsvalues; ?>">
-           <input type="radio" id="<?php echo $slotsvalues; ?>" name="plan5" required="required" value="<?php echo $slotsvalues; ?>" />
-            <div class="plan-content">
+		 <label class="plan" for="<?php esc_html_e($slotsvalues); ?>">
+           <input type="radio" id="<?php esc_html_e($slotsvalues); ?>" name="plan5" required="required" value="<?php esc_html_e($slotsvalues); ?>" disabled="disabled"/>
+             <div class="plan-content disabledslot">
             <div class="plan-details">
-           <span><?php echo $slotsvaluestrimed; ?></span>
+           <span><?php esc_html_e($slotsvaluestrimed); ?></span>
          </div>
          </div>
         </label>
 		 <?php } else { ?>
-		<label class="plan" for="<?php echo str_replace(':',"", $slotsvalues); ?>">
-            <input type="radio" id="<?php echo str_replace(':',"", $slotsvalues); ?>" name="plan5" required="required" value="<?php echo $slotsvalues; ?>" />
-            <div class="plan-content" id="<?php echo str_replace(':',"", $slotsvalues); ?>">
+		<label class="plan" for="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>">
+            <input type="radio" id="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>" name="plan5" required="required" value="<?php esc_html_e($slotsvalues); ?>" />
+            <div class="plan-content" id="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>">
             <div class="plan-details">
-           <span><?php echo $slotsvaluestrimed; ?></span>
+           <span><?php esc_html_e($slotsvaluestrimed); ?></span>
          </div>
          </div>
         </label>
@@ -3645,13 +3743,13 @@ function isValidEmailAddress4(emailAddress) {
 </div>
 
 <script>
-$(document).ready(function() {
+jQuery(document).ready(function() {
 	var delay = 0;
-	$('.btn-default').click(function(e){
+	jQuery('.btn-default').click(function(e){
 		e.preventDefault();
 		
-	   if ($('input[name=plan5]:checked').length == 0) {		
-			$('.message_box5').html(
+	   if (jQuery('input[name=plan5]:checked').length == 0) {		
+			jQuery('.message_box5').html(
 				'<span style="color:red;">Please Select Time slot!</span>'
 				);
 		 
@@ -3659,111 +3757,111 @@ $(document).ready(function() {
 		
 	 		
 		
-      if($('#name5').val() == '' || $('#name5').val() == ' ') 
+      if(jQuery('#name5').val() == '' || jQuery('#name5').val() == ' ') 
 	 {
 		  var name5 = "";
      }
 	 else 
 	 {
-		  var name5 = $('#name5').val();
+		  var name5 = jQuery('#name5').val();
 	 }
 	
-      if($('#email5').val() == '' || $('#email5').val() == ' ') 
+      if(jQuery('#email5').val() == '' || jQuery('#email5').val() == ' ') 
 	 {
 		  var email5 = "";
      }
 	  else 
 	 {
-		  var email5 = $('#email5').val();
+		  var email5 = jQuery('#email5').val();
 	 }
 	 
  
-	 if($('#phone5').val() == '' || $('#phone5').val() == ' ') 
+	 if(jQuery('#phone5').val() == '' || jQuery('#phone5').val() == ' ') 
 	 {
 		  var phone5 = "";
      }
 	   else 
 	 {
-		  var phone5 = $('#phone5').val();
+		  var phone5 = jQuery('#phone5').val();
 	 }
 	 
 	 
-	   if($('#address5').val() == '' || $('#address5').val() == ' ') 
+	   if(jQuery('#address5').val() == '' || jQuery('#address5').val() == ' ') 
 	 {
 		  var address5 = "";
      }
 	   else 
 	 {
-		  var address5 = $('#address5').val();
+		  var address5 = jQuery('#address5').val();
 	 }
 	 
 	
-	   if($('#city5').val() == '' || $('#city5').val() == ' ') 
+	   if(jQuery('#city5').val() == '' || jQuery('#city5').val() == ' ') 
 	 {
 		  var city5 = "";
      }
 	  else 
 	 {
-		  var city5 = $('#city5').val();
+		  var city5 = jQuery('#city5').val();
 	 }
 	 
 	
-	   if($('#state5').val() == '' || $('#state5').val() == ' ') 
+	   if(jQuery('#state5').val() == '' || jQuery('#state5').val() == ' ') 
 	 {
 		  var state5 = "";
      }
 	 else 
 	 {
-		  var state5 = $('#state5').val();
+		  var state5 = jQuery('#state5').val();
 	 }
 	 
-	   if($('#zip_code5').val() == '' || $('#zip_code5').val() == ' ') 
+	   if(jQuery('#zip_code5').val() == '' || jQuery('#zip_code5').val() == ' ') 
 	 {
 		  var zip_code5 = "";
      }
 	 else 
 	 {
-		  var zip_code5 = $('#zip_code5').val();
+		  var zip_code5 = jQuery('#zip_code5').val();
 	 }
 	
-	   if($('#note5').val() == '' || $('#note5').val() == ' ') 
+	   if(jQuery('#note5').val() == '' || jQuery('#note5').val() == ' ') 
 	 {
 		  var note5 = "";
      }
 	  else 
 	 {
-		  var note5 = $('#note5').val();
+		  var note5 = jQuery('#note5').val();
 	 }
 		
 	 
 			
 		 <?php  if($default_booked->name_required == "1" && $default_booked->name == "1") { ?>  
-	    var name5 = $('#name5').val();
+	    var name5 = jQuery('#name5').val();
 			if(name5 == ''){
-			$('.message_box5').html(
+			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter Your Name!</span>'
 			);
-			$('#name5').focus();
+			jQuery('#name5').focus();
 			return false;
 			}
 		
 	 <?php } ?>	
 		
 		
-		var email5 = $('#email5').val();
+		var email5 = jQuery('#email5').val();
         if(email5 == ''){
-			$('.message_box5').html(
+			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter Email Address!</span>'
 			);
-			$('#email5').focus();
+			jQuery('#email5').focus();
             return false;
 			}
-		if( $("#email5").val()!='' ){
-			if( !isValidEmailAddress( $("#email5").val() ) ){
-			$('.message_box5').html(
+		if( jQuery("#email5").val()!='' ){
+			if( !isValidEmailAddress( jQuery("#email5").val() ) ){
+			jQuery('.message_box5').html(
 			'<span style="color:red;">Provided email address is incorrect!</span>'
 			);
-			$('#email5').focus();
+			jQuery('#email5').focus();
 			return false;
 			}
 			}
@@ -3772,12 +3870,12 @@ $(document).ready(function() {
 			
 	 <?php  if($default_booked->phone_required == "1" && $default_booked->phone == "1") { ?>  
  	
-            var phone5 = $('#phone5').val();
+            var phone5 = jQuery('#phone5').val();
 			if(phone5 == ''){
-			$('.message_box5').html(
+			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter phone Number!</span>'
 			);
-			$('#phone5').focus();
+			jQuery('#phone5').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -3786,12 +3884,12 @@ $(document).ready(function() {
 	 	 
 	 <?php  if($default_booked->address_required == "1" && $default_booked->address == "1") { ?>  
  	
-            var address5 = $('#address5').val();
+            var address5 = jQuery('#address5').val();
 			if(address5 == ''){
-			$('.message_box5').html(
+			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter address!</span>'
 			);
-			$('#address5').focus();
+			jQuery('#address5').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -3799,36 +3897,36 @@ $(document).ready(function() {
 	 		
 	 <?php  if($default_booked->city_required == "1" && $default_booked->city == "1") { ?>  
  	
-            var city5 = $('#city5').val();
+            var city5 = jQuery('#city5').val();
 			if(city5 == ''){
-			$('.message_box5').html(
+			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter city!</span>'
 			);
-			$('#city5').focus();
+			jQuery('#city5').focus();
 			return false;
 			}
 	 <?php  } ?>
 	  		
 	 <?php  if($default_booked->state_required == "1" && $default_booked->state == "1") { ?>  
  	
-            var state5 = $('#state5').val();
+            var state5 = jQuery('#state5').val();
 			if(state5 == ''){
-			$('.message_box5').html(
+			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter State!</span>'
 			);
-			$('#state5').focus();
+			jQuery('#state5').focus();
 			return false;
 			}
 	 <?php  } ?>
 	   		
 	 <?php  if($default_booked->zip_code_required == "1" && $default_booked->zip_code == "1") { ?>  
  	
-            var zip_code5 = $('#zip_code5').val();
+            var zip_code5 = jQuery('#zip_code5').val();
 			if(zip_code5 == ''){
-			$('.message_box5').html(
+			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter Zip Code!</span>'
 			);
-			$('#zip_code5').focus();
+			jQuery('#zip_code5').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -3836,12 +3934,12 @@ $(document).ready(function() {
 	    		
 	 <?php  if($default_booked->note_required == "1" && $default_booked->note == "1") { ?>  
  	
-            var note5 = $('#note5').val();
+            var note5 = jQuery('#note5').val();
 			if(note5 == ''){
-			$('.message_box5').html(
+			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter Note!</span>'
 			);
-			$('#note5').focus();
+			jQuery('#note5').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -3849,32 +3947,31 @@ $(document).ready(function() {
 			
 			
 		var radiovalue = document.querySelector('input[name="plan5"]:checked').value;	
-		var date_slected = $('textarea#date_slected5').val();
+		var date_slected = jQuery('textarea#date_slected5').val();
 		
 			
-		var message = $('#message').val();
+		var message = jQuery('#message').val();
         if(message == ''){
-			$('.message_box5').html(
+			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter Your Message Here!</span>'
 			);
-			$('#message').focus();
+			jQuery('#message').focus();
             return false;
 			}
   			
-			$.ajax
+			jQuery.ajax
 			({
              type: "POST",
-			 url: "<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/ajax/ajax.php'; ?>",
              data: "name="+name5+"&email="+email5+"&message="+message+"&radiovalue="+radiovalue+"&date_slected="+date_slected+"&phone="+phone5+"&address="+address5+"&city="+city5+"&state="+state5+"&zip_code="+zip_code5+"&note="+note5,
 			 beforeSend: function() {
-			 $('.message_box5').html(
+			 jQuery('.message_box5').html(
 			 '<img src="<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/img/Loader.gif'; ?>" width="25" height="25"/>'
 			 );
 			 },		 
              success: function(data)
 			 {
 				 setTimeout(function() {
-                    $('.message_box5').html(data);
+                    jQuery('.message_box5').html(data);
                 }, delay);
 			
              }
@@ -3935,20 +4032,20 @@ function isValidEmailAddress5(emailAddress) {
 		    $slotsvaluestrimed = str_replace('Friday',"", $slotsvaluestrimed);
 		  ?>
 		<?php if (in_array( $slotsvalues, $allbook) && in_array( $nextday, $allbook)) { ?>
-		<label class="plan" for="<?php echo $slotsvalues; ?>">
-            <input type="radio" id="<?php echo $slotsvalues; ?>" name="plan6" required="required" value="<?php echo $slotsvalues; ?>" disabled="disabled" />
+		<label class="plan" for="<?php esc_html_e($slotsvalues); ?>">
+            <input type="radio" id="<?php esc_html_e($slotsvalues); ?>" name="plan6" required="required" value="<?php esc_html_e($slotsvalues); ?>" disabled="disabled" />
             <div class="plan-content disabledslot">
             <div class="plan-details">
-           <span><?php echo $slotsvaluestrimed; ?></span>
+           <span><?php esc_html_e($slotsvaluestrimed); ?></span>
          </div>
          </div>
         </label>
 		<?php } else { ?>
-         <label class="plan" for="<?php echo str_replace(':',"", $slotsvalues); ?>">
-            <input type="radio" id="<?php echo str_replace(':',"", $slotsvalues); ?>" name="plan6" required="required" value="<?php echo $slotsvalues; ?>" />
-            <div class="plan-content" id="<?php echo str_replace(':',"", $slotsvalues); ?>">
+         <label class="plan" for="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>">
+            <input type="radio" id="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>" name="plan6" required="required" value="<?php esc_html_e($slotsvalues); ?>" />
+            <div class="plan-content" id="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>">
             <div class="plan-details">
-           <span><?php echo $slotsvaluestrimed; ?></span>
+           <span><?php esc_html_e($slotsvaluestrimed); ?></span>
          </div>
          </div>
         </label>
@@ -4056,13 +4153,13 @@ function isValidEmailAddress5(emailAddress) {
 </div>
 
 <script>
-$(document).ready(function() {
+jQuery(document).ready(function() {
 	var delay = 0;
-	$('.btn-default').click(function(e){
+	jQuery('.btn-default').click(function(e){
 		e.preventDefault();
 		
-	   if ($('input[name=plan6]:checked').length == 0) {		
-			$('.message_box6').html(
+	   if (jQuery('input[name=plan6]:checked').length == 0) {		
+			jQuery('.message_box6').html(
 				'<span style="color:red;">Please Select Time slot!</span>'
 				);
 		 
@@ -4070,111 +4167,111 @@ $(document).ready(function() {
 		
 		 		
 		
-      if($('#name6').val() == '' || $('#name6').val() == ' ') 
+      if(jQuery('#name6').val() == '' || jQuery('#name6').val() == ' ') 
 	 {
 		  var name6 = "";
      }
 	 else 
 	 {
-		  var name6 = $('#name6').val();
+		  var name6 = jQuery('#name6').val();
 	 }
 	
-      if($('#email6').val() == '' || $('#email6').val() == ' ') 
+      if(jQuery('#email6').val() == '' || jQuery('#email6').val() == ' ') 
 	 {
 		  var email6 = "";
      }
 	  else 
 	 {
-		  var email6 = $('#email6').val();
+		  var email6 = jQuery('#email6').val();
 	 }
 	 
  
-	 if($('#phone6').val() == '' || $('#phone6').val() == ' ') 
+	 if(jQuery('#phone6').val() == '' || jQuery('#phone6').val() == ' ') 
 	 {
 		  var phone6 = "";
      }
 	   else 
 	 {
-		  var phone6 = $('#phone6').val();
+		  var phone6 = jQuery('#phone6').val();
 	 }
 	 
 	 
-	   if($('#address6').val() == '' || $('#address6').val() == ' ') 
+	   if(jQuery('#address6').val() == '' || jQuery('#address6').val() == ' ') 
 	 {
 		  var address6 = "";
      }
 	   else 
 	 {
-		  var address6 = $('#address6').val();
+		  var address6 = jQuery('#address6').val();
 	 }
 	 
 	
-	   if($('#city6').val() == '' || $('#city6').val() == ' ') 
+	   if(jQuery('#city6').val() == '' || jQuery('#city6').val() == ' ') 
 	 {
 		  var city6 = "";
      }
 	  else 
 	 {
-		  var city6 = $('#city6').val();
+		  var city6 = jQuery('#city6').val();
 	 }
 	 
 	
-	   if($('#state6').val() == '' || $('#state6').val() == ' ') 
+	   if(jQuery('#state6').val() == '' || jQuery('#state6').val() == ' ') 
 	 {
 		  var state6 = "";
      }
 	 else 
 	 {
-		  var state6 = $('#state6').val();
+		  var state6 = jQuery('#state6').val();
 	 }
 	 
-	   if($('#zip_code6').val() == '' || $('#zip_code6').val() == ' ') 
+	   if(jQuery('#zip_code6').val() == '' || jQuery('#zip_code6').val() == ' ') 
 	 {
 		  var zip_code6 = "";
      }
 	 else 
 	 {
-		  var zip_code6 = $('#zip_code6').val();
+		  var zip_code6 = jQuery('#zip_code6').val();
 	 }
 	
-	   if($('#note6').val() == '' || $('#note6').val() == ' ') 
+	   if(jQuery('#note6').val() == '' || jQuery('#note6').val() == ' ') 
 	 {
 		  var note6 = "";
      }
 	  else 
 	 {
-		  var note6 = $('#note6').val();
+		  var note6 = jQuery('#note6').val();
 	 }
 		
 	 
 			
 		 <?php  if($default_booked->name_required == "1" && $default_booked->name == "1") { ?>  
-	    var name6 = $('#name6').val();
+	    var name6 = jQuery('#name6').val();
 			if(name6 == ''){
-			$('.message_box6').html(
+			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter Your Name!</span>'
 			);
-			$('#name6').focus();
+			jQuery('#name6').focus();
 			return false;
 			}
 		
 	 <?php } ?>	
 		
 		
-		var email6 = $('#email6').val();
+		var email6 = jQuery('#email6').val();
         if(email6 == ''){
-			$('.message_box6').html(
+			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter Email Address!</span>'
 			);
-			$('#email6').focus();
+			jQuery('#email6').focus();
             return false;
 			}
-		if( $("#email6").val()!='' ){
-			if( !isValidEmailAddress( $("#email6").val() ) ){
-			$('.message_box6').html(
+		if( jQuery("#email6").val()!='' ){
+			if( !isValidEmailAddress( jQuery("#email6").val() ) ){
+			jQuery('.message_box6').html(
 			'<span style="color:red;">Provided email address is incorrect!</span>'
 			);
-			$('#email6').focus();
+			jQuery('#email6').focus();
 			return false;
 			}
 			}
@@ -4183,12 +4280,12 @@ $(document).ready(function() {
 			
 	 <?php  if($default_booked->phone_required == "1" && $default_booked->phone == "1") { ?>  
  	
-            var phone6 = $('#phone6').val();
+            var phone6 = jQuery('#phone6').val();
 			if(phone6 == ''){
-			$('.message_box6').html(
+			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter phone Number!</span>'
 			);
-			$('#phone6').focus();
+			jQuery('#phone6').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -4197,12 +4294,12 @@ $(document).ready(function() {
 	 	 
 	 <?php  if($default_booked->address_required == "1" && $default_booked->address == "1") { ?>  
  	
-            var address6 = $('#address6').val();
+            var address6 = jQuery('#address6').val();
 			if(address6 == ''){
-			$('.message_box6').html(
+			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter address!</span>'
 			);
-			$('#address6').focus();
+			jQuery('#address6').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -4210,36 +4307,36 @@ $(document).ready(function() {
 	 		
 	 <?php  if($default_booked->city_required == "1" && $default_booked->city == "1") { ?>  
  	
-            var city6 = $('#city6').val();
+            var city6 = jQuery('#city6').val();
 			if(city6 == ''){
-			$('.message_box6').html(
+			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter city!</span>'
 			);
-			$('#city6').focus();
+			jQuery('#city6').focus();
 			return false;
 			}
 	 <?php  } ?>
 	  		
 	 <?php  if($default_booked->state_required == "1" && $default_booked->state == "1") { ?>  
  	
-            var state6 = $('#state6').val();
+            var state6 = jQuery('#state6').val();
 			if(state6 == ''){
-			$('.message_box6').html(
+			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter State!</span>'
 			);
-			$('#state6').focus();
+			jQuery('#state6').focus();
 			return false;
 			}
 	 <?php  } ?>
 	   		
 	 <?php  if($default_booked->zip_code_required == "1" && $default_booked->zip_code == "1") { ?>  
  	
-            var zip_code6 = $('#zip_code6').val();
+            var zip_code6 = jQuery('#zip_code6').val();
 			if(zip_code6 == ''){
-			$('.message_box6').html(
+			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter Zip Code!</span>'
 			);
-			$('#zip_code6').focus();
+			jQuery('#zip_code6').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -4247,12 +4344,12 @@ $(document).ready(function() {
 	    		
 	 <?php  if($default_booked->note_required == "1" && $default_booked->note == "1") { ?>  
  	
-            var note6 = $('#note6').val();
+            var note6 = jQuery('#note6').val();
 			if(note6 == ''){
-			$('.message_box6').html(
+			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter Note!</span>'
 			);
-			$('#note6').focus();
+			jQuery('#note6').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -4261,32 +4358,31 @@ $(document).ready(function() {
 			
 			
 		var radiovalue = document.querySelector('input[name="plan6"]:checked').value;	
-		var date_slected = $('textarea#date_slected6').val();
+		var date_slected = jQuery('textarea#date_slected6').val();
 		
 			
-		var message = $('#message').val();
+		var message = jQuery('#message').val();
         if(message == ''){
-			$('.message_box6').html(
+			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter Your Message Here!</span>'
 			);
-			$('#message').focus();
+			jQuery('#message').focus();
             return false;
 			}
   			
-			$.ajax
+			jQuery.ajax
 			({
              type: "POST",
-			 url: "<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/ajax/ajax.php'; ?>",
              data: "name="+name6+"&email="+email6+"&message="+message+"&radiovalue="+radiovalue+"&date_slected="+date_slected+"&phone="+phone6+"&address="+address6+"&city="+city6+"&state="+state6+"&zip_code="+zip_code6+"&note="+note6,
 			 beforeSend: function() {
-			 $('.message_box6').html(
+			 jQuery('.message_box6').html(
 			 '<img src="<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/img/Loader.gif'; ?>" width="25" height="25"/>'
 			 );
 			 },		 
              success: function(data)
 			 {
 				 setTimeout(function() {
-                    $('.message_box6').html(data);
+                    jQuery('.message_box6').html(data);
                 }, delay);
 			
              }
@@ -4353,20 +4449,20 @@ function isValidEmailAddress6(emailAddress) {
 		  ?>
 		  
 		<?php  if (in_array( $slotsvalues, $allbook) && in_array( $nextsunday, $allbook)) { ?>  
-		    <label class="plan" for="<?php echo $slotsvalues; ?>">
-            <input type="radio" id="<?php echo $slotsvalues; ?>" name="plan7" required="required" value="<?php echo $slotsvalues; ?>" disabled="disabled"/>
+		    <label class="plan" for="<?php esc_html_e($slotsvalues); ?>">
+            <input type="radio" id="<?php esc_html_e($slotsvalues); ?>" name="plan7" required="required" value="<?php esc_html_e($slotsvalues); ?>" disabled="disabled"/>
             <div class="plan-content disabledslot">
             <div class="plan-details">
-           <span><?php echo $slotsvaluestrimed; ?></span>
+           <span><?php esc_html_e($slotsvaluestrimed); ?></span>
          </div>
          </div>
         </label>
 		<?php } else { ?>
-		  <label class="plan" for="<?php echo str_replace(':',"", $slotsvalues); ?>">
-            <input type="radio" id="<?php echo str_replace(':',"", $slotsvalues); ?>" name="plan7" required="required" value="<?php echo $slotsvalues; ?>" />
-            <div class="plan-content" id="<?php echo str_replace(':',"", $slotsvalues); ?>">
+		  <label class="plan" for="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>">
+            <input type="radio" id="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>" name="plan7" required="required" value="<?php esc_html_e($slotsvalues); ?>" />
+            <div class="plan-content" id="<?php esc_html_e(str_replace(':',"", $slotsvalues)); ?>">
             <div class="plan-details">
-           <span><?php echo $slotsvaluestrimed; ?></span>
+           <span><?php esc_html_e($slotsvaluestrimed); ?></span>
          </div>
          </div>
         </label>
@@ -4475,124 +4571,124 @@ function isValidEmailAddress6(emailAddress) {
 </div>
 
 <script>
-$(document).ready(function() {
+jQuery(document).ready(function() {
 	var delay = 0;
-	$('.btn-default').click(function(e){
+	jQuery('.btn-default').click(function(e){
 		e.preventDefault();
 		
-		  if ($('input[name=plan7]:checked').length == 0) {		
-			$('.message_box7').html(
+		  if (jQuery('input[name=plan7]:checked').length == 0) {		
+			jQuery('.message_box7').html(
 				'<span style="color:red;">Please Select Time slot!</span>'
 				);
 		 
 		}
 		
 	 	
-      if($('#name7').val() == '' || $('#name7').val() == ' ') 
+      if(jQuery('#name7').val() == '' || jQuery('#name7').val() == ' ') 
 	 {
 		  var name7 = "";
      }
 	 else 
 	 {
-		  var name7 = $('#name7').val();
+		  var name7 = jQuery('#name7').val();
 	 }
 	
-      if($('#email7').val() == '' || $('#email7').val() == ' ') 
+      if(jQuery('#email7').val() == '' || jQuery('#email7').val() == ' ') 
 	 {
 		  var email7 = "";
      }
 	  else 
 	 {
-		  var email7 = $('#email7').val();
+		  var email7 = jQuery('#email7').val();
 	 }
 	 
  
-	 if($('#phone7').val() == '' || $('#phone7').val() == ' ') 
+	 if(jQuery('#phone7').val() == '' || jQuery('#phone7').val() == ' ') 
 	 {
 		  var phone7 = "";
      }
 	   else 
 	 {
-		  var phone7 = $('#phone7').val();
+		  var phone7 = jQuery('#phone7').val();
 	 }
 	 
 	 
-	   if($('#address7').val() == '' || $('#address7').val() == ' ') 
+	   if(jQuery('#address7').val() == '' || jQuery('#address7').val() == ' ') 
 	 {
 		  var address7 = "";
      }
 	   else 
 	 {
-		  var address7 = $('#address7').val();
+		  var address7 = jQuery('#address7').val();
 	 }
 	 
 	
-	   if($('#city7').val() == '' || $('#city7').val() == ' ') 
+	   if(jQuery('#city7').val() == '' || jQuery('#city7').val() == ' ') 
 	 {
 		  var city7 = "";
      }
 	  else 
 	 {
-		  var city7 = $('#city7').val();
+		  var city7 = jQuery('#city7').val();
 	 }
 	 
 	
-	   if($('#state7').val() == '' || $('#state7').val() == ' ') 
+	   if(jQuery('#state7').val() == '' || jQuery('#state7').val() == ' ') 
 	 {
 		  var state7 = "";
      }
 	 else 
 	 {
-		  var state7 = $('#state7').val();
+		  var state7 = jQuery('#state7').val();
 	 }
 	 
-	   if($('#zip_code7').val() == '' || $('#zip_code7').val() == ' ') 
+	   if(jQuery('#zip_code7').val() == '' || jQuery('#zip_code7').val() == ' ') 
 	 {
 		  var zip_code7 = "";
      }
 	 else 
 	 {
-		  var zip_code7 = $('#zip_code7').val();
+		  var zip_code7 = jQuery('#zip_code7').val();
 	 }
 	
-	   if($('#note7').val() == '' || $('#note7').val() == ' ') 
+	   if(jQuery('#note7').val() == '' || jQuery('#note7').val() == ' ') 
 	 {
 		  var note7 = "";
      }
 	  else 
 	 {
-		  var note7 = $('#note7').val();
+		  var note7 = jQuery('#note7').val();
 	 }
 		
 	 
 			
 		 <?php  if($default_booked->name_required == "1" && $default_booked->name == "1") { ?>  
-	    var name7 = $('#name7').val();
+	    var name7 = jQuery('#name7').val();
 			if(name7 == ''){
-			$('.message_box7').html(
+			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter Your Name!</span>'
 			);
-			$('#name7').focus();
+			jQuery('#name7').focus();
 			return false;
 			}
 		
 	 <?php } ?>	
 		
 		
-		var email7 = $('#email7').val();
+		var email7 = jQuery('#email7').val();
         if(email7 == ''){
-			$('.message_box7').html(
+			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter Email Address!</span>'
 			);
-			$('#email7').focus();
+			jQuery('#email7').focus();
             return false;
 			}
-		if( $("#email7").val()!='' ){
-			if( !isValidEmailAddress( $("#email7").val() ) ){
-			$('.message_box7').html(
+		if( jQuery("#email7").val()!='' ){
+			if( !isValidEmailAddress( jQuery("#email7").val() ) ){
+			jQuery('.message_box7').html(
 			'<span style="color:red;">Provided email address is incorrect!</span>'
 			);
-			$('#email7').focus();
+			jQuery('#email7').focus();
 			return false;
 			}
 			}
@@ -4601,12 +4697,12 @@ $(document).ready(function() {
 			
 	 <?php  if($default_booked->phone_required == "1" && $default_booked->phone == "1") { ?>  
  	
-            var phone7 = $('#phone7').val();
+            var phone7 = jQuery('#phone7').val();
 			if(phone7 == ''){
-			$('.message_box7').html(
+			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter phone Number!</span>'
 			);
-			$('#phone7').focus();
+			jQuery('#phone7').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -4615,12 +4711,12 @@ $(document).ready(function() {
 	 	 
 	 <?php  if($default_booked->address_required == "1" && $default_booked->address == "1") { ?>  
  	
-            var address7 = $('#address7').val();
+            var address7 = jQuery('#address7').val();
 			if(address7 == ''){
-			$('.message_box7').html(
+			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter address!</span>'
 			);
-			$('#address7').focus();
+			jQuery('#address7').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -4628,36 +4724,36 @@ $(document).ready(function() {
 	 		
 	 <?php  if($default_booked->city_required == "1" && $default_booked->city == "1") { ?>  
  	
-            var city7 = $('#city7').val();
+            var city7 = jQuery('#city7').val();
 			if(city7 == ''){
-			$('.message_box7').html(
+			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter city!</span>'
 			);
-			$('#city7').focus();
+			jQuery('#city7').focus();
 			return false;
 			}
 	 <?php  } ?>
 	  		
 	 <?php  if($default_booked->state_required == "1" && $default_booked->state == "1") { ?>  
  	
-            var state7 = $('#state7').val();
+            var state7 = jQuery('#state7').val();
 			if(state7 == ''){
-			$('.message_box7').html(
+			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter State!</span>'
 			);
-			$('#state7').focus();
+			jQuery('#state7').focus();
 			return false;
 			}
 	 <?php  } ?>
 	   		
 	 <?php  if($default_booked->zip_code_required == "1" && $default_booked->zip_code == "1") { ?>  
  	
-            var zip_code7 = $('#zip_code7').val();
+            var zip_code7 = jQuery('#zip_code7').val();
 			if(zip_code7 == ''){
-			$('.message_box7').html(
+			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter Zip Code!</span>'
 			);
-			$('#zip_code7').focus();
+			jQuery('#zip_code7').focus();
 			return false;
 			}
 	 <?php  } ?>
@@ -4665,47 +4761,45 @@ $(document).ready(function() {
 	    		
 	 <?php  if($default_booked->note_required == "1" && $default_booked->note == "1") { ?>  
  	
-            var note7 = $('#note7').val();
+            var note7 = jQuery('#note7').val();
 			if(note7 == ''){
-			$('.message_box7').html(
+			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter Note!</span>'
 			);
-			$('#note7').focus();
+			jQuery('#note7').focus();
 			return false;
 			}
 	 <?php  } ?>
 		
 			
-			
-			
+	
 			
 		var radiovalue = document.querySelector('input[name="plan7"]:checked').value;	
-		var date_slected = $('textarea#date_slected7').val();
+		var date_slected = jQuery('textarea#date_slected7').val();
 		
 			
-		var message = $('#message').val();
+		var message = jQuery('#message').val();
         if(message == ''){
-			$('.message_box7').html(
+			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter Your Message Here!</span>'
 			);
-			$('#message').focus();
+			jQuery('#message').focus();
             return false;
 			}
   			
-			$.ajax
+			jQuery.ajax
 			({
              type: "POST",
-			 url: "<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/ajax/ajax.php'; ?>",
              data: "name="+name7+"&email="+email7+"&message="+message+"&radiovalue="+radiovalue+"&date_slected="+date_slected+"&phone="+phone7+"&address="+address7+"&city="+city7+"&state="+state7+"&zip_code="+zip_code7+"&note="+note7,
 			 beforeSend: function() {
-			 $('.message_box7').html(
+			 jQuery('.message_box7').html(
 			 '<img src="<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/img/Loader.gif'; ?>" width="25" height="25"/>'
 			 );
 			 },		 
              success: function(data)
 			 {
 				 setTimeout(function() {
-                    $('.message_box7').html(data);
+                    jQuery('.message_box7').html(data);
                 }, delay);
 			
              }
@@ -4835,170 +4929,170 @@ window.onclick = function(event) {
 <style>
 .calendar
 {
-	background: <?php echo $default_row5->background_color; ?> !Important;
+	background: <?php esc_html_e($default_row5->background_color); ?> !Important;
 }
 
 .cview__month-last
 {
-	color: <?php echo $default_row5->months_name; ?> !Important;
+	color: <?php esc_html_e($default_row5->months_name); ?> !Important;
 }
 
 .cview__month-next
 {
-	color: <?php echo $default_row5->months_name; ?> !Important;
+	color: <?php esc_html_e($default_row5->months_name); ?> !Important;
 }
  
 .cview--date
 {
-	color: <?php echo $default_row5->dates_color; ?> !Important;
+	color: <?php esc_html_e($default_row5->dates_color); ?> !Important;
 }
 
 .cview__month-current
 {
-	color: <?php echo $default_row5->year_color; ?> !Important;
+	color: <?php esc_html_e($default_row5->year_color); ?> !Important;
 }
 
 .sun-header
 {
- background-color: <?php echo $default_row5->popup_backgound_border_color; ?> !Important;
+ background-color: <?php esc_html_e($default_row5->popup_backgound_border_color); ?> !Important;
 }
 
 .sun-footer
 {
- background-color: <?php echo $default_row5->popup_backgound_border_color; ?> !Important;	
+ background-color: <?php esc_html_e($default_row5->popup_backgound_border_color); ?> !Important;	
 }
 
 
 .mon-header
 {
- background-color: <?php echo $default_row5->popup_backgound_border_color; ?> !Important;
+ background-color: <?php esc_html_e($default_row5->popup_backgound_border_color); ?> !Important;
 }
 
 .mon-footer
 {
- background-color: <?php echo $default_row5->popup_backgound_border_color; ?> !Important;	
+ background-color: <?php esc_html_e($default_row5->popup_backgound_border_color); ?> !Important;	
 }
 
 
 .tue-header
 {
- background-color: <?php echo $default_row5->popup_backgound_border_color; ?> !Important;
+ background-color: <?php esc_html_e($default_row5->popup_backgound_border_color); ?> !Important;
 }
 
 .tue-footer
 {
- background-color: <?php echo $default_row5->popup_backgound_border_color; ?> !Important;	
+ background-color: <?php esc_html_e($default_row5->popup_backgound_border_color); ?> !Important;	
 }
 
 
 .wed-header
 {
- background-color: <?php echo $default_row5->popup_backgound_border_color; ?> !Important;
+ background-color: <?php esc_html_e($default_row5->popup_backgound_border_color); ?> !Important;
 }
 
 .wed-footer
 {
- background-color: <?php echo $default_row5->popup_backgound_border_color; ?> !Important;	
+ background-color: <?php esc_html_e($default_row5->popup_backgound_border_color); ?> !Important;	
 }
-
+ 
 
 .thu-header
 {
- background-color: <?php echo $default_row5->popup_backgound_border_color; ?> !Important;
+ background-color: <?php esc_html_e($default_row5->popup_backgound_border_color); ?> !Important;
 }
 
 .thu-footer
 {
- background-color: <?php echo $default_row5->popup_backgound_border_color; ?> !Important;	
+ background-color: <?php esc_html_e($default_row5->popup_backgound_border_color); ?> !Important;	
 }
 
 
 .fri-header
 {
- background-color: <?php echo $default_row5->popup_backgound_border_color; ?> !Important;
+ background-color: <?php esc_html_e($default_row5->popup_backgound_border_color); ?> !Important;
 }
 
 .fri-footer
 {
- background-color: <?php echo $default_row5->popup_backgound_border_color; ?> !Important;	
+ background-color: <?php esc_html_e($default_row5->popup_backgound_border_color); ?> !Important;	
 }
 
 .sat-header
 {
- background-color: <?php echo $default_row5->popup_backgound_border_color; ?> !Important;
+ background-color: <?php esc_html_e($default_row5->popup_backgound_border_color); ?> !Important;
 }
 
 .sat-footer
 {
- background-color: <?php echo $default_row5->popup_backgound_border_color; ?> !Important;	
+ background-color: <?php esc_html_e($default_row5->popup_backgound_border_color); ?> !Important;	
 }
 
 #ContactForm button
 {
- background-color: <?php echo $default_row5->submit_button_color; ?> !Important;		
+ background-color: <?php esc_html_e($default_row5->submit_button_color); ?> !Important;		
 }
 
 .plan-content span
 {
-	    color: <?php echo $default_row5->timeslot_text_color; ?> !Important;	
+	    color: <?php esc_html_e($default_row5->timeslot_text_color); ?> !Important;	
 }
 
 .plan-content
 {
-    background: <?php echo $default_row5->timeslot_background_color; ?>;
-    border: <?php echo $default_row5->timeslot_background_color; ?>;
+    background: <?php esc_html_e($default_row5->timeslot_background_color); ?>;
+    border: <?php esc_html_e($default_row5->timeslot_background_color); ?>;
 }
 
 .disabledslot span
 {
-	  color: <?php echo $default_row5->timeslot_booked_color; ?> !Important;	
+	  color: <?php esc_html_e($default_row5->timeslot_booked_color); ?> !Important;	
 }
 
 .disabledslot
 {
-	 background: <?php echo $default_row5->timeslot_booked_bkg_color; ?> !Important;
-    border: <?php echo $default_row5->timeslot_booked_bkg_color; ?> !Important;
+	 background: <?php esc_html_e($default_row5->timeslot_booked_bkg_color); ?> !Important;
+    border: <?php esc_html_e($default_row5->timeslot_booked_bkg_color); ?> !Important;
 }
 
 
 .sun-header h3
 {
-	 color: <?php echo $default_row5->heading_color_popup; ?> !Important;
+	 color: <?php esc_html_e($default_row5->heading_color_popup); ?> !Important;
 }
 
 .mon-header h3
 {
-	 color: <?php echo $default_row5->heading_color_popup; ?> !Important;
+	 color: <?php esc_html_e($default_row5->heading_color_popup); ?> !Important;
 }
 
 .tue-header h3
 {
-	 color: <?php echo $default_row5->heading_color_popup; ?> !Important;
+	 color: <?php esc_html_e($default_row5->heading_color_popup); ?> !Important;
 }
 
 .wed-header h3
 {
-	 color: <?php echo $default_row5->heading_color_popup; ?> !Important;
+	 color: <?php esc_html_e($default_row5->heading_color_popup); ?> !Important;
 }
 
 .thu-header h3
 {
-	 color: <?php echo $default_row5->heading_color_popup; ?> !Important;
+	 color: <?php esc_html_e($default_row5->heading_color_popup); ?> !Important;
 }
 
 .fri-header h3
 {
-	 color: <?php echo $default_row5->heading_color_popup; ?> !Important;
+	 color: <?php esc_html_e($default_row5->heading_color_popup); ?> !Important;
 }
 
 .sat-header h3
 {
-	 color: <?php echo $default_row5->heading_color_popup; ?> !Important;
+	 color: <?php esc_html_e($default_row5->heading_color_popup); ?> !Important;
 }
 
 .fom-text
 {
-	color : <?php echo $default_row5->text_color_popup; ?> !Important;
+	color : <?php esc_html_e($default_row5->text_color_popup); ?> !Important;
 }
 
 

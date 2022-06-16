@@ -1829,5 +1829,10 @@ input.add-event-edit:-ms-input-placeholder {
 
 .form-group
 {
-	margin-bottom:15px;
+    margin-bottom: 15px;
+}
+
+#mysun
+{
+	max-width:100% !Important;
 }
