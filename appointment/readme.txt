@@ -1,5 +1,5 @@
 === Appointment booking for Next 7 Days.
-Donate link: http://shapedplugin.com/donate
+
 Tags: wordpress 
 Requires at least: 4.5
 Tested up to: 6.0
