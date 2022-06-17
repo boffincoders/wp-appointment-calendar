@@ -11,7 +11,7 @@
  
 if ( ! defined( 'ABSPATH' ) ) exit;
   
-function scratchcode_create_appointment_availability() {
+function bcas_appointment_availability() {
 global $wpdb; 
  
 $table_name = $wpdb->base_prefix.'appointment_availability';
@@ -239,12 +239,10 @@ $query5 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name5 )
 	}
 	
 	
- if( isset($_POST['radiovalue']) && isset($_POST['name']) ){
+ if( isset($_POST['radiovalue']) && isset($_POST['name']) && isset($_POST['email']) ){
  
-	$to = sanitize_email($_POST['email']);
+	$to = sanitize_email($_POST['email']);	
 	$subject = 'Apointment';
-	$message = 'Appointment Message';
-
 	$headers = "MIME-Version: 1.0" . "\r\n";
     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 	$headers .= 'From: <webmaster@example.com>' . "\r\n";
@@ -339,7 +337,7 @@ $query5 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name5 )
 	<style>
 	#<?php esc_html_e(str_replace(':',"", $radiovalue)); ?>
 	{
-			background: #bab6bf !IMPORTANT;
+		background: #bab6bf !IMPORTANT;
 		border: 1px solid #bab6bf !IMPORTANT;
 	}
 	</style>
@@ -348,22 +346,22 @@ $query5 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name5 )
 	}	
 }    
  
-add_action('init', 'scratchcode_create_appointment_availability');
+add_action('init', 'bcas_appointment_availability');
 
   
 
-function libload()
+function bcas_appointment_styling()
 {
     wp_enqueue_style('style_file' , plugin_dir_url(__FILE__).'style/style.css');
 }
  
-add_action('wp_enqueue_scripts','libload');
+add_action('wp_enqueue_scripts','bcas_appointment_styling');
   
 
 //add_action('wp_enqueue_scripts','ajax_call');
 
 
-function my_menu_pages(){
+function bcas_appointment_menu_pages(){
  
  add_menu_page('Portfolio List', 'Appointments', 'edit_posts','appointment','boffin_appointment','dashicons-calendar', 6 );   
 
@@ -374,7 +372,7 @@ add_submenu_page(
     'Settings',              
     'manage_options',            
     'appointment-basics',   
-    'boffin_appointment_settings'  
+    'bcas_appointment_settings'  
 ); 
  
   
@@ -389,10 +387,10 @@ add_submenu_page(
  
 }
  
-add_action('admin_menu', 'my_menu_pages');
+add_action('admin_menu', 'bcas_appointment_menu_pages');
 
  
-function boffin_appointment_settings() {
+function bcas_appointment_settings() {
    wp_enqueue_style('style_file' , plugin_dir_url(__FILE__).'style/style.css'); 
    global $wpdb;
    ?>
@@ -454,10 +452,12 @@ function boffin_appointment_settings() {
 		$appointment_id= sanitize_text_field( $_POST["appointment_id"]); 
          
 		 $arr = array();
-         $timeslots = $_POST["timeslots"]; 
+ 
+		 $timeslots  = array_map('filter_var', $_POST["timeslots"]);
+
 		 foreach($timeslots as $val)
 		 {
-		    array_push($arr,$val);
+		    array_push($arr,sanitize_text_field($val));
 		 }
    
 	     $wpdb->update($table_name, array('json_data'=>json_encode($arr)), array('appointment_id'=>'1'));
@@ -640,10 +640,10 @@ function boffin_appointment_settings() {
         <p> <b>ShortCode</b> : <span class="shortcode_code">[boffin_appointment_calendar]</span></p>
         <?php
             if( isset( $_GET[ 'tab' ] ) ) {
-                $active_tab = $_GET[ 'tab' ];
-            } // end if
+                $active_tab = sanitize_text_field($_GET[ 'tab' ]);
+            }  
 			
-		 $active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'basics';
+		 $active_tab = isset( $_GET[ 'tab' ] ) ? sanitize_text_field($_GET[ 'tab' ]) : 'basics';
 		 $default_row = $wpdb->get_row( "SELECT * FROM $table_name2 WHERE appointment_id='1'");
 		 $default_row3 = $wpdb->get_row( "SELECT * FROM $table_name3 WHERE appointment_id='1'");
 		 $default_row4 = $wpdb->get_row( "SELECT * FROM $table_name4 WHERE appointment_id='1'");
@@ -658,7 +658,7 @@ function boffin_appointment_settings() {
 			
 			<a href="?page=appointment-basics&tab=notifications" class="nav-tab <?php esc_html_e($active_tab == 'notifications' ? 'nav-tab-active' : ''); ?>">Notifications</a>
 			
-				<a href="?page=appointment-basics&tab=styles" class="nav-tab <?php esc_html_e($active_tab == 'styles' ? 'nav-tab-active' : ''); ?>">Styles</a>
+			 <a href="?page=appointment-basics&tab=styles" class="nav-tab <?php esc_html_e($active_tab == 'styles' ? 'nav-tab-active' : ''); ?>">Styles</a>
 		  
           </h2>
   
@@ -1120,14 +1120,10 @@ function boffin_appointment_settings() {
       </div> 
 		 <?php } 
          
-		 ?> 
  
-		 
-	  <?php
 }
  
 function boffin_appointment() {
-error_reporting(0);
 	wp_enqueue_style('style_file' , plugin_dir_url(__FILE__).'style/style.css'); 
 	  ?>
 	  <br/>
@@ -4467,8 +4463,7 @@ function isValidEmailAddress6(emailAddress) {
          </div>
         </label>
 		
-		<?php } ?>
-		 <?php 
+		<?php } 
 		 }
 	 } 
 	 ?>
