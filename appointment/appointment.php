@@ -448,23 +448,14 @@ function bcas_appointment_settings() {
  
      if(isset($_POST['availability_submit']))
 	{ 
-        $table_name = $wpdb->prefix."appointment_availability";
-		$appointment_id= sanitize_text_field( $_POST["appointment_id"]); 
-         
-		 $arr = array();
+             $table_name = $wpdb->prefix."appointment_availability";
  
-		 $timeslots  = array_map('filter_var', $_POST["timeslots"]);
-
-		 foreach($timeslots as $val)
-		 {
-		    array_push($arr,sanitize_text_field($val));
-		 }
-   
-	     $wpdb->update($table_name, array('json_data'=>json_encode($arr)), array('appointment_id'=>'1'));
+	     $timeslots = array_map('sanitize_text_field', $_POST["timeslots"]);
+ 
+	     $wpdb->update($table_name, array('json_data'=>json_encode($timeslots)), array('appointment_id'=>'1'));
 		
-		 print_r("<p class='greentext' id='message'>Appointment Updated Successfully</p>");
+	     print_r("<p class='greentext' id='message'>Appointment Updated Successfully</p>");
 	}
- 
  
  
      if(isset($_POST['user_info']))
