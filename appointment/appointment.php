@@ -11,27 +11,27 @@
  
 if ( ! defined( 'ABSPATH' ) ) exit;
   
-function bcas_appointment_availability() {
+function boffin_coders_availability() {
 global $wpdb; 
  
-$table_name = $wpdb->base_prefix.'appointment_availability';
+$table_name = $wpdb->base_prefix.'boffin_coders_appointment_availability';
 $query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
 
-$table_name2 = $wpdb->base_prefix.'appointment_booked';
+$table_name2 = $wpdb->base_prefix.'boffin_coders_appointment_booked';
 $query2 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name2 ) );
 
-$table_name3 = $wpdb->base_prefix.'appointment_data';
+$table_name3 = $wpdb->base_prefix.'boffin_coders_appointment_data';
 $query3 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name3 ) );
 
-$table_name4 = $wpdb->base_prefix.'appointment_user_information';
+$table_name4 = $wpdb->base_prefix.'boffin_coders_appointment_user_information';
 $query4 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name4 ) );
 
 
-$table_name5 = $wpdb->base_prefix.'appointment_styles';
+$table_name5 = $wpdb->base_prefix.'boffin_coders_appointment_styles';
 $query5 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name5 ) );
 
 	  if ( ! $wpdb->get_var( $query ) == $table_name ) {
-		$table_name = $wpdb->prefix . "appointment_availability";
+		$table_name = $wpdb->prefix . "boffin_coders_appointment_availability";
 	 
 		$charset_collate = $wpdb->get_charset_collate();
 	 
@@ -55,7 +55,7 @@ $query5 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name5 )
 	}
   
     if ( ! $wpdb->get_var( $query2 ) == $table_name2 ) {
-		$table_name2 = $wpdb->prefix . "appointment_booked";
+		$table_name2 = $wpdb->prefix . "boffin_coders_appointment_booked";
 	 
 		$charset_collate = $wpdb->get_charset_collate();
 	 
@@ -84,7 +84,7 @@ $query5 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name5 )
 	
  
 	if ( ! $wpdb->get_var( $query3 ) == $table_name3 ) {
-		$table_name3 = $wpdb->prefix . "appointment_data";
+		$table_name3 = $wpdb->prefix . "boffin_coders_appointment_data";
 	 
 		$charset_collate = $wpdb->get_charset_collate();
 	 
@@ -134,7 +134,7 @@ $query5 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name5 )
 	}
  
 	if ( ! $wpdb->get_var( $query4 ) == $table_name4 ) {
-		$table_name4 = $wpdb->prefix . "appointment_user_information";
+		$table_name4 = $wpdb->prefix . "boffin_coders_appointment_user_information";
 	 
 		$charset_collate = $wpdb->get_charset_collate();
 	 
@@ -191,7 +191,7 @@ $query5 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name5 )
 	
 	
 	if ( ! $wpdb->get_var( $query5 ) == $table_name5 ) {
-		$table_name5 = $wpdb->prefix . "appointment_styles";
+		$table_name5 = $wpdb->prefix . "boffin_coders_appointment_styles";
 	 
 		$charset_collate = $wpdb->get_charset_collate();
 	 
@@ -263,12 +263,12 @@ $query5 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name5 )
 		$date_slected = sanitize_text_field($_POST['date_slected']);
 	}
 	
-     $table_name = $wpdb->prefix."appointment_booked";
-     $table_name2 = $wpdb->prefix."appointment_data";
+     $table_name = $wpdb->prefix."boffin_coders_appointment_booked";
+     $table_name2 = $wpdb->prefix."boffin_coders_appointment_data";
      $default_row2 = $wpdb->get_row( "SELECT * FROM $table_name2 WHERE appointment_id='1'");
 	
      $allbook = array();
-	 $table_namebooked = $wpdb->prefix."appointment_booked";
+	 $table_namebooked = $wpdb->prefix."boffin_coders_appointment_booked";
      $default_rowbooked = $wpdb->get_results("SELECT * FROM $table_namebooked");
 	 foreach($default_rowbooked as $bookedvalues)
 	 {
@@ -276,7 +276,7 @@ $query5 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name5 )
 		 $allbook[] = $bookedvalues->time;
 	 }
 	  
- 	 $tablemessages = $wpdb->prefix."appointment_data";
+ 	 $tablemessages = $wpdb->prefix."boffin_coders_appointment_data";
 	 $default_rowbooked = $wpdb->get_row("SELECT * FROM $tablemessages where id = '1'");
 	  
  
@@ -346,24 +346,24 @@ $query5 = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name5 )
 	}	
 }    
  
-add_action('init', 'bcas_appointment_availability');
+add_action('init', 'boffin_coders_availability');
 
   
 
-function bcas_appointment_styling()
+function boffin_coders_styling()
 {
     wp_enqueue_style('style_file' , plugin_dir_url(__FILE__).'style/style.css');
 }
  
-add_action('wp_enqueue_scripts','bcas_appointment_styling');
+add_action('wp_enqueue_scripts','boffin_coders_styling');
   
 
 //add_action('wp_enqueue_scripts','ajax_call');
 
 
-function bcas_appointment_menu_pages(){
+function boffin_coders_menu_pages(){
  
- add_menu_page('Portfolio List', 'Appointments', 'edit_posts','appointment','boffin_appointment','dashicons-calendar', 6 );   
+ add_menu_page('Portfolio List', 'Appointments', 'edit_posts','appointment','boffin_coders_appointment','dashicons-calendar', 6 );   
 
  
 add_submenu_page(
@@ -372,7 +372,7 @@ add_submenu_page(
     'Settings',              
     'manage_options',            
     'appointment-basics',   
-    'bcas_appointment_settings'  
+    'boffin_coders_settings'  
 ); 
  
   
@@ -387,10 +387,10 @@ add_submenu_page(
  
 }
  
-add_action('admin_menu', 'bcas_appointment_menu_pages');
+add_action('admin_menu', 'boffin_coders_menu_pages');
 
  
-function bcas_appointment_settings() {
+function boffin_coders_settings() {
    wp_enqueue_style('style_file' , plugin_dir_url(__FILE__).'style/style.css'); 
    global $wpdb;
    ?>
@@ -406,7 +406,7 @@ function bcas_appointment_settings() {
  
      if(isset($_POST['basic_info']))
 	{ 
-        $table_name = $wpdb->prefix."appointment_data";
+        $table_name = $wpdb->prefix."boffin_coders_appointment_data";
 		$appoint_name= sanitize_text_field( $_POST["appoint_name"]); 
 	    $duration= sanitize_text_field( $_POST["duration"]); 
 		$success_message= sanitize_text_field( $_POST["success"]); 
@@ -423,7 +423,7 @@ function bcas_appointment_settings() {
  
      if(isset($_POST['capacity_submit']))
 	{ 
-        $table_name = $wpdb->prefix."appointment_styles";
+        $table_name = $wpdb->prefix."boffin_coders_appointment_styles";
 		
 		$background_color= sanitize_text_field( $_POST["background_color"]); 
 		$months_name= sanitize_text_field( $_POST["months_name"]); 
@@ -448,7 +448,7 @@ function bcas_appointment_settings() {
  
      if(isset($_POST['availability_submit']))
 	{ 
-             $table_name = $wpdb->prefix."appointment_availability";
+             $table_name = $wpdb->prefix."boffin_coders_appointment_availability";
  
 	     $timeslots = array_map('sanitize_text_field', $_POST["timeslots"]);
  
@@ -460,7 +460,7 @@ function bcas_appointment_settings() {
  
      if(isset($_POST['user_info']))
 	{ 
-        $table_name = $wpdb->prefix."appointment_user_information";
+        $table_name = $wpdb->prefix."boffin_coders_appointment_user_information";
 		
 		if (isset($_POST['user_name'])) {
 		    $user_name = "1";
@@ -603,25 +603,25 @@ function bcas_appointment_settings() {
  
      if(isset($_POST['notification']))
 	{ 
-        $table_name = $wpdb->prefix."appointment_data";
-		$admin_appointment_booked= sanitize_text_field( $_POST["admin_appointment_booked"]); 
-		$customer_appointment_booked= sanitize_text_field( $_POST["customer_appointment_booked"]); 
+        $table_name = $wpdb->prefix."boffin_coders_appointment_data";
+		$admin_boffin_coders_appointment_booked= sanitize_text_field( $_POST["admin_boffin_coders_appointment_booked"]); 
+		$customer_boffin_coders_appointment_booked= sanitize_text_field( $_POST["customer_boffin_coders_appointment_booked"]); 
 		$admin_appointment_canceled= sanitize_text_field( $_POST["admin_appointment_canceled"]); 
 		$customer_appointment_canceled= sanitize_text_field( $_POST["customer_appointment_canceled"]); 
  
 		$appointment_id= sanitize_text_field( $_POST["appointment_id"]); 
  
-	    $wpdb->update($table_name, array('booked_apointment_email_admin'=>$admin_appointment_booked, 'booked_apointment_email_customer'=>$customer_appointment_booked, 'canceled_apointment_email_admin'=>$admin_appointment_canceled, 'canceled_apointment_email_customer'=>$customer_appointment_canceled), array('appointment_id'=>'1'));
+	    $wpdb->update($table_name, array('booked_apointment_email_admin'=>$admin_boffin_coders_appointment_booked, 'booked_apointment_email_customer'=>$customer_boffin_coders_appointment_booked, 'canceled_apointment_email_admin'=>$admin_appointment_canceled, 'canceled_apointment_email_customer'=>$customer_appointment_canceled), array('appointment_id'=>'1'));
 		
 		print_r("<p class='greentext' id='message' >Appointment Updated Successfully</p>");
 	} 
 
  
       global $wpdb;
-	  $table_name2 = $wpdb->prefix."appointment_data";
-	  $table_name3 = $wpdb->prefix."appointment_user_information";
-	  $table_name4 = $wpdb->prefix."appointment_availability";
-	  $table_name5 = $wpdb->prefix."appointment_styles";
+	  $table_name2 = $wpdb->prefix."boffin_coders_appointment_data";
+	  $table_name3 = $wpdb->prefix."boffin_coders_appointment_user_information";
+	  $table_name4 = $wpdb->prefix."boffin_coders_appointment_availability";
+	  $table_name5 = $wpdb->prefix."boffin_coders_appointment_styles";
 	 ?>
    
 	 <!-- Create a header in the default WordPress 'wrap' container -->
@@ -977,72 +977,71 @@ function bcas_appointment_settings() {
 	  <?php
 	   if($active_tab == "notifications") { ?>
 	   
-	    <script>
-			function myFunction() {
-			  var dots = document.getElementById("dots");
-			  var moreText = document.getElementById("more");
-			  var btnText = document.getElementById("myBtn");
+	   <script>
+			function boffin_coders_notifyFunction() {
+			  var boffin_coders_dots = document.getElementById("boffin_coders_dots");
+			  var boffin_coders_moreText = document.getElementById("more");
+			  var boffin_coders_btnText = document.getElementById("myBtn");
 
-			  if (dots.style.display === "none") {
-				dots.style.display = "inline";
-			 	btnText.innerHTML = "Edit"; 
-				moreText.style.display = "none";
+			  if (boffin_coders_dots.style.display === "none") {
+				boffin_coders_dots.style.display = "inline";
+			 	boffin_coders_btnText.innerHTML = "Edit"; 
+				boffin_coders_moreText.style.display = "none";
 			  } else {
-				dots.style.display = "none";
-		  	btnText.innerHTML = "Hide"; 
-				moreText.style.display = "inline";
+				boffin_coders_dots.style.display = "none";
+		  	boffin_coders_btnText.innerHTML = "Hide"; 
+				boffin_coders_moreText.style.display = "inline";
 			  }
 			}
 
-			function myFunction2() {
-			  var dots = document.getElementById("dots2");
-			  var moreText = document.getElementById("more2");
-			  var btnText = document.getElementById("myBtn2");
+			function boffin_coders_notifyFunction2() {
+			  var boffin_coders_dots = document.getElementById("boffin_coders_dots2");
+			  var boffin_coders_moreText = document.getElementById("more2");
+			  var boffin_coders_btnText = document.getElementById("myBtn2");
 
-			  if (dots.style.display === "none") {
-				dots.style.display = "inline";
-			 	btnText.innerHTML = "Edit"; 
-				moreText.style.display = "none";
+			  if (boffin_coders_dots.style.display === "none") {
+				boffin_coders_dots.style.display = "inline";
+			 	boffin_coders_btnText.innerHTML = "Edit"; 
+				boffin_coders_moreText.style.display = "none";
 			  } else {
-				dots.style.display = "none";
-		  	btnText.innerHTML = "Hide"; 
-				moreText.style.display = "inline";
-			  }
-			}
-			
-			function myFunction3() {
-			  var dots = document.getElementById("dots3");
-			  var moreText = document.getElementById("more3");
-			  var btnText = document.getElementById("myBtn3");
-
-			  if (dots.style.display === "none") {
-				dots.style.display = "inline";
-			 	btnText.innerHTML = "Edit"; 
-				moreText.style.display = "none";
-			  } else {
-				dots.style.display = "none";
-		  	btnText.innerHTML = "Hide"; 
-				moreText.style.display = "inline";
+				boffin_coders_dots.style.display = "none";
+		     	boffin_coders_btnText.innerHTML = "Hide"; 
+				boffin_coders_moreText.style.display = "inline";
 			  }
 			}
 			
-			function myFunction4() {
-			  var dots = document.getElementById("dots4");
-			  var moreText = document.getElementById("more4");
-			  var btnText = document.getElementById("myBtn4");
+			function boffin_coders_notifyFunction3() {
+			  var boffin_coders_dots = document.getElementById("boffin_coders_dots3");
+			  var boffin_coders_moreText = document.getElementById("more3");
+			  var boffin_coders_btnText = document.getElementById("myBtn3");
 
-			  if (dots.style.display === "none") {
-				dots.style.display = "inline";
-			 	btnText.innerHTML = "Edit"; 
-				moreText.style.display = "none";
+			  if (boffin_coders_dots.style.display === "none") {
+				boffin_coders_dots.style.display = "inline";
+			 	boffin_coders_btnText.innerHTML = "Edit"; 
+				boffin_coders_moreText.style.display = "none";
 			  } else {
-				dots.style.display = "none";
-		  	btnText.innerHTML = "Hide"; 
-				moreText.style.display = "inline";
+				boffin_coders_dots.style.display = "none";
+		    	boffin_coders_btnText.innerHTML = "Hide"; 
+				boffin_coders_moreText.style.display = "inline";
+			  }
+			}
+			
+			function boffin_coders_notifyFunction4() {
+			  var boffin_coders_dots = document.getElementById("boffin_coders_dots4");
+			  var boffin_coders_moreText = document.getElementById("more4");
+			  var boffin_coders_btnText = document.getElementById("myBtn4");
+
+			  if (boffin_coders_dots.style.display === "none") {
+				boffin_coders_dots.style.display = "inline";
+			 	boffin_coders_btnText.innerHTML = "Edit"; 
+				boffin_coders_moreText.style.display = "none";
+			  } else {
+				boffin_coders_dots.style.display = "none";
+		  	    boffin_coders_btnText.innerHTML = "Hide"; 
+				boffin_coders_moreText.style.display = "inline";
 			  }
 			}
 		</script>
-	   
 	   
       <form method="post" action="?page=appointment-basics&tab=notifications" class="formall notification" style="width: 88%;">
         <table class="form-table" role="presentation">
@@ -1050,11 +1049,11 @@ function bcas_appointment_settings() {
           <b class="appointment-info"> Options for sending customer and admin notifications</b>		 
 		  <tr>
 		    <th><label for="capacity">Email (Admin) Appointment Booked</label></th>
-		    <td><a onclick="myFunction()" id="myBtn">Edit</a>
+		    <td><a onclick="boffin_coders_notifyFunction()" id="myBtn">Edit</a>
 
             <p> <span id="dots"> </span>
 			 <span id="more" style="display: none;"> 
-			  <textarea style="width:84%;" rows="7" cols="100" class="regular-text" name="admin_appointment_booked"><?php esc_html_e($default_row->booked_apointment_email_admin); ?></textarea>
+			  <textarea style="width:84%;" rows="7" cols="100" class="regular-text" name="admin_boffin_coders_appointment_booked"><?php esc_html_e($default_row->booked_apointment_email_admin); ?></textarea>
 			 </span>
 			</p>
 			</td>
@@ -1063,11 +1062,11 @@ function bcas_appointment_settings() {
  
          <tr>
 		    <th><label for="capacity">Email (Customer) Appointment Booked</label></th>
-		    <td><a onclick="myFunction2()" id="myBtn2">Edit</a>
+		    <td><a onclick="boffin_coders_notifyFunction2()" id="myBtn2">Edit</a>
 
             <p> <span id="dots2"> </span>
 			 <span id="more2" style="display: none;"> 
-			  <textarea style="width:84%;" rows="7" cols="100" class="regular-text" name="customer_appointment_booked"><?php esc_html_e($default_row->booked_apointment_email_customer); ?></textarea>
+			  <textarea style="width:84%;" rows="7" cols="100" class="regular-text" name="customer_boffin_coders_appointment_booked"><?php esc_html_e($default_row->booked_apointment_email_customer); ?></textarea>
 			 </span>
 			</p>
 			</td>
@@ -1075,7 +1074,7 @@ function bcas_appointment_settings() {
   
          <tr>
 		    <th><label for="capacity">Email (Admin) Appointment Canceled</label></th>
-		    <td><a onclick="myFunction3()" id="myBtn3">Edit</a>
+		    <td><a onclick="boffin_coders_notifyFunction3()" id="myBtn3">Edit</a>
 
             <p> <span id="dots3"> </span>
 			  <span id="more3" style="display: none;"> 
@@ -1087,7 +1086,7 @@ function bcas_appointment_settings() {
  
 		  <tr>
 		    <th><label for="capacity">Email (Customer) Appointment Canceled</label></th>
-		    <td><a onclick="myFunction4()" id="myBtn4">Edit</a>
+		    <td><a onclick="boffin_coders_notifyFunction4()" id="myBtn4">Edit</a>
 
             <p> <span id="dots4"> </span>
 			  <span id="more4" style="display: none;"> 
@@ -1114,19 +1113,17 @@ function bcas_appointment_settings() {
  
 }
  
-function boffin_appointment() {
+function boffin_coders_appointment() {
 	wp_enqueue_style('style_file' , plugin_dir_url(__FILE__).'style/style.css'); 
 	  ?>
 	  <br/>
 	  <h2 class="nav-tab-wrapper">
          <a href="#" class="nav-tab">Appointment List</a> 
       </h2>
-  
-	  
-	
+ 
      <?php 
 	 global $wpdb;
-	 $table_name_list = $wpdb->prefix."appointment_booked";
+	 $table_name_list = $wpdb->prefix."boffin_coders_appointment_booked";
  
 	 $list_appointments = $wpdb->get_results("SELECT * FROM  $table_name_list");
  
@@ -1174,91 +1171,88 @@ function boffin_appointment() {
 	 Note: <?php if($default_rows->notes != "undefined") { esc_html_e($default_rows->notes); } ?>  
 	 <br/>
 	 </th>
- 
     </tr>	 
-    <?php
-	  }
+      <?php
+	    }
 	   ?>	
- 
 	  </table>
- 
 	  <?php
-}
+  }
  
  
-function appointment_id() {
+ function boffin_coders_appointment_id() {
   ?>
  	
 <script>
-function nextDate(dayIndex) {
-    var todays = new Date();
-    todays.setDate(todays.getDate() + (dayIndex - 1 - todays.getDay() + 7) % 7 + 1);
-    return todays.getDate();
+var boffin_coders_filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+function boffin_coders_nextDate(dayIndex) {
+    var boffin_coders_todays = new Date();
+    boffin_coders_todays.setDate(boffin_coders_todays.getDate() + (dayIndex - 1 - boffin_coders_todays.getDay() + 7) % 7 + 1);
+    return boffin_coders_todays.getDate();
 }
 
   setInterval(function(){
     jQuery(document).ready(function(){
- 	var today = new Date();
-    var date =  today.getDate();
-   
+ 	var boffin_coders_today = new Date();
+ 
     // month
-    var month =  today.getMonth();	
-    cmonth = month+1;
+    var boffin_coders_month =  boffin_coders_today.getMonth();	
+    boffin_coders_cmonth = boffin_coders_month+1;
     
 	//  next sunday
-	var nextsunday = nextDate(0).toLocaleString();
-	if(nextsunday.length == 1)
+	var boffin_coders_nextsunday = boffin_coders_nextDate(0).toLocaleString();
+	if(boffin_coders_nextsunday.length == 1)
 	{
-		var nextsunday = "0"+nextsunday;
+		var boffin_coders_nextsunday = "0"+boffin_coders_nextsunday;
 	}
 	 
-    var dt = new Date(today);
-    dt.setDate( dt.getDate() + 7 );
+    var boffin_coders_dt = new Date(boffin_coders_today);
+    boffin_coders_dt.setDate( boffin_coders_dt.getDate() + 7 );
   
-   jQuery(".Sun."+nextsunday+"").click(function(){
-   sun.style.display = "block";
-   var indexval =  jQuery(this).index(".Sun");
-   var className = jQuery('.Sun:eq('+indexval+')').attr('data-date');
-  //  alert(className);
-  var trimmedString = className.substring(0, 15);
-  jQuery('#dateslected').text(trimmedString);
-  jQuery('#date_slected').text(trimmedString);
-  jQuery('#date_moreslected').text(trimmedString);
- // jQuery('.plan-details').text(className);
+   jQuery(".Sun."+boffin_coders_nextsunday+"").click(function(){
+   boffin_coders_sun.style.display = "block";
+   var boffin_coders_indexval =  jQuery(this).index(".Sun");
+   var boffin_coders_className = jQuery('.Sun:eq('+boffin_coders_indexval+')').attr('data-date');
+  //  alert(boffin_coders_className);
+  var boffin_coders_trimmedString = boffin_coders_className.substring(0, 15);
+  jQuery('#dateslected').text(boffin_coders_trimmedString);
+  jQuery('#date_slected').text(boffin_coders_trimmedString);
+  jQuery('#date_moreslected').text(boffin_coders_trimmedString);
+ // jQuery('.plan-details').text(boffin_coders_className);
   
   });
 });
 
 
 jQuery(document).ready(function(){
- var today = new Date();
-    var date =  today.getDate();
+ var boffin_coders_today = new Date();
+    
    
     // month
-    var month =  today.getMonth();	
-    cmonth = month+1;
+    var boffin_coders_month =  boffin_coders_today.getMonth();	
+    boffin_coders_cmonth = boffin_coders_month+1;
     
 	//  next sunday
-	var nextmonday = nextDate(1).toLocaleString();
-	if(nextmonday.length == 1)
+	var boffin_coders_nextmonday = boffin_coders_nextDate(1).toLocaleString();
+	if(boffin_coders_nextmonday.length == 1)
 	{
-		var nextmonday = "0"+nextmonday;
+		var boffin_coders_nextmonday = "0"+boffin_coders_nextmonday;
 	}
 	
-    var dt = new Date(today);
-    dt.setDate( dt.getDate() + 7 );
+    var boffin_coders_dt = new Date(boffin_coders_today);
+    boffin_coders_dt.setDate( boffin_coders_dt.getDate() + 7 );
  
    
-   jQuery(".Mon."+nextmonday+".Jun").click(function(){
-   mon.style.display = "block";
-   var indexval =  jQuery(this).index(".Mon");
-   var className = jQuery('.Mon:eq('+indexval+')').attr('data-date');
-  //  alert(className);
-    var trimmedString = className.substring(0, 15);
-  jQuery('#dateslected2').text(trimmedString);
-  jQuery('#date_slected2').text(trimmedString);
-  jQuery('#date_moreslected2').text(trimmedString);
- // jQuery('.plan-details').text(className);
+   jQuery(".Mon."+boffin_coders_nextmonday+".Jun").click(function(){
+   boffin_coders_mon.style.display = "block";
+   var boffin_coders_indexval =  jQuery(this).index(".Mon");
+   var boffin_coders_className = jQuery('.Mon:eq('+boffin_coders_indexval+')').attr('data-date');
+  //  alert(boffin_coders_className);
+    var boffin_coders_trimmedString = boffin_coders_className.substring(0, 15);
+  jQuery('#dateslected2').text(boffin_coders_trimmedString);
+  jQuery('#date_slected2').text(boffin_coders_trimmedString);
+  jQuery('#date_moreslected2').text(boffin_coders_trimmedString);
+ // jQuery('.plan-details').text(boffin_coders_className);
   
   });
 });
@@ -1266,66 +1260,66 @@ jQuery(document).ready(function(){
 
 
 jQuery(document).ready(function(){
- var today = new Date();
-    var date =  today.getDate();
+ var boffin_coders_today = new Date();
+    
    
     // month
-    var month =  today.getMonth();	
-    cmonth = month+1;
+    var boffin_coders_month =  boffin_coders_today.getMonth();	
+    boffin_coders_cmonth = boffin_coders_month+1;
     
 	//  next sunday
-	var nextmonday = nextDate(2).toLocaleString();
-	 if(nextmonday.length == 1)
+	var boffin_coders_nextmonday = boffin_coders_nextDate(2).toLocaleString();
+	 if(boffin_coders_nextmonday.length == 1)
 	{
-		var nextmonday = "0"+nextmonday;
+		var boffin_coders_nextmonday = "0"+boffin_coders_nextmonday;
 	}
 	
-    var dt = new Date(today);
-    dt.setDate( dt.getDate() + 7 );
+    var boffin_coders_dt = new Date(boffin_coders_today);
+    boffin_coders_dt.setDate( boffin_coders_dt.getDate() + 7 );
  
-   jQuery(".Tue."+nextmonday+".Jun").click(function(){
-   tue.style.display = "block";
-   var indexval =  jQuery(this).index(".Tue");
-   var className = jQuery('.Tue:eq('+indexval+')').attr('data-date');
-  //  alert(className);
-  var trimmedString = className.substring(0, 15);
-  jQuery('#dateslected3').text(trimmedString);
-  jQuery('#date_slected3').text(trimmedString);
-  jQuery('#date_moreslected3').text(trimmedString);
- // jQuery('.plan-details').text(className);
+   jQuery(".Tue."+boffin_coders_nextmonday+".Jun").click(function(){
+   boffin_coders_tue.style.display = "block";
+   var boffin_coders_indexval =  jQuery(this).index(".Tue");
+   var boffin_coders_className = jQuery('.Tue:eq('+boffin_coders_indexval+')').attr('data-date');
+  //  alert(boffin_coders_className);
+  var boffin_coders_trimmedString = boffin_coders_className.substring(0, 15);
+  jQuery('#dateslected3').text(boffin_coders_trimmedString);
+  jQuery('#date_slected3').text(boffin_coders_trimmedString);
+  jQuery('#date_moreslected3').text(boffin_coders_trimmedString);
+ // jQuery('.plan-details').text(boffin_coders_className);
   
   });
 });
 
 
 jQuery(document).ready(function(){
- var today = new Date();
-    var date =  today.getDate();
+ var boffin_coders_today = new Date();
+    
    
     // month
-    var month =  today.getMonth();	
-    cmonth = month+1;
+    var boffin_coders_month =  boffin_coders_today.getMonth();	
+    boffin_coders_cmonth = boffin_coders_month+1;
     
 	//  next sunday
-	var nextmonday = nextDate(3).toLocaleString();
-	 if(nextmonday.length == 1)
+	var boffin_coders_nextmonday = boffin_coders_nextDate(3).toLocaleString();
+	 if(boffin_coders_nextmonday.length == 1)
 	{
-		var nextmonday = "0"+nextmonday;
+		var boffin_coders_nextmonday = "0"+boffin_coders_nextmonday;
 	}
-    var dt = new Date(today);
-    dt.setDate( dt.getDate() + 7 );
+    var boffin_coders_dt = new Date(boffin_coders_today);
+    boffin_coders_dt.setDate( boffin_coders_dt.getDate() + 7 );
  
    
-   jQuery(".Wed."+nextmonday+".Jun").click(function(){
-   wed.style.display = "block";
-   var indexval =  jQuery(this).index(".Wed");
-   var className = jQuery('.Wed:eq('+indexval+')').attr('data-date');
-  //  alert(className);
-   var trimmedString = className.substring(0, 15);
-  jQuery('#dateslected4').text(trimmedString);
-  jQuery('#date_slected4').text(trimmedString);
-  jQuery('#date_moreslected4').text(trimmedString);
- // jQuery('.plan-details').text(className);
+   jQuery(".Wed."+boffin_coders_nextmonday+".Jun").click(function(){
+   boffin_coders_wed.style.display = "block";
+   var boffin_coders_indexval =  jQuery(this).index(".Wed");
+   var boffin_coders_className = jQuery('.Wed:eq('+boffin_coders_indexval+')').attr('data-date');
+  //  alert(boffin_coders_className);
+   var boffin_coders_trimmedString = boffin_coders_className.substring(0, 15);
+  jQuery('#dateslected4').text(boffin_coders_trimmedString);
+  jQuery('#date_slected4').text(boffin_coders_trimmedString);
+  jQuery('#date_moreslected4').text(boffin_coders_trimmedString);
+ // jQuery('.plan-details').text(boffin_coders_className);
   
   });
 });
@@ -1333,108 +1327,110 @@ jQuery(document).ready(function(){
 
 
 jQuery(document).ready(function(){
- var today = new Date();
-    var date =  today.getDate();
+ var boffin_coders_today = new Date();
+    
    
     // month
-    var month =  today.getMonth();	
-    cmonth = month+1;
+    var boffin_coders_month =  boffin_coders_today.getMonth();	
+    boffin_coders_cmonth = boffin_coders_month+1;
     
 	//  next sunday
-	var nextmonday = nextDate(4).toLocaleString();
-	  if(nextmonday.length == 1)
+	var boffin_coders_nextmonday = boffin_coders_nextDate(4).toLocaleString();
+	  if(boffin_coders_nextmonday.length == 1)
 	{
-		var nextmonday = "0"+nextmonday;
+		var boffin_coders_nextmonday = "0"+boffin_coders_nextmonday;
 	}
-    var dt = new Date(today);
-    dt.setDate( dt.getDate() + 7 );
+    var boffin_coders_dt = new Date(boffin_coders_today);
+    boffin_coders_dt.setDate( boffin_coders_dt.getDate() + 7 );
  
    
-   jQuery(".Thu."+nextmonday+".Jun").click(function(){
-   thu.style.display = "block";
-   var indexval =  jQuery(this).index(".Thu");
-   var className = jQuery('.Thu:eq('+indexval+')').attr('data-date');
+   jQuery(".Thu."+boffin_coders_nextmonday+".Jun").click(function(){
+   boffin_coders_thu.style.display = "block";
+   var boffin_coders_indexval =  jQuery(this).index(".Thu");
+   var boffin_coders_className = jQuery('.Thu:eq('+boffin_coders_indexval+')').attr('data-date');
    
-    var trimmedString = className.substring(0, 15);
-  //  alert(className);
-  jQuery('#dateslected5').text(trimmedString);
-  jQuery('#date_slected5').text(trimmedString);
-  jQuery('#date_moreslected5').text(trimmedString);
- // jQuery('.plan-details').text(className);
+    var boffin_coders_trimmedString = boffin_coders_className.substring(0, 15);
+  //  alert(boffin_coders_className);
+  jQuery('#dateslected5').text(boffin_coders_trimmedString);
+  jQuery('#date_slected5').text(boffin_coders_trimmedString);
+  jQuery('#date_moreslected5').text(boffin_coders_trimmedString);
+ // jQuery('.plan-details').text(boffin_coders_className);
   
   });
 });
 
 
 jQuery(document).ready(function(){
- var today = new Date();
-    var date =  today.getDate();
+ var boffin_coders_today = new Date();
+    
    
     // month
-    var month =  today.getMonth();	
-    cmonth = month+1;
+    var boffin_coders_month =  boffin_coders_today.getMonth();	
+    boffin_coders_cmonth = boffin_coders_month+1;
     
 	//  next sunday
-	var nextmonday = nextDate(5).toLocaleString();
-	  if(nextmonday.length == 1)
+	var boffin_coders_nextmonday = boffin_coders_nextDate(5).toLocaleString();
+	  if(boffin_coders_nextmonday.length == 1)
 	{
-		var nextmonday = "0"+nextmonday;
+		var boffin_coders_nextmonday = "0"+boffin_coders_nextmonday;
 	}
-    var dt = new Date(today);
-    dt.setDate( dt.getDate() + 7 );
+    var boffin_coders_dt = new Date(boffin_coders_today);
+    boffin_coders_dt.setDate( boffin_coders_dt.getDate() + 7 );
  
-   jQuery(".Fri."+nextmonday+".Jun").click(function(){
-   fri.style.display = "block";
-   var indexval =  jQuery(this).index(".Fri");
-   var className = jQuery('.Fri:eq('+indexval+')').attr('data-date');
-  //  alert(className);
-  var trimmedString = className.substring(0, 15);
-  jQuery('#dateslected6').text(trimmedString);
-  jQuery('#date_slected6').text(trimmedString);
-  jQuery('#date_moreslected6').text(trimmedString);
- // jQuery('.plan-details').text(className);
+   jQuery(".Fri."+boffin_coders_nextmonday+".Jun").click(function(){
+   boffin_coders_fri.style.display = "block";
+   var boffin_coders_indexval =  jQuery(this).index(".Fri");
+   var boffin_coders_className = jQuery('.Fri:eq('+boffin_coders_indexval+')').attr('data-date');
+  //  alert(boffin_coders_className);
+  var boffin_coders_trimmedString = boffin_coders_className.substring(0, 15);
+  jQuery('#dateslected6').text(boffin_coders_trimmedString);
+  jQuery('#date_slected6').text(boffin_coders_trimmedString);
+  jQuery('#date_moreslected6').text(boffin_coders_trimmedString);
+ // jQuery('.plan-details').text(boffin_coders_className);
   
   });
 });
 
 jQuery(document).ready(function(){
- var today = new Date();
-    var date =  today.getDate();
+ var boffin_coders_today = new Date();
+    
    
     // month
-    var month =  today.getMonth();	
-    cmonth = month+1;
+    var boffin_coders_month =  boffin_coders_today.getMonth();	
+    boffin_coders_cmonth = boffin_coders_month+1;
     
 	//  next sunday
-	var nextmonday = nextDate(6).toLocaleString();
-	  if(nextmonday.length == 1)
+	var boffin_coders_nextmonday = boffin_coders_nextDate(6).toLocaleString();
+	  if(boffin_coders_nextmonday.length == 1)
 	{
-		var nextmonday = "0"+nextmonday;
+		var boffin_coders_nextmonday = "0"+boffin_coders_nextmonday;
 	}
-    var dt = new Date(today);
-    dt.setDate( dt.getDate() + 7 );
+    var boffin_coders_dt = new Date(boffin_coders_today);
+    boffin_coders_dt.setDate( boffin_coders_dt.getDate() + 7 );
  
-   jQuery(".Sat."+nextmonday+".Jun").click(function(){
-   sat.style.display = "block";
-   var indexval =  jQuery(this).index(".Sat");
-   var className = jQuery('.Sat:eq('+indexval+')').attr('data-date');
+   jQuery(".Sat."+boffin_coders_nextmonday+".Jun").click(function(){
+   boffin_coders_sat.style.display = "block";
+   var boffin_coders_indexval =  jQuery(this).index(".Sat");
+   var boffin_coders_className = jQuery('.Sat:eq('+boffin_coders_indexval+')').attr('data-date');
  
-   var trimmedString = className.substring(0, 15);
-  //  alert(className);
-  jQuery('#dateslected7').text(trimmedString);
-  jQuery('#date_slected7').text(trimmedString);
-  jQuery('#date_moreslected7').text(trimmedString);
- // jQuery('.plan-details').text(className);
+   var boffin_coders_trimmedString = boffin_coders_className.substring(0, 15);
+  //  alert(boffin_coders_className);
+  jQuery('#dateslected7').text(boffin_coders_trimmedString);
+  jQuery('#date_slected7').text(boffin_coders_trimmedString);
+  jQuery('#date_moreslected7').text(boffin_coders_trimmedString);
+ // jQuery('.plan-details').text(boffin_coders_className);
   
   });
 });
    }, 50);
 
 </script>
+	
+	
   <?php
   global $wpdb;
   $appoint_id = '1';
-  $table_name4 = $wpdb->prefix."appointment_availability";
+  $table_name4 = $wpdb->prefix."boffin_coders_appointment_availability";
   $default_row4 = $wpdb->get_row( "SELECT * FROM $table_name4 WHERE appointment_id='$appoint_id'");
   $allarray = array($default_row4->json_data); 
   $nearr = explode(",",  $default_row4->json_data);
@@ -1467,55 +1463,39 @@ jQuery(document).ready(function(){
 
 </style>
 <script>
-function CalendarApp(date) {
+function boffin_coders_CalendarApp(date) {
   
   if (!(date instanceof Date)) {
     date = new Date();
   }
   
-  this.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  this.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  
-  this.apts = [
-    {
-      name: 'Finish this web app',
-      endTime: new Date(2016, 4, 30, 23),
-      startTime: new Date(2016, 4, 30, 21),
-      day: new Date(2016, 4, 30).toString()
-    },
-     {
-      name: 'My Birthday!',
-      endTime: new Date(2016, 4, 1, 23, 59),
-      startTime: new Date(2016, 4, 1, 0),
-      day: new Date(2016, 4, 1).toString()
-    },
-    
-  ];
-  
-  this.aptDates = [new Date(2016, 4, 30).toString(),new Date(2016, 4, 1).toString()];
-  this.eles = {
+  this.boffin_coders_days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  this.boffin_coders_months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+ 
+  this.boffin_coders_aptDates = [new Date(2016, 4, 30).toString(),new Date(2016, 4, 1).toString()];
+  this.boffin_coders_eles = {
   };
-  this.calDaySelected = null;
+  this.boffin_coders_calDaySelected = null;
   
-  this.calendar = document.getElementById("calendar-app");
+  this.boffin_coders_calendar = document.getElementById("calendar-app");
   
-  this.calendarView = document.getElementById("dates");
+  this.boffin_coders_calendarView = document.getElementById("dates");
   
-  this.calendarMonthDiv = document.getElementById("calendar-month");
-  this.calendarMonthLastDiv = document.getElementById("calendar-month-last");
-  this.calendarMonthNextDiv = document.getElementById("calendar-month-next");
+  this.boffin_coders_calendarMonthDiv = document.getElementById("calendar-month");
+  this.boffin_coders_calendarMonthLastDiv = document.getElementById("calendar-month-last");
+  this.boffin_coders_calendarMonthNextDiv = document.getElementById("calendar-month-next");
   
-  this.dayInspirationalQuote = document.getElementById("inspirational-quote");
+  this.boffin_coders_dayInspirationalQuote = document.getElementById("inspirational-quote");
    
   this.todayIsSpan = document.getElementById("footer-date");
-  this.dayViewEle = document.getElementById("day-view");
-  this.dayViewExitEle = document.getElementById("day-view-exit");
-  this.dayViewDateEle = document.getElementById("day-view-date");
-  this.dayViewDateEleinput = document.getElementById("day-view-date-input");
+  this.boffin_coders_dayViewEle = document.getElementById("day-view");
+  this.boffin_coders_dayViewExitEle = document.getElementById("day-view-exit");
+  this.boffin_coders_dayViewDateEle = document.getElementById("day-view-date");
+  this.boffin_coders_dayViewDateEleinput = document.getElementById("day-view-date-input");
   this.addDayEventEle = document.getElementById("add-event");
-  this.dayEventsEle = document.getElementById("day-events");
+  this.boffin_coders_dayEventsEle = document.getElementById("day-events");
   
-  this.dayEventAddForm = {
+  this.boffin_coders_dayEventAddForm = {
     cancelBtn: document.getElementById("add-event-cancel"),
     addBtn: document.getElementById("add-event-save"),
     nameEvent:  document.getElementById("input-add-event-name"),
@@ -1524,35 +1504,37 @@ function CalendarApp(date) {
     startAMPM:  document.getElementById("input-add-event-start-ampm"),
     endAMPM:  document.getElementById("input-add-event-end-ampm")
   };
-  this.dayEventsList = document.getElementById("day-events-list");
-  this.dayEventBoxEle = document.getElementById("add-day-event-box");
+  this.boffin_coders_dayEventsList = document.getElementById("day-events-list");
+  this.boffin_coders_dayEventBoxEle = document.getElementById("add-day-event-box");
   
   /* Start the app */
   this.showView(date);
   this.addEventListeners();
-  this.todayIsSpan.textContent = "Today is " + this.months[date.getMonth()] + " " + date.getDate();  
+  this.todayIsSpan.textContent = "Today is " + this.boffin_coders_months[date.getMonth()] + " " + date.getDate();  
 }
 
-CalendarApp.prototype.addEventListeners = function(){
+boffin_coders_CalendarApp.prototype.addEventListeners = function(){
   
-  this.calendar.addEventListener("click", this.mainCalendarClickClose.bind(this));
+  this.boffin_coders_calendar.addEventListener("click", this.mainCalendarClickClose.bind(this));
   this.todayIsSpan.addEventListener("click", this.showView.bind(this));
-  this.calendarMonthLastDiv.addEventListener("click", this.showNewMonth.bind(this));
-  this.calendarMonthNextDiv.addEventListener("click", this.showNewMonth.bind(this));
-  this.dayViewExitEle.addEventListener("click", this.closeDayWindow.bind(this));
-  this.dayViewDateEle.addEventListener("click", this.showNewMonth.bind(this));
+  this.boffin_coders_calendarMonthLastDiv.addEventListener("click", this.showNewMonth.bind(this));
+  this.boffin_coders_calendarMonthNextDiv.addEventListener("click", this.showNewMonth.bind(this));
+  this.boffin_coders_dayViewExitEle.addEventListener("click", this.closeDayWindow.bind(this));
+  this.boffin_coders_dayViewDateEle.addEventListener("click", this.showNewMonth.bind(this));
   this.addDayEventEle.addEventListener("click", this.addNewEventBox.bind(this));
-  this.dayEventAddForm.cancelBtn.addEventListener("click", this.closeNewEventBox.bind(this));
-  this.dayEventAddForm.cancelBtn.addEventListener("keyup", this.closeNewEventBox.bind(this));
+  this.boffin_coders_dayEventAddForm.cancelBtn.addEventListener("click", this.closeNewEventBox.bind(this));
+  this.boffin_coders_dayEventAddForm.cancelBtn.addEventListener("keyup", this.closeNewEventBox.bind(this));
   
-  this.dayEventAddForm.startTime.addEventListener("keyup",this.inputChangeLimiter.bind(this));
-  this.dayEventAddForm.startAMPM.addEventListener("keyup",this.inputChangeLimiter.bind(this));
-  this.dayEventAddForm.endTime.addEventListener("keyup",this.inputChangeLimiter.bind(this));
-  this.dayEventAddForm.endAMPM.addEventListener("keyup",this.inputChangeLimiter.bind(this));
-  this.dayEventAddForm.addBtn.addEventListener("click",this.saveAddNewEvent.bind(this));
+  this.boffin_coders_dayEventAddForm.startTime.addEventListener("keyup",this.inputChangeLimiter.bind(this));
+  this.boffin_coders_dayEventAddForm.startAMPM.addEventListener("keyup",this.inputChangeLimiter.bind(this));
+  this.boffin_coders_dayEventAddForm.endTime.addEventListener("keyup",this.inputChangeLimiter.bind(this));
+  this.boffin_coders_dayEventAddForm.endAMPM.addEventListener("keyup",this.inputChangeLimiter.bind(this));
+  this.boffin_coders_dayEventAddForm.addBtn.addEventListener("click",this.saveAddNewEvent.bind(this));
 
 };
-CalendarApp.prototype.showView = function(date){
+
+
+boffin_coders_CalendarApp.prototype.showView = function(date){
   if ( !date || (!(date instanceof Date)) ) date = new Date();
   var now = new Date(date),
       y = now.getFullYear(),
@@ -1564,18 +1546,18 @@ CalendarApp.prototype.showView = function(date){
   var lastM = new Date(y, now.getMonth()-1, 1);
   var nextM = new Date(y, now.getMonth()+1, 1);
  
-  this.calendarMonthDiv.classList.remove("cview__month-activate");
-  this.calendarMonthDiv.classList.add("cview__month-reset");
+  this.boffin_coders_calendarMonthDiv.classList.remove("cview__month-activate");
+  this.boffin_coders_calendarMonthDiv.classList.add("cview__month-reset");
   
-  while(this.calendarView.firstChild) {
-    this.calendarView.removeChild(this.calendarView.firstChild);
+  while(this.boffin_coders_calendarView.firstChild) {
+    this.boffin_coders_calendarView.removeChild(this.boffin_coders_calendarView.firstChild);
   }
   
   // build up spacers
   for ( var x = 0; x < startingD; x++ ) {
     var spacer = document.createElement("div");
     spacer.className = "cview--spacer";
-    this.calendarView.appendChild(spacer);
+    this.boffin_coders_calendarView.appendChild(spacer);
   }
   
   for ( var z = 1; z <= lastDayOfM; z++ ) {
@@ -1593,11 +1575,11 @@ CalendarApp.prototype.showView = function(date){
     }
     
      // check if has events to show
-    if ( this.aptDates.indexOf(_date.toString()) !== -1 ) {
+    if ( this.boffin_coders_aptDates.indexOf(_date.toString()) !== -1 ) {
       day.classList.add("has-events");
     }
     
-    this.calendarView.appendChild(day);
+    this.boffin_coders_calendarView.appendChild(day);
   }
   
   var _that = this;
@@ -1605,41 +1587,39 @@ CalendarApp.prototype.showView = function(date){
     _that.calendarMonthDiv.classList.add("cview__month-activate");
   }, 50);
   
-  this.calendarMonthDiv.textContent = this.months[now.getMonth()] + " " + now.getFullYear();
-  this.calendarMonthDiv.setAttribute("data-date", now);
+  this.boffin_coders_calendarMonthDiv.textContent = this.boffin_coders_months[now.getMonth()] + " " + now.getFullYear();
+  this.boffin_coders_calendarMonthDiv.setAttribute("data-date", now);
 
   
-  this.calendarMonthLastDiv.textContent = "← " + this.months[lastM.getMonth()];
-  this.calendarMonthLastDiv.setAttribute("data-date", lastM);
+  this.boffin_coders_calendarMonthLastDiv.textContent = "← " + this.boffin_coders_months[lastM.getMonth()];
+  this.boffin_coders_calendarMonthLastDiv.setAttribute("data-date", lastM);
   
-  this.calendarMonthNextDiv.textContent = this.months[nextM.getMonth()] + " →";
-  this.calendarMonthNextDiv.setAttribute("data-date", nextM);
+  this.boffin_coders_calendarMonthNextDiv.textContent = this.boffin_coders_months[nextM.getMonth()] + " →";
+  this.boffin_coders_calendarMonthNextDiv.setAttribute("data-date", nextM);
   
 }
-CalendarApp.prototype.showDay = function(e, dayEle) {
+boffin_coders_CalendarApp.prototype.showDay = function(e, dayEle) {
   e.stopPropagation();
   if ( !dayEle ) {
     dayEle = e.currentTarget;
   }
   var dayDate = new Date(dayEle.getAttribute('data-date'));
   
-  this.calDaySelected = dayEle;
+  this.boffin_coders_calDaySelected = dayEle;
   
   this.openDayWindow(dayDate);
-  
-
-  
+ 
 };
-CalendarApp.prototype.openDayWindow = function(date){
+boffin_coders_CalendarApp.prototype.openDayWindow = function(date){
   
   var now = new Date();
   var day = new Date(date);
-  this.dayViewDateEle.textContent = this.days[day.getDay()] + ", " + this.months[day.getMonth()] + " " + day.getDate() + ", " + day.getFullYear();
-  this.dayViewDateEle.setAttribute('data-date', day);
-  this.dayViewDateEle.setAttribute('value', this.days[day.getDay()]);
-  this.dayViewDateEleinput.setAttribute('data-date', day);
-  this.dayViewDateEleinput.setAttribute('value', this.days[day.getDay()]);
-  this.dayViewEle.classList.add("calendar--day-view-active");
+  this.boffin_coders_dayViewDateEle.textContent = this.boffin_coders_days[day.getDay()] + ", " + this.boffin_coders_months[day.getMonth()] + " " + day.getDate() + ", " + day.getFullYear();
+  this.boffin_coders_dayViewDateEle.setAttribute('data-date', day);
+  this.boffin_coders_dayViewDateEle.setAttribute('value', this.boffin_coders_days[day.getDay()]);
+  this.boffin_coders_dayViewDateEleinput.setAttribute('data-date', day);
+  this.boffin_coders_dayViewDateEleinput.setAttribute('value', this.boffin_coders_days[day.getDay()]);
+  this.boffin_coders_dayViewEle.classList.add("calendar--day-view-active");
   
   againcall();
   
@@ -1658,68 +1638,68 @@ CalendarApp.prototype.openDayWindow = function(date){
   if ( !eventsToday ) {
     _dayTopbarText += "no ";
     var _rand = Math.round(Math.random() * ((this.quotes.length - 1 ) - 0) + 0);
-    this.dayInspirationalQuote.textContent = this.quotes[_rand];
+    this.boffin_coders_dayInspirationalQuote.textContent = this.quotes[_rand];
   } else {
     _dayTopbarText += eventsToday.length + " ";
-    this.dayInspirationalQuote.textContent = null;
+    this.boffin_coders_dayInspirationalQuote.textContent = null;
   }
-  //this.dayEventsList.innerHTML = this.showEventsCreateHTMLView(eventsToday);
-  while(this.dayEventsList.firstChild) {
-    this.dayEventsList.removeChild(this.dayEventsList.firstChild);
+  //this.boffin_coders_dayEventsList.innerHTML = this.showEventsCreateHTMLView(eventsToday);
+  while(this.boffin_coders_dayEventsList.firstChild) {
+    this.boffin_coders_dayEventsList.removeChild(this.boffin_coders_dayEventsList.firstChild);
   }
   
-  this.dayEventsList.appendChild(this.showEventsCreateElesView(eventsToday));
+  this.boffin_coders_dayEventsList.appendChild(this.showEventsCreateElesView(eventsToday));
   
   
-  this.dayEventsEle.textContent = _dayTopbarText + "events on " + this.months[day.getMonth()] + " " + day.getDate() + ", " + day.getFullYear();
+  this.boffin_coders_dayEventsEle.textContent = _dayTopbarText + "events on " + this.boffin_coders_months[day.getMonth()] + " " + day.getDate() + ", " + day.getFullYear();
   
   
 };
  
   
-CalendarApp.prototype.closeDayWindow = function(){
-  this.dayViewEle.classList.remove("calendar--day-view-active");
+boffin_coders_CalendarApp.prototype.closeDayWindow = function(){
+  this.boffin_coders_dayViewEle.classList.remove("calendar--day-view-active");
   this.closeNewEventBox();
 };
 
 
-CalendarApp.prototype.mainCalendarClickClose = function(e){
+boffin_coders_CalendarApp.prototype.mainCalendarClickClose = function(e){
   if ( e.currentTarget != e.target ) {
     return;
   }
   
-  this.dayViewEle.classList.remove("calendar--day-view-active");
+  this.boffin_coders_dayViewEle.classList.remove("calendar--day-view-active");
   this.closeNewEventBox();
  
 };
 
 
-CalendarApp.prototype.addNewEventBox = function(e){
+boffin_coders_CalendarApp.prototype.addNewEventBox = function(e){
   var target = e.currentTarget;
-  this.dayEventBoxEle.setAttribute("data-active", "true"); 
-  this.dayEventBoxEle.setAttribute("data-date", target.getAttribute("data-date"));
+  this.boffin_coders_dayEventBoxEle.setAttribute("data-active", "true"); 
+  this.boffin_coders_dayEventBoxEle.setAttribute("data-date", target.getAttribute("data-date"));
   
 };
-CalendarApp.prototype.closeNewEventBox = function(e){
+boffin_coders_CalendarApp.prototype.closeNewEventBox = function(e){
   
   if (e && e.keyCode && e.keyCode != 13) return false;
   
-  this.dayEventBoxEle.setAttribute("data-active", "false");
+  this.boffin_coders_dayEventBoxEle.setAttribute("data-active", "false");
   // reset values
   this.resetAddEventBox();
   
 };
-CalendarApp.prototype.saveAddNewEvent = function() {
+boffin_coders_CalendarApp.prototype.saveAddNewEvent = function() {
   var saveErrors = this.validateAddEventInput();
   if ( !saveErrors ) {
     this.addEvent();
   }
 };
 
-CalendarApp.prototype.addEvent = function() {
+boffin_coders_CalendarApp.prototype.addEvent = function() {
   
-  var name = this.dayEventAddForm.nameEvent.value.trim();
-  var dayOfDate = this.dayEventBoxEle.getAttribute("data-date");
+  var boffin_coders_name = this.boffin_coders_dayEventAddForm.nameEvent.value.trim();
+  var dayOfDate = this.boffin_coders_dayEventBoxEle.getAttribute("data-date");
   var dateObjectDay =  new Date(dayOfDate);
   var cleanDates = this.cleanEventTimeStampDates();
   
@@ -1731,14 +1711,14 @@ CalendarApp.prototype.addEvent = function() {
   });
   this.closeNewEventBox();
   this.openDayWindow(dayOfDate);
-  this.calDaySelected.classList.add("has-events");
+  this.boffin_coders_calDaySelected.classList.add("has-events");
   // add to dates
-  if ( this.aptDates.indexOf(dateObjectDay.toString()) === -1 ) {
-    this.aptDates.push(dateObjectDay.toString());
+  if ( this.boffin_coders_aptDates.indexOf(dateObjectDay.toString()) === -1 ) {
+    this.boffin_coders_aptDates.push(dateObjectDay.toString());
   }
   
 };
-CalendarApp.prototype.convertTo23HourTime = function(stringOfTime, AMPM) {
+boffin_coders_CalendarApp.prototype.convertTo23HourTime = function(stringOfTime, AMPM) {
   // convert to 0 - 23 hour time
   var mins = stringOfTime.split(":");
   var hours = stringOfTime.trim();
@@ -1752,15 +1732,15 @@ CalendarApp.prototype.convertTo23HourTime = function(stringOfTime, AMPM) {
   hours = ( AMPM == 'am' ) ? ( (hours == 12) ? 0 : hours ) : (hours <= 11) ? parseInt(hours) + 12 : hours;
   return [hours, mins];
 };
-CalendarApp.prototype.cleanEventTimeStampDates = function() {
+boffin_coders_CalendarApp.prototype.cleanEventTimeStampDates = function() {
   
-  var startTime = this.dayEventAddForm.startTime.value.trim() || this.dayEventAddForm.startTime.getAttribute("placeholder") || '8';
-  var startAMPM = this.dayEventAddForm.startAMPM.value.trim() || this.dayEventAddForm.startAMPM.getAttribute("placeholder") || 'am';
+  var startTime = this.boffin_coders_dayEventAddForm.startTime.value.trim() || this.boffin_coders_dayEventAddForm.startTime.getAttribute("placeholder") || '8';
+  var startAMPM = this.boffin_coders_dayEventAddForm.startAMPM.value.trim() || this.boffin_coders_dayEventAddForm.startAMPM.getAttribute("placeholder") || 'am';
   startAMPM = (startAMPM == 'a') ? startAMPM + 'm' : startAMPM;
-  var endTime = this.dayEventAddForm.endTime.value.trim() || this.dayEventAddForm.endTime.getAttribute("placeholder") || '9';
-  var endAMPM = this.dayEventAddForm.endAMPM.value.trim() || this.dayEventAddForm.endAMPM.getAttribute("placeholder") || 'pm';
+  var endTime = this.boffin_coders_dayEventAddForm.endTime.value.trim() || this.boffin_coders_dayEventAddForm.endTime.getAttribute("placeholder") || '9';
+  var endAMPM = this.boffin_coders_dayEventAddForm.endAMPM.value.trim() || this.boffin_coders_dayEventAddForm.endAMPM.getAttribute("placeholder") || 'pm';
   endAMPM = (endAMPM == 'p') ? endAMPM + 'm' : endAMPM;
-  var date = this.dayEventBoxEle.getAttribute("data-date");
+  var date = this.boffin_coders_dayEventBoxEle.getAttribute("data-date");
   
   var startingTimeStamps = this.convertTo23HourTime(startTime, startAMPM);
   var endingTimeStamps = this.convertTo23HourTime(endTime, endAMPM);
@@ -1775,21 +1755,21 @@ CalendarApp.prototype.cleanEventTimeStampDates = function() {
   return [startDate, endDate];
   
 };
-CalendarApp.prototype.validateAddEventInput = function() {
+boffin_coders_CalendarApp.prototype.validateAddEventInput = function() {
 
   var _errors = false;
-  var name = this.dayEventAddForm.nameEvent.value.trim();
-  var startTime = this.dayEventAddForm.startTime.value.trim();
-  var startAMPM = this.dayEventAddForm.startAMPM.value.trim();
-  var endTime = this.dayEventAddForm.endTime.value.trim();
-  var endAMPM = this.dayEventAddForm.endAMPM.value.trim();
+  var boffin_coders_name = this.boffin_coders_dayEventAddForm.nameEvent.value.trim();
+  var startTime = this.boffin_coders_dayEventAddForm.startTime.value.trim();
+  var startAMPM = this.boffin_coders_dayEventAddForm.startAMPM.value.trim();
+  var endTime = this.boffin_coders_dayEventAddForm.endTime.value.trim();
+  var endAMPM = this.boffin_coders_dayEventAddForm.endAMPM.value.trim();
   
   if (!name || name == null) {
     _errors = true;
-    this.dayEventAddForm.nameEvent.classList.add("add-event-edit--error");
-    this.dayEventAddForm.nameEvent.focus();
+    this.boffin_coders_dayEventAddForm.nameEvent.classList.add("add-event-edit--error");
+    this.boffin_coders_dayEventAddForm.nameEvent.focus();
   } else {
-     this.dayEventAddForm.nameEvent.classList.remove("add-event-edit--error");
+     this.boffin_coders_dayEventAddForm.nameEvent.classList.remove("add-event-edit--error");
   }
  
   return _errors;
@@ -1798,89 +1778,8 @@ CalendarApp.prototype.validateAddEventInput = function() {
 };
 var timeOut = null;
 var activeEle = null;
-CalendarApp.prototype.inputChangeLimiter = function(ele) {
-  
-  if ( ele.currentTarget ) {
-    ele = ele.currentTarget;
-  }
-  if (timeOut && ele == activeEle){
-    clearTimeout(timeOut);
-  }
-  
-  var limiter = CalendarApp.prototype.textOptionLimiter;
-
-  var _options = ele.getAttribute("data-options").split(",");
-  var _format = ele.getAttribute("data-format") || 'text';
-  timeOut = setTimeout(function(){
-    ele.value = limiter(_options, ele.value, _format);
-  }, 600);
-  activeEle = ele;
-  
-};
-CalendarApp.prototype.textOptionLimiter = function(options, input, format){
-  if ( !input ) return '';
-  
-  if ( input.indexOf(":") !== -1 && format == 'datetime' ) {
  
-    var _splitTime = input.split(':', 2);
-    if (_splitTime.length == 2 && !_splitTime[1].trim()) return input;
-    var _trailingTime = parseInt(_splitTime[1]);
-    /* Probably could be coded better -- a block to clean up trailing data */
-    if (options.indexOf(_splitTime[0]) === -1) {
-      return options[0];
-    }
-    else if (_splitTime[1] == "0" ) {
-      return input;
-    }
-    else if (_splitTime[1] == "00" ) {
-      return _splitTime[0] +  ":00";
-    }
-    else if (_trailingTime < 10 ) {
-      return _splitTime[0] + ":" + "0" + _trailingTime;
-    }
-    else if ( !Number.isInteger(_trailingTime) || _trailingTime < 0 || _trailingTime > 59 )  {
-      return _splitTime[0];
-    } 
-    return _splitTime[0] + ":" + _trailingTime;
-  }
-  if ((input.toString().length >= 3) ) {
-    var pad = (input.toString().length - 4) * -1;
-    var _hour, _min;
-    if (pad == 1) {
-      _hour = input[0];
-      _min = input[1] + input[2];
-    } else {
-      _hour = input[0] + input[1];
-      _min = input[2] + input[3];
-    }
-    
-    _hour = Math.max(1,Math.min(12,(_hour)));
-    _min = Math.min(59,(_min));
-    if ( _min < 10 ) { 
-      _min = "0" + _min;
-    }
-    _min = (isNaN(_min)) ? '00' : _min;
-    _hour = (isNaN(_hour)) ? '9' : _hour ;
-
-    return _hour + ":" + _min;
-    
-  }
-
-  if (options.indexOf(input) === -1) {
-    return options[0];
-  }
-  
-  return input;
-};
-CalendarApp.prototype.resetAddEventBox = function(){
-  this.dayEventAddForm.nameEvent.value = '';
-  this.dayEventAddForm.nameEvent.classList.remove("add-event-edit--error");
-  this.dayEventAddForm.endTime.value = '';
-  this.dayEventAddForm.startTime.value = '';
-  this.dayEventAddForm.endAMPM.value = '';
-  this.dayEventAddForm.startAMPM.value = '';
-};
-CalendarApp.prototype.showNewMonth = function(e){
+boffin_coders_CalendarApp.prototype.showNewMonth = function(e){
   var date = e.currentTarget.dataset.date;
   var newMonthDate = new Date(date);
   this.showView(newMonthDate);
@@ -1888,15 +1787,16 @@ CalendarApp.prototype.showNewMonth = function(e){
   return true;
 };
 
-var calendar = new CalendarApp();
+var calendar = new boffin_coders_CalendarApp();
 console.log(calendar);
 </script>
+
   
  <div id="mysun" class="sun">
   <?php global $wpdb;
   $appoint_id = '1';
-  $table_name4 = $wpdb->prefix."appointment_availability";
-  $table_booked = $wpdb->prefix."appointment_user_information";
+  $table_name4 = $wpdb->prefix."boffin_coders_appointment_availability";
+  $table_booked = $wpdb->prefix."boffin_coders_appointment_user_information";
   $default_row4 = $wpdb->get_row( "SELECT * FROM $table_name4 WHERE appointment_id='$appoint_id'");
   $default_booked = $wpdb->get_row( "SELECT * FROM $table_booked WHERE appointment_id='$appoint_id'");
   
@@ -1917,7 +1817,7 @@ console.log(calendar);
 		 $slots = str_replace('"]',"", $slots);
 		 $array = explode('","', $slots); 
 		 
-		 $table_namebooked = $wpdb->prefix."appointment_booked";
+		 $table_namebooked = $wpdb->prefix."boffin_coders_appointment_booked";
 		 $allbook = array();
 		 $default_rowbooked = $wpdb->get_results("SELECT * FROM $table_namebooked");
 		 foreach($default_rowbooked as $bookedvalues)
@@ -2069,7 +1969,7 @@ console.log(calendar);
 
 <script>
 	jQuery(document).ready(function() {
-		var delay = 0;
+		var boffin_coders_delay = 0;
 		jQuery('.btn-default').click(function(e){
 			e.preventDefault();
   
@@ -2084,84 +1984,84 @@ console.log(calendar);
 
       if(jQuery('#name').val() == '' || jQuery('#name').val() == ' ') 
 	 {
-		  var name = "";
+		  var boffin_coders_name = "";
      }
 	 else 
 	 {
-		  var name = jQuery('#name').val();
+		  var boffin_coders_name = jQuery('#name').val();
 	 }
 	
       if(jQuery('#email').val() == '' || jQuery('#email').val() == ' ') 
 	 {
-		  var email = "";
+		  var boffin_coders_email = "";
      }
 	  else 
 	 {
-		  var email = jQuery('#email').val();
+		  var boffin_coders_email = jQuery('#email').val();
 	 }
 	 
  
 	 if(jQuery('#phone').val() == '' || jQuery('#phone').val() == ' ') 
 	 {
-		  var phone = "";
+		 var boffin_coders_phone = "";
      }
 	   else 
 	 {
-		  var phone = jQuery('#phone').val();
+		 var boffin_coders_phone = jQuery('#phone').val();
 	 }
 	 
 	 
 	   if(jQuery('#address').val() == '' || jQuery('#address').val() == ' ') 
 	 {
-		  var address = "";
+		 var boffin_coders_address = "";
      }
 	   else 
 	 {
-		  var address = jQuery('#address').val();
+		 var boffin_coders_address = jQuery('#address').val();
 	 }
 	 
 	
 	   if(jQuery('#city').val() == '' || jQuery('#city').val() == ' ') 
 	 {
-		  var city = "";
+		 var boffin_coders_city = "";
      }
 	  else 
 	 {
-		  var city = jQuery('#city').val();
+		 var boffin_coders_city = jQuery('#city').val();
 	 }
 	 
 	
 	   if(jQuery('#state').val() == '' || jQuery('#state').val() == ' ') 
 	 {
-		  var state = "";
+		  var boffin_coders_state = "";
      }
 	 else 
 	 {
-		  var state = jQuery('#state').val();
+		  var boffin_coders_state = jQuery('#state').val();
 	 }
 	 
 	   if(jQuery('#zip_code').val() == '' || jQuery('#zip_code').val() == ' ') 
 	 {
-		  var zip_code = "";
+		  var boffin_coders_zip_code = "";
      }
 	 else 
 	 {
-		  var zip_code = jQuery('#zip_code').val();
+		  var boffin_coders_zip_code = jQuery('#zip_code').val();
 	 }
 	
 	   if(jQuery('#note').val() == '' || jQuery('#note').val() == ' ') 
 	 {
-		  var note = "";
+		  var boffin_coders_note = "";
      }
 	  else 
 	 {
-		  var note = jQuery('#note').val();
+		  var boffin_coders_note = jQuery('#note').val();
 	 }
 	 
 	  
   	 <?php  if($default_booked->name_required == "1" && $default_booked->name == "1") { ?>  
-	    var name = jQuery('#name').val();
-			if(name == ''){
+	    var boffin_coders_name = jQuery('#name').val();
+			if(boffin_coders_name == ''){
 			jQuery('.message_box').html(
 			'<span style="color:red;">Enter Your Name!</span>'
 			);
@@ -2172,8 +2072,8 @@ console.log(calendar);
 	 <?php } ?>	
 		
 		
-		var email = jQuery('#email').val();
-        if(email == ''){
+		var boffin_coders_email = jQuery('#email').val();
+        if(boffin_coders_email == ''){
 			jQuery('.message_box').html(
 			'<span style="color:red;">Enter Email Address!</span>'
 			);
@@ -2181,7 +2081,7 @@ console.log(calendar);
             return false;
 			}
 		if( jQuery("#email").val()!='' ){
-			if( !isValidEmailAddress( jQuery("#email").val() ) ){
+			if(!boffin_coders_filter.test( jQuery("#email").val() ) ){
 			jQuery('.message_box').html(
 			'<span style="color:red;">Provided email address is incorrect!</span>'
 			);
@@ -2194,8 +2094,8 @@ console.log(calendar);
 			
 	 <?php  if($default_booked->phone_required == "1" && $default_booked->phone == "1") { ?>  
  	
-            var phone = jQuery('#phone').val();
-			if(phone == ''){
+           var boffin_coders_phone = jQuery('#phone').val();
+			if(boffin_coders_phone == ''){
 			jQuery('.message_box').html(
 			'<span style="color:red;">Enter phone Number!</span>'
 			);
@@ -2208,8 +2108,8 @@ console.log(calendar);
 	 	 
 	 <?php  if($default_booked->address_required == "1" && $default_booked->address == "1") { ?>  
  	
-            var address = jQuery('#address').val();
-			if(address == ''){
+           var boffin_coders_address = jQuery('#address').val();
+			if(boffin_coders_address == ''){
 			jQuery('.message_box').html(
 			'<span style="color:red;">Enter address!</span>'
 			);
@@ -2221,8 +2121,8 @@ console.log(calendar);
 	 		
 	 <?php  if($default_booked->city_required == "1" && $default_booked->city == "1") { ?>  
  	
-            var city = jQuery('#city').val();
-			if(city == ''){
+           var boffin_coders_city = jQuery('#city').val();
+			if(boffin_coders_city == ''){
 			jQuery('.message_box').html(
 			'<span style="color:red;">Enter city!</span>'
 			);
@@ -2233,8 +2133,8 @@ console.log(calendar);
 	  		
 	 <?php  if($default_booked->state_required == "1" && $default_booked->state == "1") { ?>  
  	
-            var state = jQuery('#state').val();
-			if(state == ''){
+            var boffin_coders_state = jQuery('#state').val();
+			if(boffin_coders_state == ''){
 			jQuery('.message_box').html(
 			'<span style="color:red;">Enter State!</span>'
 			);
@@ -2245,8 +2145,8 @@ console.log(calendar);
 	   		
 	 <?php  if($default_booked->zip_code_required == "1" && $default_booked->zip_code == "1") { ?>  
  	
-            var zip_code = jQuery('#zip_code').val();
-			if(zip_code == ''){
+            var boffin_coders_zip_code = jQuery('#zip_code').val();
+			if(boffin_coders_zip_code == ''){
 			jQuery('.message_box').html(
 			'<span style="color:red;">Enter Zip Code!</span>'
 			);
@@ -2258,8 +2158,8 @@ console.log(calendar);
 	    		
 	 <?php  if($default_booked->note_required == "1" && $default_booked->note == "1") { ?>  
  	
-            var note = jQuery('#note').val();
-			if(note == ''){
+            var boffin_coders_note = jQuery('#note').val();
+			if(boffin_coders_note == ''){
 			jQuery('.message_box').html(
 			'<span style="color:red;">Enter Note!</span>'
 			);
@@ -2269,12 +2169,12 @@ console.log(calendar);
 	 <?php  } ?>
 	 
   
-		var radiovalue = document.querySelector('input[name="plan"]:checked').value;	
-		var date_slected = jQuery('textarea#date_slected').val();
+		var boffin_coders_radiovalue = document.querySelector('input[name="plan"]:checked').value;	
+		var boffin_coders_date_slected = jQuery('textarea#date_slected').val();
 		
 			
-		var message = jQuery('#message').val();
-        if(message == ''){
+		var boffin_coders_message = jQuery('#message').val();
+        if(boffin_coders_message == ''){
 			jQuery('.message_box').html(
 			'<span style="color:red;">Enter Your Message Here!</span>'
 			);
@@ -2285,7 +2185,7 @@ console.log(calendar);
 			jQuery.ajax
 			({
              type: "POST",
-             data:  "name="+name+"&email="+email+"&message="+message+"&radiovalue="+radiovalue+"&date_slected="+date_slected+"&phone="+phone+"&address="+address+"&city="+city+"&state="+state+"&zip_code="+zip_code+"&note="+note,
+             data: "name="+boffin_coders_name+"&email="+boffin_coders_email+"&message="+boffin_coders_message+"&radiovalue="+boffin_coders_radiovalue+"&date_slected="+boffin_coders_date_slected+"&phone="+boffin_coders_phone+"&address="+boffin_coders_address+"&city="+boffin_coders_city+"&state="+boffin_coders_state+"&zip_code="+boffin_coders_zip_code+"&note="+boffin_coders_note,
 			 beforeSend: function() {
 			 jQuery('.message_box').html(
 			 '<img src="<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/img/Loader.gif'; ?>" width="25" height="25"/>'
@@ -2295,22 +2195,16 @@ console.log(calendar);
 			 {
 				 setTimeout(function() {
                     jQuery('.message_box').html(data);
-                }, delay);
+                }, boffin_coders_delay);
 			
              }
 			 });
 	});
 			
 });
-
-//Email validation Function	
-function isValidEmailAddress(emailAddress) {
-    var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
-    return pattern.test(emailAddress);
-};
+ 
 </script>
  
-    
    </div>  
  
 	 <div class="sun-footer">
@@ -2340,7 +2234,7 @@ function isValidEmailAddress(emailAddress) {
 	 $slots = str_replace('"]',"", $slots);
 	 $array = explode('","', $slots); 
 
-	 $table_namebooked = $wpdb->prefix."appointment_booked";
+	 $table_namebooked = $wpdb->prefix."boffin_coders_appointment_booked";
 	 $allbook = array();
 	 $default_rowbooked = $wpdb->get_results("SELECT * FROM $table_namebooked");
 	 foreach($default_rowbooked as $bookedvalues)
@@ -2486,7 +2380,7 @@ function isValidEmailAddress(emailAddress) {
 
 <script>
 jQuery(document).ready(function() {
-	var delay = 0;
+	var boffin_coders_delay = 0;
 	jQuery('.btn-default').click(function(e){
 		e.preventDefault();
 		
@@ -2501,84 +2395,84 @@ jQuery(document).ready(function() {
 		
       if(jQuery('#name2').val() == '' || jQuery('#name2').val() == ' ') 
 	 {
-		  var name2 = "";
+		  var boffin_coders_name2 = "";
      }
 	 else 
 	 {
-		  var name2 = jQuery('#name2').val();
+		  var boffin_coders_name2 = jQuery('#name2').val();
 	 }
 	
       if(jQuery('#email2').val() == '' || jQuery('#email2').val() == ' ') 
 	 {
-		  var email2 = "";
+		  var boffin_coders_email2 = "";
      }
 	  else 
 	 {
-		  var email2 = jQuery('#email2').val();
+		  var boffin_coders_email2 = jQuery('#email2').val();
 	 }
 	 
  
 	 if(jQuery('#phone2').val() == '' || jQuery('#phone2').val() == ' ') 
 	 {
-		  var phone2 = "";
+		 var boffin_coders_phone2 = "";
      }
 	   else 
 	 {
-		  var phone2 = jQuery('#phone2').val();
+		 var boffin_coders_phone2 = jQuery('#phone2').val();
 	 }
 	 
 	 
 	   if(jQuery('#address2').val() == '' || jQuery('#address2').val() == ' ') 
 	 {
-		  var address2 = "";
+		 var boffin_coders_address2 = "";
      }
 	   else 
 	 {
-		  var address2 = jQuery('#address2').val();
+		 var boffin_coders_address2 = jQuery('#address2').val();
 	 }
 	 
 	
 	   if(jQuery('#city2').val() == '' || jQuery('#city2').val() == ' ') 
 	 {
-		  var city2 = "";
+		 var boffin_coders_city2 = "";
      }
 	  else 
 	 {
-		  var city2 = jQuery('#city2').val();
+		 var boffin_coders_city2 = jQuery('#city2').val();
 	 }
 	 
 	
 	   if(jQuery('#state2').val() == '' || jQuery('#state2').val() == ' ') 
 	 {
-		  var state2 = "";
+		  var boffin_coders_state2 = "";
      }
 	 else 
 	 {
-		  var state2 = jQuery('#state2').val();
+		  var boffin_coders_state2 = jQuery('#state2').val();
 	 }
 	 
 	   if(jQuery('#zip_code2').val() == '' || jQuery('#zip_code2').val() == ' ') 
 	 {
-		  var zip_code2 = "";
+		  var boffin_coders_zip_code2 = "";
      }
 	 else 
 	 {
-		  var zip_code2 = jQuery('#zip_code2').val();
+		  var boffin_coders_zip_code2 = jQuery('#zip_code2').val();
 	 }
 	
 	   if(jQuery('#note2').val() == '' || jQuery('#note2').val() == ' ') 
 	 {
-		  var note2 = "";
+		  var boffin_coders_note2 = "";
      }
 	  else 
 	 {
-		  var note2 = jQuery('#note2').val();
+		  var boffin_coders_note2 = jQuery('#note2').val();
 	 }
 		
  
 			 <?php  if($default_booked->name_required == "1" && $default_booked->name == "1") { ?>  
-	    var name2 = jQuery('#name2').val();
-			if(name2 == ''){
+	    var boffin_coders_name2 = jQuery('#name2').val();
+			if(boffin_coders_name2 == ''){
 			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter Your Name!</span>'
 			);
@@ -2589,8 +2483,8 @@ jQuery(document).ready(function() {
 	 <?php } ?>	
 		
 		
-		var email2 = jQuery('#email2').val();
-        if(email2 == ''){
+		var boffin_coders_email2 = jQuery('#email2').val();
+        if(boffin_coders_email2 == ''){
 			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter Email Address!</span>'
 			);
@@ -2598,7 +2492,7 @@ jQuery(document).ready(function() {
             return false;
 			}
 		if( jQuery("#email2").val()!='' ){
-			if( !isValidEmailAddress( jQuery("#email2").val() ) ){
+			if(!boffin_coders_filter.test( jQuery("#email2").val() ) ){
 			jQuery('.message_box2').html(
 			'<span style="color:red;">Provided email address is incorrect!</span>'
 			);
@@ -2611,8 +2505,8 @@ jQuery(document).ready(function() {
 			
 	 <?php  if($default_booked->phone_required == "1" && $default_booked->phone == "1") { ?>  
  	
-            var phone2 = jQuery('#phone2').val();
-			if(phone2 == ''){
+           var boffin_coders_phone2 = jQuery('#phone2').val();
+			if(boffin_coders_phone2 == ''){
 			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter phone Number!</span>'
 			);
@@ -2625,8 +2519,8 @@ jQuery(document).ready(function() {
 	 	 
 	 <?php  if($default_booked->address_required == "1" && $default_booked->address == "1") { ?>  
  	
-            var address2 = jQuery('#address2').val();
-			if(address2 == ''){
+           var boffin_coders_address2 = jQuery('#address2').val();
+			if(boffin_coders_address2 == ''){
 			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter address!</span>'
 			);
@@ -2638,8 +2532,8 @@ jQuery(document).ready(function() {
 	 		
 	 <?php  if($default_booked->city_required == "1" && $default_booked->city == "1") { ?>  
  	
-            var city2 = jQuery('#city2').val();
-			if(city2 == ''){
+           var boffin_coders_city2 = jQuery('#city2').val();
+			if(boffin_coders_city2 == ''){
 			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter city!</span>'
 			);
@@ -2650,8 +2544,8 @@ jQuery(document).ready(function() {
 	  		
 	 <?php  if($default_booked->state_required == "1" && $default_booked->state == "1") { ?>  
  	
-            var state2 = jQuery('#state2').val();
-			if(state2 == ''){
+            var boffin_coders_state2 = jQuery('#state2').val();
+			if(boffin_coders_state2 == ''){
 			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter State!</span>'
 			);
@@ -2662,8 +2556,8 @@ jQuery(document).ready(function() {
 	   		
 	 <?php  if($default_booked->zip_code_required == "1" && $default_booked->zip_code == "1") { ?>  
  	
-            var zip_code2 = jQuery('#zip_code2').val();
-			if(zip_code2 == ''){
+            var boffin_coders_zip_code2 = jQuery('#zip_code2').val();
+			if(boffin_coders_zip_code2 == ''){
 			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter Zip Code!</span>'
 			);
@@ -2675,8 +2569,8 @@ jQuery(document).ready(function() {
 	    		
 	 <?php  if($default_booked->note_required == "1" && $default_booked->note == "1") { ?>  
  	
-            var note2 = jQuery('#note2').val();
-			if(note2 == ''){
+            var boffin_coders_note2 = jQuery('#note2').val();
+			if(boffin_coders_note2 == ''){
 			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter Note!</span>'
 			);
@@ -2685,12 +2579,12 @@ jQuery(document).ready(function() {
 			}
 	 <?php  } ?>
 			
-		var radiovalue = document.querySelector('input[name="plan2"]:checked').value;	
-		var date_slected = jQuery('textarea#date_slected2').val();
+		var boffin_coders_radiovalue = document.querySelector('input[name="plan2"]:checked').value;	
+		var boffin_coders_date_slected = jQuery('textarea#date_slected2').val();
 		
 			
-		var message = jQuery('#message').val();
-        if(message == ''){
+		var boffin_coders_message = jQuery('#message').val();
+        if(boffin_coders_message == ''){
 			jQuery('.message_box2').html(
 			'<span style="color:red;">Enter Your Message Here!</span>'
 			);
@@ -2701,7 +2595,7 @@ jQuery(document).ready(function() {
 			jQuery.ajax
 			({
              type: "POST",
-             data: "name="+name2+"&email="+email2+"&message="+message+"&radiovalue="+radiovalue+"&date_slected="+date_slected+"&phone="+phone2+"&address="+address2+"&city="+city2+"&state="+state2+"&zip_code="+zip_code2+"&note="+note2,
+             data: "name="+boffin_coders_name2+"&email="+boffin_coders_email2+"&message="+boffin_coders_message+"&radiovalue="+boffin_coders_radiovalue+"&date_slected="+boffin_coders_date_slected+"&phone="+boffin_coders_phone2+"&address="+boffin_coders_address2+"&city="+boffin_coders_city2+"&state="+boffin_coders_state2+"&zip_code="+boffin_coders_zip_code2+"&note="+boffin_coders_note2,
 			 beforeSend: function() {
 			 jQuery('.message_box2').html(
 			 '<img src="<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/img/Loader.gif'; ?>" width="25" height="25"/>'
@@ -2711,19 +2605,14 @@ jQuery(document).ready(function() {
 			 {
 				 setTimeout(function() {
                     jQuery('.message_box2').html(data);
-                }, delay);
+                }, boffin_coders_delay);
 			
              }
 			 });
 	});
 			
 });
-
  
-function isValidEmailAddress2(emailAddress) {
-    var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
-    return pattern.test(emailAddress);
-};
 </script>
  
    
@@ -2757,7 +2646,7 @@ function isValidEmailAddress2(emailAddress) {
 	 $slots = str_replace('"]',"", $slots);
 	 $array = explode('","', $slots); 
 	 
-	$table_namebooked = $wpdb->prefix."appointment_booked";
+	$table_namebooked = $wpdb->prefix."boffin_coders_appointment_booked";
 	 $allbook = array();
 	 $default_rowbooked = $wpdb->get_results("SELECT * FROM $table_namebooked");
 	 foreach($default_rowbooked as $bookedvalues)
@@ -2904,7 +2793,7 @@ function isValidEmailAddress2(emailAddress) {
 
 <script>
 jQuery(document).ready(function() {
-	var delay = 0;
+	var boffin_coders_delay = 0;
 	jQuery('.btn-default').click(function(e){
 		e.preventDefault();
 		
@@ -2919,85 +2808,85 @@ jQuery(document).ready(function() {
 		
       if(jQuery('#name3').val() == '' || jQuery('#name3').val() == ' ') 
 	 {
-		  var name3 = "";
+		  var boffin_coders_name3 = "";
      }
 	 else 
 	 {
-		  var name3 = jQuery('#name3').val();
+		  var boffin_coders_name3 = jQuery('#name3').val();
 	 }
 	
       if(jQuery('#email3').val() == '' || jQuery('#email3').val() == ' ') 
 	 {
-		  var email3 = "";
+		  var boffin_coders_email3 = "";
      }
 	  else 
 	 {
-		  var email3 = jQuery('#email3').val();
+		  var boffin_coders_email3 = jQuery('#email3').val();
 	 }
 	 
  
 	 if(jQuery('#phone3').val() == '' || jQuery('#phone3').val() == ' ') 
 	 {
-		  var phone3 = "";
+		 var boffin_coders_phone3 = "";
      }
 	   else 
 	 {
-		  var phone3 = jQuery('#phone3').val();
+		 var boffin_coders_phone3 = jQuery('#phone3').val();
 	 }
 	 
 	 
 	   if(jQuery('#address3').val() == '' || jQuery('#address3').val() == ' ') 
 	 {
-		  var address3 = "";
+		 var boffin_coders_address3 = "";
      }
 	   else 
 	 {
-		  var address3 = jQuery('#address3').val();
+		 var boffin_coders_address3 = jQuery('#address3').val();
 	 }
 	 
 	
 	   if(jQuery('#city3').val() == '' || jQuery('#city3').val() == ' ') 
 	 {
-		  var city3 = "";
+		 var boffin_coders_city3 = "";
      }
 	  else 
 	 {
-		  var city3 = jQuery('#city3').val();
+		 var boffin_coders_city3 = jQuery('#city3').val();
 	 }
 	 
 	
 	   if(jQuery('#state3').val() == '' || jQuery('#state3').val() == ' ') 
 	 {
-		  var state3 = "";
+		  var boffin_coders_state3 = "";
      }
 	 else 
 	 {
-		  var state3 = jQuery('#state3').val();
+		  var boffin_coders_state3 = jQuery('#state3').val();
 	 }
 	 
 	   if(jQuery('#zip_code3').val() == '' || jQuery('#zip_code3').val() == ' ') 
 	 {
-		  var zip_code3 = "";
+		  var boffin_coders_zip_code3 = "";
      }
 	 else 
 	 {
-		  var zip_code3 = jQuery('#zip_code3').val();
+		  var boffin_coders_zip_code3 = jQuery('#zip_code3').val();
 	 }
 	
 	   if(jQuery('#note3').val() == '' || jQuery('#note3').val() == ' ') 
 	 {
-		  var note3 = "";
+		  var boffin_coders_note3 = "";
      }
 	  else 
 	 {
-		  var note3 = jQuery('#note3').val();
+		  var boffin_coders_note3 = jQuery('#note3').val();
 	 }
 		
 	 
 			
 		 <?php  if($default_booked->name_required == "1" && $default_booked->name == "1") { ?>  
-	    var name3 = jQuery('#name3').val();
-			if(name3 == ''){
+	    var boffin_coders_name3 = jQuery('#name3').val();
+			if(boffin_coders_name3 == ''){
 			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter Your Name!</span>'
 			);
@@ -3008,8 +2897,8 @@ jQuery(document).ready(function() {
 	 <?php } ?>	
 		
 		
-		var email3 = jQuery('#email3').val();
-        if(email3 == ''){
+		var boffin_coders_email3 = jQuery('#email3').val();
+        if(boffin_coders_email3 == ''){
 			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter Email Address!</span>'
 			);
@@ -3017,7 +2906,7 @@ jQuery(document).ready(function() {
             return false;
 			}
 		if( jQuery("#email3").val()!='' ){
-			if( !isValidEmailAddress( jQuery("#email3").val() ) ){
+			if(!boffin_coders_filter.test( jQuery("#email3").val() ) ){
 			jQuery('.message_box3').html(
 			'<span style="color:red;">Provided email address is incorrect!</span>'
 			);
@@ -3030,8 +2919,8 @@ jQuery(document).ready(function() {
 			
 	 <?php  if($default_booked->phone_required == "1" && $default_booked->phone == "1") { ?>  
  	
-            var phone3 = jQuery('#phone3').val();
-			if(phone3 == ''){
+           var boffin_coders_phone3 = jQuery('#phone3').val();
+			if(boffin_coders_phone3 == ''){
 			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter phone Number!</span>'
 			);
@@ -3044,8 +2933,8 @@ jQuery(document).ready(function() {
 	 	 
 	 <?php  if($default_booked->address_required == "1" && $default_booked->address == "1") { ?>  
  	
-            var address3 = jQuery('#address3').val();
-			if(address3 == ''){
+           var boffin_coders_address3 = jQuery('#address3').val();
+			if(boffin_coders_address3 == ''){
 			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter address!</span>'
 			);
@@ -3057,8 +2946,8 @@ jQuery(document).ready(function() {
 	 		
 	 <?php  if($default_booked->city_required == "1" && $default_booked->city == "1") { ?>  
  	
-            var city3 = jQuery('#city3').val();
-			if(city3 == ''){
+           var boffin_coders_city3 = jQuery('#city3').val();
+			if(boffin_coders_city3 == ''){
 			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter city!</span>'
 			);
@@ -3069,8 +2958,8 @@ jQuery(document).ready(function() {
 	  		
 	 <?php  if($default_booked->state_required == "1" && $default_booked->state == "1") { ?>  
  	
-            var state3 = jQuery('#state3').val();
-			if(state3 == ''){
+            var boffin_coders_state3 = jQuery('#state3').val();
+			if(boffin_coders_state3 == ''){
 			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter State!</span>'
 			);
@@ -3081,8 +2970,8 @@ jQuery(document).ready(function() {
 	   		
 	 <?php  if($default_booked->zip_code_required == "1" && $default_booked->zip_code == "1") { ?>  
  	
-            var zip_code3 = jQuery('#zip_code3').val();
-			if(zip_code3 == ''){
+            var boffin_coders_zip_code3 = jQuery('#zip_code3').val();
+			if(boffin_coders_zip_code3 == ''){
 			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter Zip Code!</span>'
 			);
@@ -3094,8 +2983,8 @@ jQuery(document).ready(function() {
 	    		
 	 <?php  if($default_booked->note_required == "1" && $default_booked->note == "1") { ?>  
  	
-            var note3 = jQuery('#note3').val();
-			if(note3 == ''){
+            var boffin_coders_note3 = jQuery('#note3').val();
+			if(boffin_coders_note3 == ''){
 			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter Note!</span>'
 			);
@@ -3106,12 +2995,12 @@ jQuery(document).ready(function() {
 		
 		
 		
-		var radiovalue = document.querySelector('input[name="plan3"]:checked').value;	
-		var date_slected = jQuery('textarea#date_slected3').val();
+		var boffin_coders_radiovalue = document.querySelector('input[name="plan3"]:checked').value;	
+		var boffin_coders_date_slected = jQuery('textarea#date_slected3').val();
 		
 			
-		var message = jQuery('#message').val();
-        if(message == ''){
+		var boffin_coders_message = jQuery('#message').val();
+        if(boffin_coders_message == ''){
 			jQuery('.message_box3').html(
 			'<span style="color:red;">Enter Your Message Here!</span>'
 			);
@@ -3122,7 +3011,7 @@ jQuery(document).ready(function() {
 			jQuery.ajax
 			({
              type: "POST",
-             data: "name="+name3+"&email="+email3+"&message="+message+"&radiovalue="+radiovalue+"&date_slected="+date_slected+"&phone="+phone3+"&address="+address3+"&city="+city3+"&state="+state3+"&zip_code="+zip_code3+"&note="+note3,
+             data: "name="+boffin_coders_name3+"&email="+boffin_coders_email3+"&message="+boffin_coders_message+"&radiovalue="+boffin_coders_radiovalue+"&date_slected="+boffin_coders_date_slected+"&phone="+boffin_coders_phone3+"&address="+boffin_coders_address3+"&city="+boffin_coders_city3+"&state="+boffin_coders_state3+"&zip_code="+boffin_coders_zip_code3+"&note="+boffin_coders_note3,
 			 beforeSend: function() {
 			 jQuery('.message_box3').html(
 			 '<img src="<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/img/Loader.gif'; ?>" width="25" height="25"/>'
@@ -3132,18 +3021,14 @@ jQuery(document).ready(function() {
 			 {
 				 setTimeout(function() {
                     jQuery('.message_box3').html(data);
-                }, delay);
+                }, boffin_coders_delay);
 			
              }
 			 });
 	});
 			
 });
-
-function isValidEmailAddress3(emailAddress) {
-    var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
-    return pattern.test(emailAddress);
-};
+ 
 </script>
   
     </div>
@@ -3172,7 +3057,7 @@ function isValidEmailAddress3(emailAddress) {
 	 $array = explode('","', $slots); 
 	 
  
-	 $table_namebooked = $wpdb->prefix."appointment_booked";
+	 $table_namebooked = $wpdb->prefix."boffin_coders_appointment_booked";
 	 $allbook = array();
 	 $default_rowbooked = $wpdb->get_results("SELECT * FROM $table_namebooked");
 	 foreach($default_rowbooked as $bookedvalues)
@@ -3319,7 +3204,7 @@ function isValidEmailAddress3(emailAddress) {
 
 <script>
 jQuery(document).ready(function() {
-	var delay = 0;
+	var boffin_coders_delay = 0;
 	jQuery('.btn-default').click(function(e){
 		e.preventDefault();
 		
@@ -3335,84 +3220,84 @@ jQuery(document).ready(function() {
 		
       if(jQuery('#name4').val() == '' || jQuery('#name4').val() == ' ') 
 	 {
-		  var name4 = "";
+		  var boffin_coders_name4 = "";
      }
 	 else 
 	 {
-		  var name4 = jQuery('#name4').val();
+		  var boffin_coders_name4 = jQuery('#name4').val();
 	 }
 	
       if(jQuery('#email4').val() == '' || jQuery('#email4').val() == ' ') 
 	 {
-		  var email4 = "";
+		  var boffin_coders_email4 = "";
      }
 	  else 
 	 {
-		  var email4 = jQuery('#email4').val();
+		  var boffin_coders_email4 = jQuery('#email4').val();
 	 }
 	 
  
 	 if(jQuery('#phone4').val() == '' || jQuery('#phone4').val() == ' ') 
 	 {
-		  var phone4 = "";
+		 var boffin_coders_phone4 = "";
      }
 	   else 
 	 {
-		  var phone4 = jQuery('#phone4').val();
+		 var boffin_coders_phone4 = jQuery('#phone4').val();
 	 }
 	 
 	 
 	   if(jQuery('#address4').val() == '' || jQuery('#address4').val() == ' ') 
 	 {
-		  var address4 = "";
+		 var boffin_coders_address4 = "";
      }
 	   else 
 	 {
-		  var address4 = jQuery('#address4').val();
+		 var boffin_coders_address4 = jQuery('#address4').val();
 	 }
 	 
 	
 	   if(jQuery('#city4').val() == '' || jQuery('#city4').val() == ' ') 
 	 {
-		  var city4 = "";
+		 var boffin_coders_city4 = "";
      }
 	  else 
 	 {
-		  var city4 = jQuery('#city4').val();
+		 var boffin_coders_city4 = jQuery('#city4').val();
 	 }
 	 
 	
 	   if(jQuery('#state4').val() == '' || jQuery('#state4').val() == ' ') 
 	 {
-		  var state4 = "";
+		  var boffin_coders_state4 = "";
      }
 	 else 
 	 {
-		  var state4 = jQuery('#state4').val();
+		  var boffin_coders_state4 = jQuery('#state4').val();
 	 }
 	 
 	   if(jQuery('#zip_code4').val() == '' || jQuery('#zip_code4').val() == ' ') 
 	 {
-		  var zip_code4 = "";
+		  var boffin_coders_zip_code4 = "";
      }
 	 else 
 	 {
-		  var zip_code4 = jQuery('#zip_code4').val();
+		  var boffin_coders_zip_code4 = jQuery('#zip_code4').val();
 	 }
 	
 	   if(jQuery('#note4').val() == '' || jQuery('#note4').val() == ' ') 
 	 {
-		  var note4 = "";
+		  var boffin_coders_note4 = "";
      }
 	  else 
 	 {
-		  var note4 = jQuery('#note4').val();
+		  var boffin_coders_note4 = jQuery('#note4').val();
 	 }
 		
 	 
 			
 		 <?php  if($default_booked->name_required == "1" && $default_booked->name == "1") { ?>  
-	    var name4 = jQuery('#name4').val();
+	    var boffin_coders_name4 = jQuery('#name4').val();
 			if(name4 == ''){
 			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter Your Name!</span>'
@@ -3424,8 +3309,8 @@ jQuery(document).ready(function() {
 	 <?php } ?>	
 		
 		
-		var email4 = jQuery('#email4').val();
-        if(email4 == ''){
+		var boffin_coders_email4 = jQuery('#email4').val();
+        if(boffin_coders_email4 == ''){
 			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter Email Address!</span>'
 			);
@@ -3433,7 +3318,7 @@ jQuery(document).ready(function() {
             return false;
 			}
 		if( jQuery("#email4").val()!='' ){
-			if( !isValidEmailAddress( jQuery("#email4").val() ) ){
+			if(!boffin_coders_filter.test( jQuery("#email4").val() ) ){
 			jQuery('.message_box4').html(
 			'<span style="color:red;">Provided email address is incorrect!</span>'
 			);
@@ -3446,8 +3331,8 @@ jQuery(document).ready(function() {
 			
 	 <?php  if($default_booked->phone_required == "1" && $default_booked->phone == "1") { ?>  
  	
-            var phone4 = jQuery('#phone4').val();
-			if(phone4 == ''){
+           var boffin_coders_phone4 = jQuery('#phone4').val();
+			if(boffin_coders_phone4 == ''){
 			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter phone Number!</span>'
 			);
@@ -3460,8 +3345,8 @@ jQuery(document).ready(function() {
 	 	 
 	 <?php  if($default_booked->address_required == "1" && $default_booked->address == "1") { ?>  
  	
-            var address4 = jQuery('#address4').val();
-			if(address4 == ''){
+           var boffin_coders_address4 = jQuery('#address4').val();
+			if(boffin_coders_address4 == ''){
 			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter address!</span>'
 			);
@@ -3473,8 +3358,8 @@ jQuery(document).ready(function() {
 	 		
 	 <?php  if($default_booked->city_required == "1" && $default_booked->city == "1") { ?>  
  	
-            var city4 = jQuery('#city4').val();
-			if(city4 == ''){
+           var boffin_coders_city4 = jQuery('#city4').val();
+			if(boffin_coders_city4 == ''){
 			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter city!</span>'
 			);
@@ -3485,8 +3370,8 @@ jQuery(document).ready(function() {
 	  		
 	 <?php  if($default_booked->state_required == "1" && $default_booked->state == "1") { ?>  
  	
-            var state4 = jQuery('#state4').val();
-			if(state4 == ''){
+            var boffin_coders_state4 = jQuery('#state4').val();
+			if(boffin_coders_state4 == ''){
 			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter State!</span>'
 			);
@@ -3497,8 +3382,8 @@ jQuery(document).ready(function() {
 	   		
 	 <?php  if($default_booked->zip_code_required == "1" && $default_booked->zip_code == "1") { ?>  
  	
-            var zip_code4 = jQuery('#zip_code4').val();
-			if(zip_code4 == ''){
+            var boffin_coders_zip_code4 = jQuery('#zip_code4').val();
+			if(boffin_coders_zip_code4 == ''){
 			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter Zip Code!</span>'
 			);
@@ -3510,8 +3395,8 @@ jQuery(document).ready(function() {
 	    		
 	 <?php  if($default_booked->note_required == "1" && $default_booked->note == "1") { ?>  
  	
-            var note4 = jQuery('#note4').val();
-			if(note4 == ''){
+            var boffin_coders_note4 = jQuery('#note4').val();
+			if(boffin_coders_note4 == ''){
 			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter Note!</span>'
 			);
@@ -3522,12 +3407,12 @@ jQuery(document).ready(function() {
 		
 			
 			
-		var radiovalue = document.querySelector('input[name="plan4"]:checked').value;	
-		var date_slected = jQuery('textarea#date_slected4').val();
+		var boffin_coders_radiovalue = document.querySelector('input[name="plan4"]:checked').value;	
+		var boffin_coders_date_slected = jQuery('textarea#date_slected4').val();
 		
 			
-		var message = jQuery('#message').val();
-        if(message == ''){
+		var boffin_coders_message = jQuery('#message').val();
+        if(boffin_coders_message == ''){
 			jQuery('.message_box4').html(
 			'<span style="color:red;">Enter Your Message Here!</span>'
 			);
@@ -3538,7 +3423,7 @@ jQuery(document).ready(function() {
 			jQuery.ajax
 			({
              type: "POST",
-             data: "name="+name4+"&email="+email4+"&message="+message+"&radiovalue="+radiovalue+"&date_slected="+date_slected+"&phone="+phone4+"&address="+address4+"&city="+city4+"&state="+state4+"&zip_code="+zip_code4+"&note="+note4,
+             data: "name="+boffin_coders_name4+"&email="+boffin_coders_email4+"&message="+boffin_coders_message+"&radiovalue="+boffin_coders_radiovalue+"&date_slected="+boffin_coders_date_slected+"&phone="+boffin_coders_phone4+"&address="+boffin_coders_address4+"&city="+boffin_coders_city4+"&state="+boffin_coders_state4+"&zip_code="+boffin_coders_zip_code4+"&note="+boffin_coders_note4,
 			 beforeSend: function() {
 			 jQuery('.message_box4').html(
 			 '<img src="<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/img/Loader.gif'; ?>" width="25" height="25"/>'
@@ -3548,18 +3433,14 @@ jQuery(document).ready(function() {
 			 {
 				 setTimeout(function() {
                     jQuery('.message_box4').html(data);
-                }, delay);
+                }, boffin_coders_delay);
 			
              }
 			 });
 	});
 			
 });
- 
-function isValidEmailAddress4(emailAddress) {
-    var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
-    return pattern.test(emailAddress);
-};
+  
 </script>
  
     </div>
@@ -3586,7 +3467,7 @@ function isValidEmailAddress4(emailAddress) {
 	 $slots = str_replace('"]',"", $slots);
 	 $array = explode('","', $slots); 
  
-	 $table_namebooked = $wpdb->prefix."appointment_booked";
+	 $table_namebooked = $wpdb->prefix."boffin_coders_appointment_booked";
 	 $allbook = array();
 	 $default_rowbooked = $wpdb->get_results("SELECT * FROM $table_namebooked");
 	 foreach($default_rowbooked as $bookedvalues)
@@ -3731,7 +3612,7 @@ function isValidEmailAddress4(emailAddress) {
 
 <script>
 jQuery(document).ready(function() {
-	var delay = 0;
+	var boffin_coders_delay = 0;
 	jQuery('.btn-default').click(function(e){
 		e.preventDefault();
 		
@@ -3746,85 +3627,85 @@ jQuery(document).ready(function() {
 		
       if(jQuery('#name5').val() == '' || jQuery('#name5').val() == ' ') 
 	 {
-		  var name5 = "";
+		  var boffin_coders_name5 = "";
      }
 	 else 
 	 {
-		  var name5 = jQuery('#name5').val();
+		  var boffin_coders_name5 = jQuery('#name5').val();
 	 }
 	
       if(jQuery('#email5').val() == '' || jQuery('#email5').val() == ' ') 
 	 {
-		  var email5 = "";
+		  var boffin_coders_email5 = "";
      }
 	  else 
 	 {
-		  var email5 = jQuery('#email5').val();
+		  var boffin_coders_email5 = jQuery('#email5').val();
 	 }
 	 
  
 	 if(jQuery('#phone5').val() == '' || jQuery('#phone5').val() == ' ') 
 	 {
-		  var phone5 = "";
+		 var boffin_coders_phone5 = "";
      }
 	   else 
 	 {
-		  var phone5 = jQuery('#phone5').val();
+		 var boffin_coders_phone5 = jQuery('#phone5').val();
 	 }
 	 
 	 
 	   if(jQuery('#address5').val() == '' || jQuery('#address5').val() == ' ') 
 	 {
-		  var address5 = "";
+		 var boffin_coders_address5 = "";
      }
 	   else 
 	 {
-		  var address5 = jQuery('#address5').val();
+		 var boffin_coders_address5 = jQuery('#address5').val();
 	 }
 	 
 	
 	   if(jQuery('#city5').val() == '' || jQuery('#city5').val() == ' ') 
 	 {
-		  var city5 = "";
+		 var boffin_coders_city5 = "";
      }
 	  else 
 	 {
-		  var city5 = jQuery('#city5').val();
+		 var boffin_coders_city5 = jQuery('#city5').val();
 	 }
 	 
 	
 	   if(jQuery('#state5').val() == '' || jQuery('#state5').val() == ' ') 
 	 {
-		  var state5 = "";
+		  var boffin_coders_state5 = "";
      }
 	 else 
 	 {
-		  var state5 = jQuery('#state5').val();
+		  var boffin_coders_state5 = jQuery('#state5').val();
 	 }
 	 
 	   if(jQuery('#zip_code5').val() == '' || jQuery('#zip_code5').val() == ' ') 
 	 {
-		  var zip_code5 = "";
+		  var boffin_coders_zip_code5 = "";
      }
 	 else 
 	 {
-		  var zip_code5 = jQuery('#zip_code5').val();
+		  var boffin_coders_zip_code5 = jQuery('#zip_code5').val();
 	 }
 	
 	   if(jQuery('#note5').val() == '' || jQuery('#note5').val() == ' ') 
 	 {
-		  var note5 = "";
+		  var boffin_coders_note5 = "";
      }
 	  else 
 	 {
-		  var note5 = jQuery('#note5').val();
+		  var boffin_coders_note5 = jQuery('#note5').val();
 	 }
 		
 	 
 			
 		 <?php  if($default_booked->name_required == "1" && $default_booked->name == "1") { ?>  
-	    var name5 = jQuery('#name5').val();
-			if(name5 == ''){
+	    var boffin_coders_name5 = jQuery('#name5').val();
+			if(boffin_coders_name5 == ''){
 			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter Your Name!</span>'
 			);
@@ -3835,8 +3716,8 @@ jQuery(document).ready(function() {
 	 <?php } ?>	
 		
 		
-		var email5 = jQuery('#email5').val();
-        if(email5 == ''){
+		var boffin_coders_email5 = jQuery('#email5').val();
+        if(boffin_coders_email5 == ''){
 			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter Email Address!</span>'
 			);
@@ -3844,7 +3725,7 @@ jQuery(document).ready(function() {
             return false;
 			}
 		if( jQuery("#email5").val()!='' ){
-			if( !isValidEmailAddress( jQuery("#email5").val() ) ){
+           if(!boffin_coders_filter.test( jQuery("#email5").val() ) ){
 			jQuery('.message_box5').html(
 			'<span style="color:red;">Provided email address is incorrect!</span>'
 			);
@@ -3857,8 +3738,8 @@ jQuery(document).ready(function() {
 			
 	 <?php  if($default_booked->phone_required == "1" && $default_booked->phone == "1") { ?>  
  	
-            var phone5 = jQuery('#phone5').val();
-			if(phone5 == ''){
+           var boffin_coders_phone5 = jQuery('#phone5').val();
+			if(boffin_coders_phone5 == ''){
 			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter phone Number!</span>'
 			);
@@ -3871,8 +3752,8 @@ jQuery(document).ready(function() {
 	 	 
 	 <?php  if($default_booked->address_required == "1" && $default_booked->address == "1") { ?>  
  	
-            var address5 = jQuery('#address5').val();
-			if(address5 == ''){
+           var boffin_coders_address5 = jQuery('#address5').val();
+			if(boffin_coders_address5 == ''){
 			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter address!</span>'
 			);
@@ -3884,8 +3765,8 @@ jQuery(document).ready(function() {
 	 		
 	 <?php  if($default_booked->city_required == "1" && $default_booked->city == "1") { ?>  
  	
-            var city5 = jQuery('#city5').val();
-			if(city5 == ''){
+           var boffin_coders_city5 = jQuery('#city5').val();
+			if(boffin_coders_city5 == ''){
 			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter city!</span>'
 			);
@@ -3896,8 +3777,8 @@ jQuery(document).ready(function() {
 	  		
 	 <?php  if($default_booked->state_required == "1" && $default_booked->state == "1") { ?>  
  	
-            var state5 = jQuery('#state5').val();
-			if(state5 == ''){
+            var boffin_coders_state5 = jQuery('#state5').val();
+			if(boffin_coders_state5 == ''){
 			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter State!</span>'
 			);
@@ -3908,8 +3789,8 @@ jQuery(document).ready(function() {
 	   		
 	 <?php  if($default_booked->zip_code_required == "1" && $default_booked->zip_code == "1") { ?>  
  	
-            var zip_code5 = jQuery('#zip_code5').val();
-			if(zip_code5 == ''){
+            var boffin_coders_zip_code5 = jQuery('#zip_code5').val();
+			if(boffin_coders_zip_code5 == ''){
 			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter Zip Code!</span>'
 			);
@@ -3921,8 +3802,8 @@ jQuery(document).ready(function() {
 	    		
 	 <?php  if($default_booked->note_required == "1" && $default_booked->note == "1") { ?>  
  	
-            var note5 = jQuery('#note5').val();
-			if(note5 == ''){
+            var boffin_coders_note5 = jQuery('#note5').val();
+			if(boffin_coders_note5 == ''){
 			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter Note!</span>'
 			);
@@ -3933,12 +3814,12 @@ jQuery(document).ready(function() {
 		
 			
 			
-		var radiovalue = document.querySelector('input[name="plan5"]:checked').value;	
-		var date_slected = jQuery('textarea#date_slected5').val();
+		var boffin_coders_radiovalue = document.querySelector('input[name="plan5"]:checked').value;	
+		var boffin_coders_date_slected = jQuery('textarea#date_slected5').val();
 		
 			
-		var message = jQuery('#message').val();
-        if(message == ''){
+		var boffin_coders_message = jQuery('#message').val();
+        if(boffin_coders_message == ''){
 			jQuery('.message_box5').html(
 			'<span style="color:red;">Enter Your Message Here!</span>'
 			);
@@ -3949,7 +3830,7 @@ jQuery(document).ready(function() {
 			jQuery.ajax
 			({
              type: "POST",
-             data: "name="+name5+"&email="+email5+"&message="+message+"&radiovalue="+radiovalue+"&date_slected="+date_slected+"&phone="+phone5+"&address="+address5+"&city="+city5+"&state="+state5+"&zip_code="+zip_code5+"&note="+note5,
+             data: "name="+boffin_coders_name5+"&email="+boffin_coders_email5+"&message="+boffin_coders_message+"&radiovalue="+boffin_coders_radiovalue+"&date_slected="+boffin_coders_date_slected+"&phone="+boffin_coders_phone5+"&address="+boffin_coders_address5+"&city="+boffin_coders_city5+"&state="+boffin_coders_state5+"&zip_code="+boffin_coders_zip_code5+"&note="+boffin_coders_note5,
 			 beforeSend: function() {
 			 jQuery('.message_box5').html(
 			 '<img src="<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/img/Loader.gif'; ?>" width="25" height="25"/>'
@@ -3959,18 +3840,14 @@ jQuery(document).ready(function() {
 			 {
 				 setTimeout(function() {
                     jQuery('.message_box5').html(data);
-                }, delay);
+                }, boffin_coders_delay);
 			
              }
 			 });
 	});
 			
 });
- 
-function isValidEmailAddress5(emailAddress) {
-    var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
-    return pattern.test(emailAddress);
-};
+  
 </script>
  
     </div>
@@ -3998,7 +3875,7 @@ function isValidEmailAddress5(emailAddress) {
 	 $slots = str_replace('"]',"", $slots);
 	 $array = explode('","', $slots); 
     
-	 $table_namebooked = $wpdb->prefix."appointment_booked";
+	 $table_namebooked = $wpdb->prefix."boffin_coders_appointment_booked";
 	 $allbook = array();
 	 $default_rowbooked = $wpdb->get_results("SELECT * FROM $table_namebooked");
 	 foreach($default_rowbooked as $bookedvalues)
@@ -4141,7 +4018,7 @@ function isValidEmailAddress5(emailAddress) {
 
 <script>
 jQuery(document).ready(function() {
-	var delay = 0;
+	var boffin_coders_delay = 0;
 	jQuery('.btn-default').click(function(e){
 		e.preventDefault();
 		
@@ -4156,85 +4033,85 @@ jQuery(document).ready(function() {
 		
       if(jQuery('#name6').val() == '' || jQuery('#name6').val() == ' ') 
 	 {
-		  var name6 = "";
+		  var boffin_coders_name6 = "";
      }
 	 else 
 	 {
-		  var name6 = jQuery('#name6').val();
+		  var boffin_coders_name6 = jQuery('#name6').val();
 	 }
 	
       if(jQuery('#email6').val() == '' || jQuery('#email6').val() == ' ') 
 	 {
-		  var email6 = "";
+		  var boffin_coders_email6 = "";
      }
 	  else 
 	 {
-		  var email6 = jQuery('#email6').val();
+		  var boffin_coders_email6 = jQuery('#email6').val();
 	 }
 	 
  
 	 if(jQuery('#phone6').val() == '' || jQuery('#phone6').val() == ' ') 
 	 {
-		  var phone6 = "";
+		 var boffin_coders_phone6 = "";
      }
 	   else 
 	 {
-		  var phone6 = jQuery('#phone6').val();
+		 var boffin_coders_phone6 = jQuery('#phone6').val();
 	 }
 	 
 	 
 	   if(jQuery('#address6').val() == '' || jQuery('#address6').val() == ' ') 
 	 {
-		  var address6 = "";
+		 var boffin_coders_address6 = "";
      }
 	   else 
 	 {
-		  var address6 = jQuery('#address6').val();
+		 var boffin_coders_address6 = jQuery('#address6').val();
 	 }
 	 
 	
 	   if(jQuery('#city6').val() == '' || jQuery('#city6').val() == ' ') 
 	 {
-		  var city6 = "";
+		 var boffin_coders_city6 = "";
      }
 	  else 
 	 {
-		  var city6 = jQuery('#city6').val();
+		 var boffin_coders_city6 = jQuery('#city6').val();
 	 }
 	 
 	
 	   if(jQuery('#state6').val() == '' || jQuery('#state6').val() == ' ') 
 	 {
-		  var state6 = "";
+		  var boffin_coders_state6 = "";
      }
 	 else 
 	 {
-		  var state6 = jQuery('#state6').val();
+		  var boffin_coders_state6 = jQuery('#state6').val();
 	 }
 	 
 	   if(jQuery('#zip_code6').val() == '' || jQuery('#zip_code6').val() == ' ') 
 	 {
-		  var zip_code6 = "";
+		  var boffin_coders_zip_code6 = "";
      }
 	 else 
 	 {
-		  var zip_code6 = jQuery('#zip_code6').val();
+		  var boffin_coders_zip_code6 = jQuery('#zip_code6').val();
 	 }
 	
 	   if(jQuery('#note6').val() == '' || jQuery('#note6').val() == ' ') 
 	 {
-		  var note6 = "";
+		  var boffin_coders_zip_note6 = "";
      }
 	  else 
 	 {
-		  var note6 = jQuery('#note6').val();
+		  var boffin_coders_zip_note6 = jQuery('#note6').val();
 	 }
 		
 	 
 			
 		 <?php  if($default_booked->name_required == "1" && $default_booked->name == "1") { ?>  
-	    var name6 = jQuery('#name6').val();
-			if(name6 == ''){
+	    var boffin_coders_name6 = jQuery('#name6').val();
+			if(boffin_coders_name6 == ''){
 			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter Your Name!</span>'
 			);
@@ -4245,8 +4122,8 @@ jQuery(document).ready(function() {
 	 <?php } ?>	
 		
 		
-		var email6 = jQuery('#email6').val();
-        if(email6 == ''){
+		var boffin_coders_email6 = jQuery('#email6').val();
+        if(boffin_coders_email6 == ''){
 			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter Email Address!</span>'
 			);
@@ -4254,7 +4131,7 @@ jQuery(document).ready(function() {
             return false;
 			}
 		if( jQuery("#email6").val()!='' ){
-			if( !isValidEmailAddress( jQuery("#email6").val() ) ){
+		   if(!boffin_coders_filter.test( jQuery("#email6").val() ) ){
 			jQuery('.message_box6').html(
 			'<span style="color:red;">Provided email address is incorrect!</span>'
 			);
@@ -4267,8 +4144,8 @@ jQuery(document).ready(function() {
 			
 	 <?php  if($default_booked->phone_required == "1" && $default_booked->phone == "1") { ?>  
  	
-            var phone6 = jQuery('#phone6').val();
-			if(phone6 == ''){
+           var boffin_coders_phone6 = jQuery('#phone6').val();
+			if(boffin_coders_phone6 == ''){
 			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter phone Number!</span>'
 			);
@@ -4281,8 +4158,8 @@ jQuery(document).ready(function() {
 	 	 
 	 <?php  if($default_booked->address_required == "1" && $default_booked->address == "1") { ?>  
  	
-            var address6 = jQuery('#address6').val();
-			if(address6 == ''){
+           var boffin_coders_address6 = jQuery('#address6').val();
+			if(boffin_coders_address6 == ''){
 			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter address!</span>'
 			);
@@ -4294,8 +4171,8 @@ jQuery(document).ready(function() {
 	 		
 	 <?php  if($default_booked->city_required == "1" && $default_booked->city == "1") { ?>  
  	
-            var city6 = jQuery('#city6').val();
-			if(city6 == ''){
+           var boffin_coders_city6 = jQuery('#city6').val();
+			if(boffin_coders_city6 == ''){
 			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter city!</span>'
 			);
@@ -4306,8 +4183,8 @@ jQuery(document).ready(function() {
 	  		
 	 <?php  if($default_booked->state_required == "1" && $default_booked->state == "1") { ?>  
  	
-            var state6 = jQuery('#state6').val();
-			if(state6 == ''){
+            var boffin_coders_state6 = jQuery('#state6').val();
+			if(boffin_coders_state6 == ''){
 			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter State!</span>'
 			);
@@ -4318,8 +4195,8 @@ jQuery(document).ready(function() {
 	   		
 	 <?php  if($default_booked->zip_code_required == "1" && $default_booked->zip_code == "1") { ?>  
  	
-            var zip_code6 = jQuery('#zip_code6').val();
-			if(zip_code6 == ''){
+            var boffin_coders_zip_code6 = jQuery('#zip_code6').val();
+			if(boffin_coders_zip_code6 == ''){
 			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter Zip Code!</span>'
 			);
@@ -4331,8 +4208,8 @@ jQuery(document).ready(function() {
 	    		
 	 <?php  if($default_booked->note_required == "1" && $default_booked->note == "1") { ?>  
  	
-            var note6 = jQuery('#note6').val();
-			if(note6 == ''){
+            var boffin_coders_note6 = jQuery('#note6').val();
+			if(boffin_coders_note6 == ''){
 			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter Note!</span>'
 			);
@@ -4344,12 +4221,12 @@ jQuery(document).ready(function() {
 			
 			
 			
-		var radiovalue = document.querySelector('input[name="plan6"]:checked').value;	
-		var date_slected = jQuery('textarea#date_slected6').val();
+		var boffin_coders_radiovalue = document.querySelector('input[name="plan6"]:checked').value;	
+		var boffin_coders_date_slected = jQuery('textarea#date_slected6').val();
 		
 			
-		var message = jQuery('#message').val();
-        if(message == ''){
+		var boffin_coders_message = jQuery('#message').val();
+        if(boffin_coders_message == ''){
 			jQuery('.message_box6').html(
 			'<span style="color:red;">Enter Your Message Here!</span>'
 			);
@@ -4360,7 +4237,7 @@ jQuery(document).ready(function() {
 			jQuery.ajax
 			({
              type: "POST",
-             data: "name="+name6+"&email="+email6+"&message="+message+"&radiovalue="+radiovalue+"&date_slected="+date_slected+"&phone="+phone6+"&address="+address6+"&city="+city6+"&state="+state6+"&zip_code="+zip_code6+"&note="+note6,
+             data: "name="+boffin_coders_name6+"&email="+boffin_coders_email6+"&message="+boffin_coders_message+"&radiovalue="+boffin_coders_radiovalue+"&date_slected="+boffin_coders_date_slected+"&phone="+boffin_coders_phone6+"&address="+boffin_coders_address6+"&city="+boffin_coders_city6+"&state="+boffin_coders_state6+"&zip_code="+boffin_coders_zip_code6+"&note="+boffin_coders_note6,
 			 beforeSend: function() {
 			 jQuery('.message_box6').html(
 			 '<img src="<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/img/Loader.gif'; ?>" width="25" height="25"/>'
@@ -4370,18 +4247,14 @@ jQuery(document).ready(function() {
 			 {
 				 setTimeout(function() {
                     jQuery('.message_box6').html(data);
-                }, delay);
+                }, boffin_coders_delay);
 			
              }
 			 });
 	});
 			
 });
- 
-function isValidEmailAddress6(emailAddress) {
-    var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
-    return pattern.test(emailAddress);
-};
+  
 </script>
 	   
 	   
@@ -4411,10 +4284,10 @@ function isValidEmailAddress6(emailAddress) {
 	 $slots = str_replace('"]',"", $slots);
 	 $array = explode('","', $slots); 
 	 
-	 $table_namebooked = $wpdb->prefix."appointment_booked";
+	 $table_namebooked = $wpdb->prefix."boffin_coders_appointment_booked";
 	 $default_rowbooked = $wpdb->get_results("SELECT time FROM $table_namebooked");
 	 
-	 $table_namebooked = $wpdb->prefix."appointment_booked";
+	 $table_namebooked = $wpdb->prefix."boffin_coders_appointment_booked";
 	 $allbook = array();
 	 $default_rowbooked = $wpdb->get_results("SELECT * FROM $table_namebooked");
 	 foreach($default_rowbooked as $bookedvalues)
@@ -4558,7 +4431,7 @@ function isValidEmailAddress6(emailAddress) {
 
 <script>
 jQuery(document).ready(function() {
-	var delay = 0;
+	var boffin_coders_delay = 0;
 	jQuery('.btn-default').click(function(e){
 		e.preventDefault();
 		
@@ -4572,85 +4445,85 @@ jQuery(document).ready(function() {
 	 	
       if(jQuery('#name7').val() == '' || jQuery('#name7').val() == ' ') 
 	 {
-		  var name7 = "";
+		  var boffin_coders_name7 = "";
      }
 	 else 
 	 {
-		  var name7 = jQuery('#name7').val();
+		  var boffin_coders_name7 = jQuery('#name7').val();
 	 }
 	
       if(jQuery('#email7').val() == '' || jQuery('#email7').val() == ' ') 
 	 {
-		  var email7 = "";
+		  var boffin_coders_email7 = "";
      }
 	  else 
 	 {
-		  var email7 = jQuery('#email7').val();
+		  var boffin_coders_email7 = jQuery('#email7').val();
 	 }
 	 
  
 	 if(jQuery('#phone7').val() == '' || jQuery('#phone7').val() == ' ') 
 	 {
-		  var phone7 = "";
+		 var boffin_coders_phone7 = "";
      }
 	   else 
 	 {
-		  var phone7 = jQuery('#phone7').val();
+		 var boffin_coders_phone7 = jQuery('#phone7').val();
 	 }
 	 
 	 
 	   if(jQuery('#address7').val() == '' || jQuery('#address7').val() == ' ') 
 	 {
-		  var address7 = "";
+		 var boffin_coders_address7 = "";
      }
 	   else 
 	 {
-		  var address7 = jQuery('#address7').val();
+		 var boffin_coders_address7 = jQuery('#address7').val();
 	 }
 	 
 	
 	   if(jQuery('#city7').val() == '' || jQuery('#city7').val() == ' ') 
 	 {
-		  var city7 = "";
+		 var boffin_coders_city7 = "";
      }
 	  else 
 	 {
-		  var city7 = jQuery('#city7').val();
+		 var boffin_coders_city7 = jQuery('#city7').val();
 	 }
 	 
 	
 	   if(jQuery('#state7').val() == '' || jQuery('#state7').val() == ' ') 
 	 {
-		  var state7 = "";
+		  var boffin_coders_state7 = "";
      }
 	 else 
 	 {
-		  var state7 = jQuery('#state7').val();
+		  var boffin_coders_state7 = jQuery('#state7').val();
 	 }
 	 
 	   if(jQuery('#zip_code7').val() == '' || jQuery('#zip_code7').val() == ' ') 
 	 {
-		  var zip_code7 = "";
+		  var boffin_coders_zip_code7 = "";
      }
 	 else 
 	 {
-		  var zip_code7 = jQuery('#zip_code7').val();
+		  var boffin_coders_zip_code7 = jQuery('#zip_code7').val();
 	 }
 	
 	   if(jQuery('#note7').val() == '' || jQuery('#note7').val() == ' ') 
 	 {
-		  var note7 = "";
+		  var boffin_coders_zip_note7 = "";
      }
 	  else 
 	 {
-		  var note7 = jQuery('#note7').val();
+		  var boffin_coders_zip_note7 = jQuery('#note7').val();
 	 }
 		
 	 
 			
 		 <?php  if($default_booked->name_required == "1" && $default_booked->name == "1") { ?>  
-	    var name7 = jQuery('#name7').val();
-			if(name7 == ''){
+	    var boffin_coders_name7 = jQuery('#name7').val();
+			if(boffin_coders_name7 == ''){
 			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter Your Name!</span>'
 			);
@@ -4661,8 +4534,8 @@ jQuery(document).ready(function() {
 	 <?php } ?>	
 		
 		
-		var email7 = jQuery('#email7').val();
-        if(email7 == ''){
+		var boffin_coders_email7 = jQuery('#email7').val();
+        if(boffin_coders_email7 == ''){
 			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter Email Address!</span>'
 			);
@@ -4670,7 +4543,7 @@ jQuery(document).ready(function() {
             return false;
 			}
 		if( jQuery("#email7").val()!='' ){
-			if( !isValidEmailAddress( jQuery("#email7").val() ) ){
+		   if(!boffin_coders_filter.test( jQuery("#email7").val() ) ){
 			jQuery('.message_box7').html(
 			'<span style="color:red;">Provided email address is incorrect!</span>'
 			);
@@ -4683,8 +4556,8 @@ jQuery(document).ready(function() {
 			
 	 <?php  if($default_booked->phone_required == "1" && $default_booked->phone == "1") { ?>  
  	
-            var phone7 = jQuery('#phone7').val();
-			if(phone7 == ''){
+           var boffin_coders_phone7 = jQuery('#phone7').val();
+			if(boffin_coders_phone7 == ''){
 			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter phone Number!</span>'
 			);
@@ -4697,8 +4570,8 @@ jQuery(document).ready(function() {
 	 	 
 	 <?php  if($default_booked->address_required == "1" && $default_booked->address == "1") { ?>  
  	
-            var address7 = jQuery('#address7').val();
-			if(address7 == ''){
+           var boffin_coders_address7 = jQuery('#address7').val();
+			if(boffin_coders_address7 == ''){
 			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter address!</span>'
 			);
@@ -4710,8 +4583,8 @@ jQuery(document).ready(function() {
 	 		
 	 <?php  if($default_booked->city_required == "1" && $default_booked->city == "1") { ?>  
  	
-            var city7 = jQuery('#city7').val();
-			if(city7 == ''){
+           var boffin_coders_city7 = jQuery('#city7').val();
+			if(boffin_coders_city7 == ''){
 			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter city!</span>'
 			);
@@ -4722,8 +4595,8 @@ jQuery(document).ready(function() {
 	  		
 	 <?php  if($default_booked->state_required == "1" && $default_booked->state == "1") { ?>  
  	
-            var state7 = jQuery('#state7').val();
-			if(state7 == ''){
+            var boffin_coders_state7 = jQuery('#state7').val();
+			if(boffin_coders_state7 == ''){
 			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter State!</span>'
 			);
@@ -4734,8 +4607,8 @@ jQuery(document).ready(function() {
 	   		
 	 <?php  if($default_booked->zip_code_required == "1" && $default_booked->zip_code == "1") { ?>  
  	
-            var zip_code7 = jQuery('#zip_code7').val();
-			if(zip_code7 == ''){
+            var boffin_coders_zip_code7 = jQuery('#zip_code7').val();
+			if(boffin_coders_zip_code7 == ''){
 			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter Zip Code!</span>'
 			);
@@ -4747,8 +4620,8 @@ jQuery(document).ready(function() {
 	    		
 	 <?php  if($default_booked->note_required == "1" && $default_booked->note == "1") { ?>  
  	
-            var note7 = jQuery('#note7').val();
-			if(note7 == ''){
+            var boffin_coders_note7 = jQuery('#note7').val();
+			if(boffin_coders_note7 == ''){
 			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter Note!</span>'
 			);
@@ -4760,12 +4633,12 @@ jQuery(document).ready(function() {
 			
 	
 			
-		var radiovalue = document.querySelector('input[name="plan7"]:checked').value;	
-		var date_slected = jQuery('textarea#date_slected7').val();
+		var boffin_coders_radiovalue = document.querySelector('input[name="plan7"]:checked').value;	
+		var boffin_coders_date_slected = jQuery('textarea#date_slected7').val();
 		
 			
-		var message = jQuery('#message').val();
-        if(message == ''){
+		var boffin_coders_message = jQuery('#message').val();
+        if(boffin_coders_message == ''){
 			jQuery('.message_box7').html(
 			'<span style="color:red;">Enter Your Message Here!</span>'
 			);
@@ -4776,7 +4649,7 @@ jQuery(document).ready(function() {
 			jQuery.ajax
 			({
              type: "POST",
-             data: "name="+name7+"&email="+email7+"&message="+message+"&radiovalue="+radiovalue+"&date_slected="+date_slected+"&phone="+phone7+"&address="+address7+"&city="+city7+"&state="+state7+"&zip_code="+zip_code7+"&note="+note7,
+             data: "name="+boffin_coders_name7+"&email="+boffin_coders_email7+"&message="+boffin_coders_message+"&radiovalue="+boffin_coders_radiovalue+"&date_slected="+dboffin_coders_ate_slected+"&phone="+boffin_coders_phone7+"&address="+boffin_coders_address7+"&city="+boffin_coders_city7+"&state="+boffin_coders_state7+"&zip_code="+boffin_coders_zip_code7+"&note="+boffin_coders_note7,
 			 beforeSend: function() {
 			 jQuery('.message_box7').html(
 			 '<img src="<?php echo plugin_dir_url( dirname( __FILE__ ) ) . 'appointment/img/Loader.gif'; ?>" width="25" height="25"/>'
@@ -4786,7 +4659,7 @@ jQuery(document).ready(function() {
 			 {
 				 setTimeout(function() {
                     jQuery('.message_box7').html(data);
-                }, delay);
+                }, boffin_coders_delay);
 			
              }
 			 });
@@ -4794,10 +4667,6 @@ jQuery(document).ready(function() {
 			
 });
  
-function isValidEmailAddress7(emailAddress) {
-    var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
-    return pattern.test(emailAddress);
-};
 </script>
    </div>
     <div class="sat-footer">
@@ -4810,105 +4679,105 @@ function isValidEmailAddress7(emailAddress) {
 
 <script>
 // Get the wed
-var wed = document.getElementById("mywed");
-var spanwed = document.getElementsByClassName("closewed")[0];
+  var boffin_coders_wed = document.getElementById("mywed");
+  var boffin_coders_spanwed = document.getElementsByClassName("closewed")[0];
 
-spanwed.onclick = function() {
-  wed.style.display = "none";
+  boffin_coders_spanwed.onclick = function() {
+  boffin_coders_wed.style.display = "none";
 }
 
 window.onclick = function(event) {
-  if (event.target == wed) {
-    wed.style.display = "none";
+  if (event.target == boffin_coders_wed) {
+    boffin_coders_wed.style.display = "none";
   }
 }
 
-var sun = document.getElementById("mysun");
-var spansun = document.getElementsByClassName("closesun")[0];
+var boffin_coders_sun = document.getElementById("mysun");
+var boffin_coders_spansun = document.getElementsByClassName("closesun")[0];
 
-spansun.onclick = function() {
-  sun.style.display = "none";
+boffin_coders_spansun.onclick = function() {
+  boffin_coders_sun.style.display = "none";
 }
 
 window.onclick = function(event) {
-  if (event.target == sun) {
-    sun.style.display = "none";
+  if (event.target == boffin_coders_sun) {
+    boffin_coders_sun.style.display = "none";
   }
 }
 
 
-var mon = document.getElementById("mymon");
-var spanmon = document.getElementsByClassName("closemon")[0];
+var boffin_coders_mon = document.getElementById("mymon");
+var boffin_coders_spanmon = document.getElementsByClassName("closemon")[0];
 
-spanmon.onclick = function() {
-  mon.style.display = "none";
+boffin_coders_spanmon.onclick = function() {
+  boffin_coders_mon.style.display = "none";
 }
 
 window.onclick = function(event) {
-  if (event.target == mon) {
-    mon.style.display = "none";
+  if (event.target == boffin_coders_mon) {
+    boffin_coders_mon.style.display = "none";
   }
 }
 
-var tue = document.getElementById("mytue");
-var spantue = document.getElementsByClassName("closetue")[0];
+var boffin_coders_tue = document.getElementById("mytue");
+var boffin_coders_spantue = document.getElementsByClassName("closetue")[0];
 
-spantue.onclick = function() {
-  tue.style.display = "none";
+  boffin_coders_spantue.onclick = function() {
+  boffin_coders_tue.style.display = "none";
 }
 
 window.onclick = function(event) {
-  if (event.target == tue) {
-    tue.style.display = "none";
+  if (event.target == boffin_coders_tue) {
+    boffin_coders_tue.style.display = "none";
   }
 }
 
  
-var thu = document.getElementById("mythu");
-var spanthu = document.getElementsByClassName("closethu")[0];
+var boffin_coders_thu = document.getElementById("mythu");
+var boffin_coders_spanthu = document.getElementsByClassName("closethu")[0];
 
-spanthu.onclick = function() {
-  thu.style.display = "none";
+boffin_coders_spanthu.onclick = function() {
+  boffin_coders_thu.style.display = "none";
 }
 
 window.onclick = function(event) {
-  if (event.target == thu) {
-    thu.style.display = "none";
+  if (event.target == boffin_coders_thu) {
+    boffin_coders_thu.style.display = "none";
   }
 }
 
 
  
-var fri = document.getElementById("myfri");
-var spanfri = document.getElementsByClassName("closefri")[0];
+var boffin_coders_fri = document.getElementById("myfri");
+var boffin_coders_spanfri = document.getElementsByClassName("closefri")[0];
 
-spanfri.onclick = function() {
-  fri.style.display = "none";
+boffin_coders_spanfri.onclick = function() {
+  boffin_coders_fri.style.display = "none";
 }
 
 window.onclick = function(event) {
-  if (event.target == fri) {
-    fri.style.display = "none";
+  if (event.target == boffin_coders_fri) {
+    boffin_coders_fri.style.display = "none";
   }
 }
  
-var sat = document.getElementById("mysat");
-var spansat = document.getElementsByClassName("closesat")[0];
+var boffin_coders_sat = document.getElementById("mysat");
+var boffin_coders_spansat = document.getElementsByClassName("closesat")[0];
 
-spansat.onclick = function() {
-  sat.style.display = "none";
+boffin_coders_spansat.onclick = function() {
+  boffin_coders_sat.style.display = "none";
 }
 
 window.onclick = function(event) {
-  if (event.target == sat) {
-    sat.style.display = "none";
+  if (event.target == boffin_coders_sat) {
+    boffin_coders_sat.style.display = "none";
   }
 }
  
 </script>
    <?php 
      global $wpdb;
-	$table_name5 = $wpdb->prefix."appointment_styles";
+	$table_name5 = $wpdb->prefix."boffin_coders_appointment_styles";
 	$default_row5 = $wpdb->get_row( "SELECT * FROM $table_name5 WHERE id='1'");
 	 
    ?>
@@ -5086,6 +4955,6 @@ window.onclick = function(event) {
  
 <?php
 } 
-add_shortcode('boffin_appointment_calendar', 'appointment_id');
+add_shortcode('boffin_appointment_calendar', 'boffin_coders_appointment_id');
 
  
