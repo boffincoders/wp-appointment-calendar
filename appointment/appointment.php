@@ -662,7 +662,7 @@ function boffin_coders_settings() {
 	   <b class="appointment-info">
           The basics for this type of appointment
           </b>
-    <table class="form-table" role="presentation" id="basic-changes">
+    <table class="form-table appointment-boffin" role="presentation" id="basic-changes">
 	 <tbody> 
 	  <tr>
 		    <th><label for="name_base">Name</label></th>
@@ -744,7 +744,7 @@ function boffin_coders_settings() {
  
       <form method="post" action="?page=appointment-basics&tab=availability" class="formall full-width-table">
 	  
-	  <table class="form-table unique-table" role="presentation">
+	  <table class="form-table appointment-boffin unique-table" role="presentation">
 	  <tr> 
 	  <th>
 	  
@@ -776,7 +776,7 @@ function boffin_coders_settings() {
 		 ?>	
 	    </table>
 		
-        <table class="form-table" role="presentation">
+        <table class="form-table appointment-boffin" role="presentation">
           <tr>
 		    <th><label> <input type="hidden" value="<?php esc_html_e($appoint_id); ?>" name="appointment_id"/>  </label> 
 			  <input type="submit" class="button button-primary" name="availability_submit"/></td>
@@ -799,7 +799,7 @@ function boffin_coders_settings() {
 	  <?php
 	   if($active_tab == "styles") { ?>
       <form method="post" action="?page=appointment-basics&tab=styles" class="formall stylepart">
-       <table class="form-table" role="presentation" id="style-section-tb">
+       <table class="form-table appointment-boffin" role="presentation" id="style-section-tb">
 	    <tbody>
          <b class="appointment-info">
          Calendar Section : 
@@ -889,7 +889,7 @@ function boffin_coders_settings() {
       
 	 if($active_tab == "customer-information") { ?>
      <form method="post" action="?page=appointment-basics&tab=customer-information" class="formall">
-        <table class="form-table" role="presentation">
+        <table class="form-table appointment-boffin" role="presentation">
 	     <tbody>
           <b class="appointment-info">
             What do you need to know about your customer?
@@ -1044,7 +1044,7 @@ function boffin_coders_settings() {
 		</script>
 	   
       <form method="post" action="?page=appointment-basics&tab=notifications" class="formall notification" style="width: 88%;">
-        <table class="form-table" role="presentation">
+        <table class="form-table appointment-boffin" role="presentation">
 	     <tbody>
           <b class="appointment-info"> Options for sending customer and admin notifications</b>		 
 		  <tr>
@@ -4956,5 +4956,4 @@ window.onclick = function(event) {
 <?php
 } 
 add_shortcode('boffin_appointment_calendar', 'boffin_coders_appointment_id');
-
  
